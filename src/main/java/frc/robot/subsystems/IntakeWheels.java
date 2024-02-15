@@ -21,12 +21,18 @@ import edu.wpi.first.wpilibj.AnalogInput;
 
 public class IntakeWheels extends SubsystemBase {
   /** Creates a new IntakeWheels. */
-  private CANSparkMax upperWheels;
-  private CANSparkMax lowerWheels;
+  private CANSparkMax upperWheels; //neo 550
+  private CANSparkMax lowerWheels; //neo 550
+
+  public double kIntakeP, kIntakeI, kIntakeD, kIntakeIz, kIntakeFF, kIntakeMaxOutput, kIntakeMinOutput;
+  public double maxRPM;
 
   // add pid for close loop in case we need
   private SparkPIDController m_pidIntakeUpperController;
   private RelativeEncoder m_intakeUpper_encoder;
+
+  private SparkPIDController m_pidIntakeLowerController;
+  private RelativeEncoder m_intakeLower_encoder;
 
   private AnalogInput intakeNoteSensor;
 
@@ -38,12 +44,56 @@ public class IntakeWheels extends SubsystemBase {
     upperWheels.restoreFactoryDefaults();
     lowerWheels.restoreFactoryDefaults();
 
+    m_pidIntakeLowerController = lowerWheels.getPIDController();
+    m_intakeLower_encoder = lowerWheels.getEncoder();
+
+    m_pidIntakeUpperController = upperWheels.getPIDController();
+    m_intakeUpper_encoder = upperWheels.getEncoder();
+
     //upperWheels.setInverted(true);
+
+    kIntakeP = 0.3;  //6e-5 //make larger if it doesn't hold //0.1
+    kIntakeI = 0;
+    kIntakeD = 1;//0; 
+    kIntakeIz = 0; 
+    kIntakeFF = 0.000091;//  0.000015; //0.000156
+    kIntakeMinOutput = -1;
+    kIntakeMaxOutput = 1; 
+    maxRPM = 11000; //5700
+
+    // set PID coefficients
+    m_pidIntakeUpperController.setP(kIntakeP);
+    m_pidIntakeUpperController.setI(kIntakeI);
+    m_pidIntakeUpperController.setD(kIntakeD);
+    m_pidIntakeUpperController.setIZone(kIntakeIz);
+    m_pidIntakeUpperController.setFF(kIntakeFF);
+
+    m_pidIntakeLowerController.setP(kIntakeP);
+    m_pidIntakeLowerController.setI(kIntakeI);
+    m_pidIntakeLowerController.setD(kIntakeD);
+    m_pidIntakeLowerController.setIZone(kIntakeIz);
+    m_pidIntakeLowerController.setFF(kIntakeFF);
 
     upperWheels.follow(lowerWheels);
 
     upperWheels.setIdleMode(CANSparkMax.IdleMode.kBrake);
     lowerWheels.setIdleMode(CANSparkMax.IdleMode.kBrake);
+
+    kIntakeMinOutput = -0.3;
+    kIntakeMaxOutput = 0.3; 
+    m_pidIntakeUpperController.setOutputRange(kIntakeMinOutput, kIntakeMaxOutput); 
+    m_pidIntakeLowerController.setOutputRange(kIntakeMinOutput, kIntakeMaxOutput); 
+
+    //smart motion setting, similar to Falcon motion magic
+    m_pidIntakeUpperController.setSmartMotionMaxVelocity(1500, 0); //maxVel in rpm; will need to adjust
+    m_pidIntakeUpperController.setSmartMotionMaxAccel(2500,0);
+    m_pidIntakeUpperController.setSmartMotionMinOutputVelocity(0, 0);
+    m_pidIntakeUpperController.setSmartMotionAllowedClosedLoopError(0.2, 0);  
+
+    m_pidIntakeLowerController.setSmartMotionMaxVelocity(1500, 0);
+    m_pidIntakeLowerController.setSmartMotionMaxAccel(2500,0);
+    m_pidIntakeLowerController.setSmartMotionMinOutputVelocity(0, 0);
+    m_pidIntakeLowerController.setSmartMotionAllowedClosedLoopError(0.2, 0); 
 
 
     intakeNoteSensor = new AnalogInput(RobotMap.analogDistanceSensorPort1);
@@ -63,8 +113,12 @@ public class IntakeWheels extends SubsystemBase {
     //return 0; // temp code
   }
   
-  public void intakeMove(double speed){
-     // lowerWheels.set(speed);
+  public void intakeMove(double speedPercent){
+    double intakeSetPoint = speedPercent*maxRPM;
+    m_pidIntakeLowerController.setReference(intakeSetPoint, CANSparkMax.ControlType.kVelocity);
+    
+    SmartDashboard.putNumber("IntakeSetPoint", intakeSetPoint);
+    SmartDashboard.putNumber("IntakeVelocityVariable", m_intakeLower_encoder.getVelocity());
   }
 
 
