@@ -10,6 +10,8 @@ import frc.robot.Constants;
 import frc.robot.RobotMap;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -22,11 +24,14 @@ public class IntakeWheels extends SubsystemBase {
   private CANSparkMax upperWheels;
   private CANSparkMax lowerWheels;
 
+  // add pid for close loop in case we need
+  private SparkPIDController m_pidIntakeUpperController;
+  private RelativeEncoder m_intakeUpper_encoder;
 
   private AnalogInput intakeNoteSensor;
 
   public IntakeWheels() {
-    /* 
+    
     upperWheels = new CANSparkMax(RobotMap.intakeNEOTopID, MotorType.kBrushless);
     lowerWheels = new CANSparkMax(RobotMap.intakeNEOBottomID, MotorType.kBrushless);
 
@@ -43,19 +48,19 @@ public class IntakeWheels extends SubsystemBase {
 
     intakeNoteSensor = new AnalogInput(RobotMap.analogDistanceSensorPort1);
     intakeNoteSensor.setAverageBits(12);
-    */
+    
   }
 
    
   public double noteSensor() {
     //double cmDistanceSensor = (27048/(analogDistanceSensor.getAverageValue()-36))-4;
-    /* 
+    
     double cmDistanceSensor1;
     cmDistanceSensor1 = intakeNoteSensor.getAverageValue();
     SmartDashboard.putNumber("note sensor raw", cmDistanceSensor1);
     return cmDistanceSensor1;
-    */
-    return 0; // temp code
+    
+    //return 0; // temp code
   }
   
   public void intakeMove(double speed){
