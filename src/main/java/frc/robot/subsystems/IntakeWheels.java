@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.AnalogInput;
 
 public class IntakeWheels extends SubsystemBase {
   /** Creates a new IntakeWheels. */
+  /* 
   private CANSparkMax upperWheels; //neo 550
   private CANSparkMax lowerWheels; //neo 550
 
@@ -36,8 +37,11 @@ public class IntakeWheels extends SubsystemBase {
 
   private AnalogInput intakeNoteSensor;
 
+  */
+
   public IntakeWheels() {
     
+    /* 
     upperWheels = new CANSparkMax(RobotMap.intakeNEOTopID, MotorType.kBrushless);
     lowerWheels = new CANSparkMax(RobotMap.intakeNEOBottomID, MotorType.kBrushless);
 
@@ -99,26 +103,29 @@ public class IntakeWheels extends SubsystemBase {
     intakeNoteSensor = new AnalogInput(RobotMap.analogDistanceSensorPort1);
     intakeNoteSensor.setAverageBits(12);
     
+    */
   }
 
    
   public double noteSensor() {
     //double cmDistanceSensor = (27048/(analogDistanceSensor.getAverageValue()-36))-4;
-    
+    /* 
     double cmDistanceSensor1;
     cmDistanceSensor1 = intakeNoteSensor.getAverageValue();
     SmartDashboard.putNumber("note sensor raw", cmDistanceSensor1);
     return cmDistanceSensor1;
-    
-    //return 0; // temp code
+    */
+    return 0; // temp code
   }
   
   public void intakeMove(double speedPercent){
+    /* 
     double intakeSetPoint = speedPercent*maxRPM;
     m_pidIntakeLowerController.setReference(intakeSetPoint, CANSparkMax.ControlType.kVelocity);
     
     SmartDashboard.putNumber("IntakeSetPoint", intakeSetPoint);
     SmartDashboard.putNumber("IntakeVelocityVariable", m_intakeLower_encoder.getVelocity());
+    */
   }
 
 
