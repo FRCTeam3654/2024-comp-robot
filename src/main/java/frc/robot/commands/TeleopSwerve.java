@@ -19,7 +19,8 @@ public class TeleopSwerve extends Command {
     private DoubleSupplier translationSup;
     private DoubleSupplier strafeSup;
     private DoubleSupplier rotationSup;
-    private Boolean fieldSentric;
+    //private Boolean fieldSentric;
+    BooleanSupplier robotCentricSup;
     private BooleanSupplier slowSpeedSup;
 
 
@@ -33,7 +34,9 @@ public class TeleopSwerve extends Command {
     private double driveStraightAngle = 0;
 
 
-    public TeleopSwerve(SwerveSubsystem s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, boolean fieldSentric, BooleanSupplier slowSpeedSup) {
+    //public TeleopSwerve(SwerveSubsystem s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, boolean fieldSentric, BooleanSupplier slowSpeedSup) {
+    
+    public TeleopSwerve(SwerveSubsystem s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup, BooleanSupplier slowSpeedSup) {
         this.s_Swerve = s_Swerve;
         this.slowSpeedSup = slowSpeedSup;
         addRequirements(s_Swerve);
@@ -41,14 +44,13 @@ public class TeleopSwerve extends Command {
         this.translationSup = translationSup;
         this.strafeSup = strafeSup;
         this.rotationSup = rotationSup;
-        this.fieldSentric = fieldSentric;
-
-        isFieldRelative = fieldSentric;
+        this.robotCentricSup = robotCentricSup;
+         //this.fieldSentric = fieldSentric;
     }
 
     @Override
     public void execute() {
-        double speedMultiplier = slowSpeedSup.getAsBoolean() ? 0.8 : 0.5; //0.2, 0.5 //0.05, 0.2
+        double speedMultiplier = slowSpeedSup.getAsBoolean() ? 0.2 : 0.8; //0.2, 0.5 //0.05, 0.2
 
         /* Get Values, Deadband*/
         double translationVal = translationLimiter.calculate(speedMultiplier *  MathUtil.applyDeadband(translationSup.getAsDouble(), Constants.stickDeadband) );
@@ -77,10 +79,10 @@ public class TeleopSwerve extends Command {
         driveStraightFlag = false;
         }
 
-
+        isFieldRelative = !robotCentricSup.getAsBoolean();
 
         /* Drive */
-        //if (!slowSpeedSup.getAsBoolean()){
+  
             s_Swerve.drive(
                 new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed), 
                 rotationVal * Constants.Swerve.maxAngularVelocity, 
@@ -89,19 +91,6 @@ public class TeleopSwerve extends Command {
                 
             );
 
-        /* Slow mode drive */
-        /* 
-        }else{
-            s_Swerve.drive(
-                //new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed * Constants.Swerve.XYSlowRatio),
-                new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed * speedMultiplier), 
-                //rotationVal * Constants.Swerve.maxAngularVelocity * Constants.Swerve.rotationSlowRatio, 
-                rotationVal * Constants.Swerve.maxAngularVelocity * speedMultiplier, 
-                fieldSentric, 
-                true,
-                true
-            );
-        }
-        */
+       
     }
 }

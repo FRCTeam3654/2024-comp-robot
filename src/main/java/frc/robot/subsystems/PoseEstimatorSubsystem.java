@@ -11,7 +11,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import frc.robot.Constants;
-
+import frc.robot.RobotContainer;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 //import frc.robot.Constants.DrivetrainConstants;
 import java.util.List;
@@ -51,7 +52,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
   // temp code to set up the ApriTag postion at shop
   public static final HashMap<Integer, Pose3d> targetPoses =  new HashMap<Integer, Pose3d>() {{
     put(2, new Pose3d(Units.inchesToMeters(60),0,Units.inchesToMeters(10.5), new Rotation3d(0,0,Units.degreesToRadians(180))));
-    put(4, new Pose3d(Units.inchesToMeters(-101),Units.inchesToMeters(49),Units.inchesToMeters(8.5), new Rotation3d(0,0,Units.degreesToRadians(0))));
+    put(1, new Pose3d(Units.inchesToMeters(-101),Units.inchesToMeters(49),Units.inchesToMeters(8.5), new Rotation3d(0,0,Units.degreesToRadians(0))));
   }}   ;   
   
   //public static Transform3d tag4Totag2 = targetPoses.get(2).minus(targetPoses.get(4));
@@ -82,6 +83,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
   private final Field2d field2d = new Field2d();
 
   private double previousPipelineTimestamp = 0;
+
+  private int noCameraCycleCnt = 0;
 
   public PoseEstimatorSubsystem(PhotonCamera photonFrontOVCamera, PhotonCamera photonBackOVCamera, SwerveSubsystem drivetrainSubsystem) {
     this.photonFrontOVCamera = photonFrontOVCamera;
@@ -136,7 +139,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     double frontCameraPoseAmbiguity = -1.0;
     double backCameraPoseAmbiguity = -1.0;
     Pose3d targetPose;
-    int whichCameraToUse = 0; // 0 -- None ;  1 -- Front Camera ;  2 -- Back Camera
+    //int whichCameraToUse = 0; // 0 -- None ;  1 -- Front Camera ;  2 -- Back Camera
 
     if(photonFrontOVCamera != null ) {
       pipelineResult = photonFrontOVCamera.getLatestResult();
@@ -177,13 +180,31 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     }
 
 
-    if(photonCamera != null ) {
+    if(photonCamera == null ) {
+        noCameraCycleCnt++;
+        if(noCameraCycleCnt > 3) {
+          RobotContainer.led.setAll(Color.kBlack);
+        }
+    } 
+    else if(photonCamera != null ) {
+      noCameraCycleCnt = 0;
+      
       pipelineResult = photonCamera.getLatestResult();
       resultTimestamp = pipelineResult.getTimestampSeconds();
       if (resultTimestamp != previousPipelineTimestamp && pipelineResult.hasTargets()) {
         previousPipelineTimestamp = resultTimestamp;
         target = pipelineResult.getBestTarget();
         fiducialId = target.getFiducialId();
+
+        // Color:  Speaker -> Green; Amp --> Blue;  Note --> Red;   Source --> Yellow  
+        if( fiducialId == 2 ) {
+          RobotContainer.led.setAll(Color.kGreen); 
+        }
+        else if( fiducialId == 1 ) {
+          RobotContainer.led.setAll(Color.kBlue);
+        }
+
+
         // Get the tag pose from field layout - consider that the layout will be null if it failed to load
         
         //Optional<Pose3d> tagPose = aprilTagFieldLayout == null ? Optional.empty() : aprilTagFieldLayout.getTagPose(fiducialId);

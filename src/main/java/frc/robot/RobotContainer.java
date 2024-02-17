@@ -28,6 +28,7 @@ public class RobotContainer {
     public static OI oi;
     public static SpeakerShooter speakerShooter;
     public static IntakeWheels intakeWheels;
+    public static LEDSubsystem led;
   
     /* Controllers */
     //private final Joystick driver = new Joystick(0); // moved to OI for consistency
@@ -47,8 +48,8 @@ public class RobotContainer {
     /* Subsystems */
     private final SwerveSubsystem swerve = SwerveSubsystem.getInstance();
 
-    private final SpeakerShooter s_SpeakerShooter = new SpeakerShooter();
-    private final IntakeWheels s_IntakeWheels = new IntakeWheels();
+   // private final SpeakerShooter s_SpeakerShooter = new SpeakerShooter();
+   // private final IntakeWheels s_IntakeWheels = new IntakeWheels();
 
     // vision
    //private PhotonCamera photonCamera = new PhotonCamera("Arducam_OV9281_USB_Camera");
@@ -85,11 +86,12 @@ public class RobotContainer {
 
         speakerShooter = new SpeakerShooter();
         intakeWheels = new IntakeWheels();
+        led = new LEDSubsystem();
         oi = new OI();
          
          
         try {
-            System.out.println("Ready to sleep for 10 seconds ...");
+            System.out.println("Ready to sleep for 5 seconds ...");
             Thread.sleep(5000); // try this
             photonFrontOVCamera = new PhotonCamera("Arducam_OV9281_USB_1");//JW's first camera
             photonBackOVCamera = new PhotonCamera("Arducam_OV9281_USB_Camera");//AK's second camera
@@ -117,7 +119,8 @@ public class RobotContainer {
                 () -> -oi.driverStick.getRawAxis(translationAxis), 
                 () -> -oi.driverStick.getRawAxis(strafeAxis), 
                 () -> -oi.driverStick.getRawAxis(rotationAxis), 
-                true,
+                //true,
+                () -> oi.robotCentric.getAsBoolean(),
                 () -> true
             )
         );
