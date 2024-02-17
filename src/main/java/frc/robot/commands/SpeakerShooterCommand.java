@@ -40,7 +40,7 @@ public class SpeakerShooterCommand extends Command {
   public void execute() {
     RobotContainer.speakerShooter.shootSpeaker(shooterVelocity);
     if(RobotContainer.speakerShooter.targetSpeed()){
-      RobotContainer.intakeWheels.intakeMove(-0.2);
+      RobotContainer.intakeWheels.intakeSpin(-0.2);
     }
   }
 

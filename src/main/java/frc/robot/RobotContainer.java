@@ -73,6 +73,7 @@ public class RobotContainer {
     private ChaseNoteCommand chaseNoteCommand =  null;
 
 
+
    
 
 
@@ -127,6 +128,8 @@ public class RobotContainer {
             )
         );
 
+        intakeWheels.setDefaultCommand(new IntakeCommand(2));
+
         // Configure the button bindings
         configureButtonBindings();
 
@@ -160,6 +163,12 @@ public class RobotContainer {
 
         oi.turnLeft180Button.whileTrue(chaseNoteCommand);
         oi.turnRight180Button.whileTrue(chaseTagCommand);
+        oi.intakeDownButton.onTrue(new GrabDownCommand());
+        oi.intakeUpButton.onTrue(new StoreCommand());
+
+        //if(intakeWheels.noteSensor() > 1800){
+            //new StoreCommand();
+        //}
  
     }
 

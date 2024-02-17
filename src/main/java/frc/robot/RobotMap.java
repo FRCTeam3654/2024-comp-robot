@@ -62,18 +62,26 @@ public static int operatorControllerPort = 1;
 
 //DRIVE STICK
 public static int turboButtonNumber = 18;
-public static int driveStraightButtonNumber = 7;
-public static int turnLeft90ButtonNumber = 3; 
-public static int turnRight90ButtonNumber = 2; 
-public static int turnLeft180ButtonNumber = 4; 
-public static int turnRight180ButtonNumber = 1;
+public static int driveStraightButtonNumber = 7; //want to be right trigger
+public static int turnLeft90ButtonNumber = 3; //blue x
+public static int turnRight90ButtonNumber = 2; //red b //might only do 1 180 button so i have an extra
+public static int turnLeft180ButtonNumber = 4; //yellow y
+public static int turnRight180ButtonNumber = 1; //green a
+public static int aprilButtonNumber = 5; //left bumper
+public static int noteSensorButtonNumber = 6; //right bumper
 
 
 
 
 //OPERATOR STICK
-public static int speakerShooterButtonNumber = 4;
-public static int wristDownUpButtonNumber = 3;
+public static int speakerShooterButtonNumber = 4; //yellow y
+public static int ampButtonNumber = 1; // green a
+public static int intakeDownButtonNumber = 3; // blue x
+public static int intakeUpButtonNumber = 2; //red b
+public static int trapButtonNumber = 6; //right bumper
+public static int climbPositionButtonNumber = 5; //left bumper //this button is for raising the arm to hook
+public static int climbWinchButtonNumber = 18; //want to be right trigger //this is for moving the winch
+
 
 
 //TALONS/TALON ID NUMBERS!
@@ -119,7 +127,7 @@ public static final int LED_PWMPORT = 9;
 public static final int LED_LENGTH = 20;
 
 //For the Wrist
-public static double wristFullUpDistance;
+public static double wristFullUpDistance = 0.5; //will tune later
 
 /**
  * which PID slot to pull gains from. starting 2018, you can choose from 0,1,2 or 3.
