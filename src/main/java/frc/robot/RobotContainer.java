@@ -28,12 +28,9 @@ public class RobotContainer {
     public static OI oi;
     public static SpeakerShooter speakerShooter;
     public static IntakeWheels intakeWheels;
-<<<<<<< HEAD
     public static Wrist wrist;
     public static Arm arm;
-=======
     public static LEDSubsystem led;
->>>>>>> 07245db38cd6c385938e04259482b0dcfecd799b
   
     /* Controllers */
     //private final Joystick driver = new Joystick(0); // moved to OI for consistency
