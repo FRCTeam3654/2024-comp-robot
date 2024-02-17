@@ -73,6 +73,7 @@ public static int turnRight180ButtonNumber = 1;
 
 //OPERATOR STICK
 public static int speakerShooterButtonNumber = 4;
+public static int wristDownUpButtonNumber = 3;
 
 
 //TALONS/TALON ID NUMBERS!
@@ -116,6 +117,9 @@ public static double radianConversionToDegree = 57.2958;
 
 public static final int LED_PWMPORT = 1;
 public static final int LED_LENGTH = 20;
+
+//For the Wrist
+public static double wristFullUpDistance;
 
 /**
  * which PID slot to pull gains from. starting 2018, you can choose from 0,1,2 or 3.

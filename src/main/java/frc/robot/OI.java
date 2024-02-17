@@ -51,6 +51,7 @@ public class OI {
   public JoystickButton slowSpeed;
 
   public JoystickButton speakerShooterButton;
+  public JoystickButton wristDownUpButton;
       //new JoystickButton(driver, XboxController.Button.kRightBumper.value);
  
 
@@ -85,6 +86,7 @@ public class OI {
 
   //Operator Stick
   speakerShooterButton = new JoystickButton(operatorStick, RobotMap.speakerShooterButtonNumber);
+  wristDownUpButton = new JoystickButton(operatorStick, RobotMap.wristDownUpButtonNumber);
 
 
   

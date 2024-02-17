@@ -28,6 +28,8 @@ public class RobotContainer {
     public static OI oi;
     public static SpeakerShooter speakerShooter;
     public static IntakeWheels intakeWheels;
+    public static Wrist wrist;
+    public static Arm arm;
   
     /* Controllers */
     //private final Joystick driver = new Joystick(0); // moved to OI for consistency
