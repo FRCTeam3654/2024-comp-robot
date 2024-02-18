@@ -23,16 +23,16 @@ import com.ctre.phoenix6.controls.Follower;
 
 public class SpeakerShooter extends SubsystemBase {
   /** Creates a new SpeakerShooter. */
-  /* 
+  
   private TalonFX shooterTalonLeft  = new TalonFX (RobotMap.shooterTalonLeftID);
   private TalonFX shooterTalonRight  = new TalonFX (RobotMap.shooterTalonRightID);
 
   public TalonFXConfiguration shooterLeftFXConfig = new TalonFXConfiguration();
   public TalonFXConfiguration shooterRightFXConfig = new TalonFXConfiguration();
-  */
+  
 
   public SpeakerShooter() {
-    /* 
+    
     shooterTalonLeft.getConfigurator().apply(new TalonFXConfiguration()); //configs factory default
     shooterTalonRight.getConfigurator().apply(new TalonFXConfiguration());
 
@@ -57,8 +57,19 @@ public class SpeakerShooter extends SubsystemBase {
     shooterTalonLeft.getConfigurator().apply(new FeedbackConfigs());
     shooterTalonRight.getConfigurator().apply(new FeedbackConfigs());
 
+
+    // reduce the frame rate of the follower in order to reduce the can bus utilization
+    // phoenix 5 version: :  m_talonFX.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 200);
+    shooterTalonRight.getPosition().setUpdateFrequency(5);  // phoenix 6 syntax
+    shooterTalonRight.getVelocity().setUpdateFrequency(5);
+    shooterTalonRight.getSupplyCurrent().setUpdateFrequency(5); // not sure which one is "Brushed Supply Current Measurement"
+    shooterTalonRight.getStickyFault_Hardware().setUpdateFrequency(5); // so many, not sure which
+
+
+
+
     zeroSensors();
-    */
+    
   }
 
   public void shootSpeaker(double velocity){
@@ -81,7 +92,7 @@ public class SpeakerShooter extends SubsystemBase {
      
 
 
-     /* 
+     
     double speedLeft = shooterTalonLeft.getVelocity().getValueAsDouble();
     SmartDashboard.putNumber("Shooter Speed Left", speedLeft);
     double speedLeftDifferential = speedLeft - RobotMap.shooterSpeed_nativeUnit;
@@ -98,16 +109,16 @@ public class SpeakerShooter extends SubsystemBase {
     else{
       return false;
     }
-    */
+    
 
     // temp
-    return true;
+    //return true;
 
   }
   
 
   public void shooterToVelocity(double speed) {
-    //shooterTalonLeft.setControl(ShooterConstants.shooterControl.withVelocity(speed));
+    shooterTalonLeft.setControl(ShooterConstants.shooterControl.withVelocity(speed));
 
     //shooterMotorBottom.setControl(ShooterConstants.shooterControl.withVelocity(speed));
   }
