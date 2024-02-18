@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.Timer;
 
 
 public class IntakeCommand extends Command {
-  /** Creates a new IntakeCommand. */
+  /** Creates a new IntakeCommand. */ //test edit
   //private boolean isNote = false;
   public static int intakeMode = 0;
   double intakeTimer;
