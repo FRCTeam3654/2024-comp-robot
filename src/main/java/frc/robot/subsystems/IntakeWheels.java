@@ -42,7 +42,7 @@ public class IntakeWheels extends SubsystemBase {
 
   public IntakeWheels() {
     
-    
+    /* 
     upperWheels = new CANSparkMax(RobotMap.intakeNEOTopID, MotorType.kBrushless);
     lowerWheels = new CANSparkMax(RobotMap.intakeNEOBottomID, MotorType.kBrushless);
 
@@ -111,34 +111,34 @@ public class IntakeWheels extends SubsystemBase {
     upperWheels.setPeriodicFramePeriod(PeriodicFrame.kStatus2,64001); // position. default 20 ms
     upperWheels.setPeriodicFramePeriod(PeriodicFrame.kStatus4,63001); // Alternate Encoder Velocity, default 20 ms
     // no need messing with status0 (set follower's value), status3 (analog value, 50 ms)
-
+    */
 
   }
 
    
   public double noteSensor() {
     //double cmDistanceSensor = (27048/(analogDistanceSensor.getAverageValue()-36))-4;
-     
+     /* 
     double cmDistanceSensor1;
     cmDistanceSensor1 = intakeNoteSensor.getAverageValue();
     SmartDashboard.putNumber("note sensor raw", cmDistanceSensor1);
     return cmDistanceSensor1;
-    
-    //return 0; // temp code
+    */
+    return 0; // temp code
   }
   
   public void intakeMove(double speedPercent){
-     
+     /* 
     double intakeSetPoint = speedPercent*maxRPM;
     m_pidIntakeLowerController.setReference(intakeSetPoint, CANSparkMax.ControlType.kVelocity);
     
     SmartDashboard.putNumber("IntakeSetPoint", intakeSetPoint);
     SmartDashboard.putNumber("IntakeVelocityVariable", m_intakeLower_encoder.getVelocity());
-    
+    */
   }
 
   public void intakeSpin(double percentDuty){
-    lowerWheels.set(percentDuty);
+    //lowerWheels.set(percentDuty);
   }
 
 

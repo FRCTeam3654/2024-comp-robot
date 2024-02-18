@@ -88,11 +88,11 @@ public class RobotContainer {
     public RobotContainer() {
 
         speakerShooter = new SpeakerShooter();
-        intakeWheels = new IntakeWheels();
+        //intakeWheels = new IntakeWheels();
         led = new LEDSubsystem();
         oi = new OI();
          
-         
+        /* 
         try {
             System.out.println("Ready to sleep for 5 seconds ...");
             Thread.sleep(5000); // try this
@@ -112,9 +112,9 @@ public class RobotContainer {
          
         }
         catch(Exception e) {
-
+            System.out.println("error "+e);
         }
-        
+        */
 
         swerve.setDefaultCommand(
             new TeleopSwerve(
@@ -128,7 +128,7 @@ public class RobotContainer {
             )
         );
 
-        intakeWheels.setDefaultCommand(new IntakeCommand(2));
+       // intakeWheels.setDefaultCommand(new IntakeCommand(2));
 
         // Configure the button bindings
         configureButtonBindings();
@@ -161,10 +161,10 @@ public class RobotContainer {
 
        // oi.turnLeft180Button.whileTrue(chaseTagCommand);
 
-        oi.turnLeft180Button.whileTrue(chaseNoteCommand);
-        oi.turnRight180Button.whileTrue(chaseTagCommand);
-        oi.intakeDownButton.onTrue(new GrabDownCommand());
-        oi.intakeUpButton.onTrue(new StoreCommand());
+       // oi.turnLeft180Button.whileTrue(chaseNoteCommand);
+       // oi.turnRight180Button.whileTrue(chaseTagCommand);
+       // oi.intakeDownButton.onTrue(new GrabDownCommand());
+        //oi.intakeUpButton.onTrue(new StoreCommand());
 
         //if(intakeWheels.noteSensor() > 1800){
             //new StoreCommand();
