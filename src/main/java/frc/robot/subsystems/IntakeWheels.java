@@ -13,6 +13,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkBase.IdleMode;
 
@@ -103,7 +104,15 @@ public class IntakeWheels extends SubsystemBase {
     intakeNoteSensor = new AnalogInput(RobotMap.analogDistanceSensorPort1);
     intakeNoteSensor.setAverageBits(12);
     
-    
+
+    //upperWheels.setControlFramePeriodMs(40); // should we mess up control frame: rio to motor
+
+    upperWheels.setPeriodicFramePeriod(PeriodicFrame.kStatus1,65001); // velocity, voltage, default 20 ms
+    upperWheels.setPeriodicFramePeriod(PeriodicFrame.kStatus2,64001); // position. default 20 ms
+    upperWheels.setPeriodicFramePeriod(PeriodicFrame.kStatus4,63001); // Alternate Encoder Velocity, default 20 ms
+    // no need messing with status0 (set follower's value), status3 (analog value, 50 ms)
+
+
   }
 
    
