@@ -124,7 +124,8 @@ public class RobotContainer {
                 () -> -oi.driverStick.getRawAxis(rotationAxis), 
                 //true,
                 () -> oi.robotCentric.getAsBoolean(),
-                () -> true
+                () -> oi.slowSpeed.getAsBoolean()
+                //() -> true
             )
         );
 
@@ -186,8 +187,8 @@ public class RobotContainer {
         // return new PathPlannerAuto("3Piece");
         //return new PathPlannerAuto("4Piece");
         //return new PathPlannerAuto("5Piece");
-        //return new PathPlannerAuto("4PieceLong");
+        return new PathPlannerAuto("4PieceLong");
 
-        return autoChooser.getSelected();
+        //return autoChooser.getSelected();
     }
 }

@@ -33,9 +33,9 @@ public class WristSmartMotion extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-   // if(RobotContainer.oi.wristDownUpButton.getAsBoolean()  || mode == 1){
-   //   isSmartMotionButtonPressed = true;
-   // }
+   if(RobotContainer.oi.intakeDownButton.getAsBoolean() || RobotContainer.oi.intakeUpButton.getAsBoolean() || mode == 1){
+    isSmartMotionButtonPressed = true;
+   }
 
     if(isSmartMotionButtonPressed == true){
     wristMoveNumber = wristMoveNumber + 1;
