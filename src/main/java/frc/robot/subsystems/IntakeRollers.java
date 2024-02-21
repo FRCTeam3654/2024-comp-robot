@@ -38,7 +38,7 @@ public class IntakeRollers extends SubsystemBase {
 
 
     private double target = 0;
-    private ArmFeedforward m_intakFeedforward = new ArmFeedforward(0, 0, 0);
+    private ArmFeedforward m_intakeFeedforward = new ArmFeedforward(0, 0, 0);
 
 
 
@@ -131,7 +131,7 @@ public class IntakeRollers extends SubsystemBase {
     }
 
     public boolean hasGamePiece(){
-        return (intakeNoteSensor.getAverageValue() > 1800);
+        return (intakeNoteSensor.getValue() > 1800);
     }
 
     @Override
@@ -143,7 +143,9 @@ public class IntakeRollers extends SubsystemBase {
     }
 
     public Command intakeGamepieceCommand(){
-        Command result = run(this::feedIn).until(this::hasGamePiece).andThen(runOnce(this::stop));
+        //Command result = run(this::feedIn).until(this::hasGamePiece).andThen(runOnce(this::stop));
+        Command result = run(this::feedIn).until(this::hasGamePiece);
+
         return result;
     } 
     

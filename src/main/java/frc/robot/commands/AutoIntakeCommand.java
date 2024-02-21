@@ -15,7 +15,7 @@ public class AutoIntakeCommand extends Command {
 
   public AutoIntakeCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(RobotContainer.intakeWheels);
+    addRequirements(RobotContainer.intakeRollers);
   }
 
   // Called when the command is initially scheduled.
@@ -27,21 +27,22 @@ public class AutoIntakeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    RobotContainer.intakeWheels.intakeMove(0.2);
-
+    //RobotContainer.intakeWheels.intakeMove(0.2);
+    RobotContainer.intakeRollers.feedIn();
 
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.intakeWheels.intakeMove(0);
+    //RobotContainer.intakeWheels.intakeMove(0);
+    RobotContainer.intakeRollers.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (RobotContainer.intakeWheels.noteSensor() < 1000 || intakeTimer + 0.5 < Timer.getFPGATimestamp()){ //distance sensor value needs to be tuned
+    if (RobotContainer.intakeRollers.hasGamePiece() || intakeTimer + 0.5 < Timer.getFPGATimestamp()){ //distance sensor value needs to be tuned
       return true;
     }
     return false;

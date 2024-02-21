@@ -27,7 +27,9 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 public class RobotContainer {
     public static OI oi;
     public static SpeakerShooter speakerShooter;
-    public static IntakeWheels intakeWheels;
+    public static Climb climb;
+    //public static IntakeWheels intakeWheels;
+    public static IntakeRollers intakeRollers;
     public static Wrist wrist;
     public static Arm arm;
     public static LEDSubsystem led;
@@ -167,10 +169,13 @@ public class RobotContainer {
        // oi.intakeDownButton.onTrue(new GrabDownCommand());
         //oi.intakeUpButton.onTrue(new StoreCommand());
 
+        oi.climbUpButton.whileTrue(new ClimbUpCommand());
+
         //if(intakeWheels.noteSensor() > 1800){
             //new StoreCommand();
         //}
- 
+        oi.intakeDownButton.onTrue(intakeRollers.intakeGamepieceCommand().andThen(new StoreCommand())).onFalse(new InstantCommand(intakeRollers::stop)); //may make the onFalse a store command
+        
     }
 
     /**

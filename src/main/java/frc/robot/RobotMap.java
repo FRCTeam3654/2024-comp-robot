@@ -80,7 +80,7 @@ public static int intakeDownButtonNumber = 3; // blue x
 public static int intakeUpButtonNumber = 2; //red b
 public static int trapButtonNumber = 6; //right bumper
 public static int climbPositionButtonNumber = 5; //left bumper //this button is for raising the arm to hook
-public static int climbWinchButtonNumber = 18; //want to be right trigger //this is for moving the winch
+//public static int climbWinchButtonNumber = 18; //want to be right trigger //this is for moving the winch
 
 
 

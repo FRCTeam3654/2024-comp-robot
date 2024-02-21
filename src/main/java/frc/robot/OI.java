@@ -58,6 +58,8 @@ public class OI {
 
   public JoystickButton limelightButton;
 
+  public POVButton climbUpButton;
+
 
   public Trigger sensorTrigger;
 
@@ -89,6 +91,7 @@ public class OI {
   speakerShooterButton = new JoystickButton(operatorStick, RobotMap.speakerShooterButtonNumber);
   intakeDownButton = new JoystickButton(operatorStick, RobotMap.intakeDownButtonNumber);
   intakeUpButton = new JoystickButton(operatorStick, RobotMap.intakeUpButtonNumber);
+  climbUpButton = new POVButton(operatorStick, 0);
 
 
   

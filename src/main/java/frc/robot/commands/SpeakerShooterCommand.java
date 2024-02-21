@@ -26,7 +26,7 @@ public class SpeakerShooterCommand extends Command {
   public SpeakerShooterCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.speakerShooter);
-    addRequirements(RobotContainer.intakeWheels);
+    addRequirements(RobotContainer.intakeRollers);
   }
 
   // Called when the command is initially scheduled.
@@ -40,7 +40,8 @@ public class SpeakerShooterCommand extends Command {
   public void execute() {
     RobotContainer.speakerShooter.shootSpeaker(shooterVelocity);
     if(RobotContainer.speakerShooter.targetSpeed()){
-      RobotContainer.intakeWheels.intakeSpin(-0.2);
+      //RobotContainer.intakeWheels.intakeSpin(-0.2);
+      RobotContainer.intakeRollers.feedOut();
     }
   }
 
@@ -48,6 +49,7 @@ public class SpeakerShooterCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     RobotContainer.speakerShooter.shootSpeaker(0);
+    RobotContainer.intakeRollers.stop();
   }
 
   // Returns true when the command should end.
