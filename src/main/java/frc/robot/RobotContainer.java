@@ -132,6 +132,7 @@ public class RobotContainer {
         );
 
        // intakeWheels.setDefaultCommand(new IntakeCommand(2));
+        wrist.setDefaultCommand(new WristSmartMotion(0));
 
         // Configure the button bindings
         configureButtonBindings();

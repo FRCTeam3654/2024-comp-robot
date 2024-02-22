@@ -129,6 +129,9 @@ public static final int LED_LENGTH = 20;
 //For the Wrist
 public static double wristFullUpDistance = 0.5; //will tune later
 
+//For the Arm
+public static double armAmpDistance = 0.5;
+
 /**
  * which PID slot to pull gains from. starting 2018, you can choose from 0,1,2 or 3.
  * only the first two (0,1) are visible in web-based
