@@ -19,6 +19,7 @@ public class WristSmartMotion extends Command {
   private boolean isSmartMotionButtonPressed = false;
   private double currentPos;
   private int mode = 0;
+  private double targetPos;
 
   public WristSmartMotion() {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -41,8 +42,9 @@ public class WristSmartMotion extends Command {
     wristMoveNumber = wristMoveNumber + 1;
 
     if(mode == 0){ //moves full down for intake
+      targetPos = -1 * RobotMap.wristFullUpDistance;
       wristTimer = Timer.getFPGATimestamp();
-      RobotContainer.wrist.goToPositionBySmartMotion(-1 * RobotMap.wristFullUpDistance);
+      RobotContainer.wrist.goToPositionBySmartMotion(targetPos);
       //RobotContainer.wrist.setMotionMagic(0, 2000, 2000);
       System.out.println("should i be moving down");
       isSmartMotionInProgress = true;
@@ -51,8 +53,9 @@ public class WristSmartMotion extends Command {
 
     else if(mode == 1){ //moves to storage position
       wristTimer = Timer.getFPGATimestamp();
+      targetPos = 0;
       //RobotContainer.wrist.setMotionMagic(RobotMap.wristFullUpDistance, 2000, 2000);
-      RobotContainer.wrist.goToPositionBySmartMotion(0); //this should be the store pos bc the motors zero at start
+      RobotContainer.wrist.goToPositionBySmartMotion(targetPos); //this should be the store pos bc the motors zero at start
       System.out.println("should i be moving to storage");
       isSmartMotionInProgress = true;
       //IntakeCommand.changeMode(2);
@@ -61,16 +64,18 @@ public class WristSmartMotion extends Command {
     
     else if(mode == 2){ //moves for amp
       wristTimer = Timer.getFPGATimestamp();
+      targetPos = 0.5 * RobotMap.wristFullUpDistance;
       //RobotContainer.wrist.setMotionMagic(RobotMap.wristFullUpDistance, 2000, 2000);
-      RobotContainer.wrist.goToPositionBySmartMotion(0.5 * RobotMap.wristFullUpDistance); //change value depending on how much we want it to move
+      RobotContainer.wrist.goToPositionBySmartMotion(targetPos); //change value depending on how much we want it to move
       System.out.println("should i be moving to amp");
       isSmartMotionInProgress = true;
     }
 
     else if(mode == 3){ //moves for trap
       wristTimer = Timer.getFPGATimestamp();
+      targetPos = 0.2 * RobotMap.wristFullUpDistance;
       //RobotContainer.wrist.setMotionMagic(RobotMap.wristFullUpDistance, 2000, 2000);
-      RobotContainer.wrist.goToPositionBySmartMotion(0.2 * RobotMap.wristFullUpDistance); //change value depending on how much we want it to move
+      RobotContainer.wrist.goToPositionBySmartMotion(targetPos); //change value depending on how much we want it to move
       System.out.println("should i be moving to trap");
       isSmartMotionInProgress = true;
     }
@@ -117,7 +122,7 @@ public class WristSmartMotion extends Command {
     }
     else {
         double sensorDistance = Math.abs(RobotContainer.wrist.getSensorReading());
-        double percentError = 100 * (RobotMap.wristFullUpDistance - sensorDistance)/RobotMap.wristFullUpDistance;
+        double percentError = 100 * (targetPos - sensorDistance)/targetPos;
 
         if (Math.abs(percentError) < 1){
         //if (percentLeftError < 0.9 || percentLeftError < 0 )

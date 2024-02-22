@@ -175,6 +175,8 @@ public class RobotContainer {
         //if(intakeWheels.noteSensor() > 1800){
             //new StoreCommand();
         //}
+        oi.intakeUpButton.onTrue(new StoreCommand());
+        oi.speakerShooterButton.onTrue(new SpeakerShooterCommand());
         oi.intakeDownButton.onTrue(intakeRollers.intakeGamepieceCommand().andThen(new StoreCommand())).onFalse(new InstantCommand(intakeRollers::stop)); //may make the onFalse a store command
         
     }
