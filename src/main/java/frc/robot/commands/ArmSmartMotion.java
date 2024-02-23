@@ -44,7 +44,7 @@ public class ArmSmartMotion extends Command {
     if(mode == 0){ //moves full down for intake
       armTimer = Timer.getFPGATimestamp();
       targetPos = RobotMap.armAmpDistance;
-      RobotContainer.arm.goToPositionBySmartMotion(targetPos);
+      //RobotContainer.arm.goToPositionBySmartMotion(targetPos);
       //RobotContainer.wrist.setMotionMagic(0, 2000, 2000);
       System.out.println("should i be moving down");
       isSmartMotionInProgress = true;
@@ -55,7 +55,7 @@ public class ArmSmartMotion extends Command {
       armTimer = Timer.getFPGATimestamp();
       //RobotContainer.wrist.setMotionMagic(RobotMap.wristFullUpDistance, 2000, 2000);
       targetPos = 0;
-      RobotContainer.arm.goToPositionBySmartMotion(targetPos); //change value depending on how much we want it to move
+     // RobotContainer.arm.goToPositionBySmartMotion(targetPos); //change value depending on how much we want it to move
       System.out.println("should i be moving to storage");
       isSmartMotionInProgress = true;
       IntakeCommand.changeMode(2);
@@ -66,14 +66,14 @@ public class ArmSmartMotion extends Command {
       armTimer = Timer.getFPGATimestamp();
       //RobotContainer.wrist.setMotionMagic(RobotMap.wristFullUpDistance, 2000, 2000);
       targetPos = 0.5 * RobotMap.wristFullUpDistance;
-      RobotContainer.wrist.goToPositionBySmartMotion(targetPos); //change value depending on how much we want it to move
+      //RobotContainer.wrist.goToPositionBySmartMotion(targetPos); //change value depending on how much we want it to move
       System.out.println("should i be moving to amp");
       isSmartMotionInProgress = true;
     }
 
     else{
-      currentPos = RobotContainer.arm.getSensorReading();
-      RobotContainer.arm.goToPositionBySmartMotion(currentPos);
+      //currentPos = RobotContainer.arm.getSensorReading();
+      //RobotContainer.arm.goToPositionBySmartMotion(currentPos);
       armTimer = Timer.getFPGATimestamp();
     }
     }
@@ -103,14 +103,14 @@ public class ArmSmartMotion extends Command {
       return true;
     }
     else {
-        double sensorDistance = Math.abs(RobotContainer.arm.getSensorReading());
-        double percentError = 100 * (targetPos - sensorDistance)/targetPos;
+        //double sensorDistance = Math.abs(RobotContainer.arm.getSensorReading());
+        //double percentError = 100 * (targetPos - sensorDistance)/targetPos;
 
-        if (Math.abs(percentError) < 1){
+        //if (Math.abs(percentError) < 1){
         //if (percentLeftError < 0.9 || percentLeftError < 0 )
-        isSmartMotionInProgress = false;
-        return true;
-        }
+       // isSmartMotionInProgress = false;
+        //return true;
+        //}
     return false;
   }
 }

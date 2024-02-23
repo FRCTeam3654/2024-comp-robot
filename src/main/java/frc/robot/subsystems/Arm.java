@@ -21,6 +21,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 
 public class Arm extends SubsystemBase {
   /** Creates a new Wrist. */
+  /* */
   private CANSparkMax armMotor; //neo 1.1
 
   public double kArmP, kArmI, kArmD, kArmIz, kArmFF, kArmMaxOutput, kArmMinOutput;
@@ -33,9 +34,10 @@ public class Arm extends SubsystemBase {
   private double target = 0;
  
 
-
+ 
   private CANSparkMax armSpark;
   public Arm() {
+    /* 
     armSpark = new CANSparkMax(RobotMap.wristNEOID, MotorType.kBrushless);
 
     armSpark.restoreFactoryDefaults();
@@ -72,18 +74,20 @@ public class Arm extends SubsystemBase {
     m_pidArmController.setSmartMotionMinOutputVelocity(0, 0);
     m_pidArmController.setSmartMotionAllowedClosedLoopError(0.2, 0);  
 
+    */
+
   }
 
   //positions for wrist: active intake, store/feed, amp shoot, trap shoot
 
   public void resetEncoders(){
-    m_Arm_encoder.setPosition(0);
+    //m_Arm_encoder.setPosition(0);
   }
 
-  public double getSensorReading(){
-    return m_Arm_encoder.getPosition();
-  }
-
+  //public double getSensorReading(){
+   // return m_Arm_encoder.getPosition();
+  //}
+/* 
   public void stayStill(double rotations){
     //CANSparkMax.ControlType.kSmartMotion
     m_pidArmController.setReference(rotations, CANSparkMax.ControlType.kPosition);
@@ -141,14 +145,15 @@ public class Arm extends SubsystemBase {
     public void stop() {
         target = 0;
     }
+    */
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
-    armSpark.set(target);
+ 
+    //armSpark.set(target);
   }
-
+/* 
      public Command armAmpCommand(){
         //Command result = run(this::feedIn).until(this::hasGamePiece).andThen(runOnce(this::stop));
         Command result = run(this::amp);
@@ -170,5 +175,6 @@ public class Arm extends SubsystemBase {
         Command result = runOnce(this::stop);
         return result;
     }
+    */
   }
 

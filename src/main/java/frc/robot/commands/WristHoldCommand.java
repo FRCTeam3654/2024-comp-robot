@@ -17,8 +17,8 @@ public class WristHoldCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    double currentPos = RobotContainer.wrist.getSensorReading();
-    RobotContainer.wrist.goToPositionBySmartMotion(currentPos);
+    //double currentPos = RobotContainer.wrist.getSensorReading();
+    //RobotContainer.wrist.goToPositionBySmartMotion(currentPos);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

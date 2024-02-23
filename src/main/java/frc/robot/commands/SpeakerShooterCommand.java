@@ -38,18 +38,21 @@ public class SpeakerShooterCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    RobotContainer.speakerShooter.shootSpeaker(shooterVelocity);
-    if(RobotContainer.speakerShooter.targetSpeed()){
+    //RobotContainer.speakerShooter.shootSpeaker(shooterVelocity);
+    RobotContainer.speakerShooter.percentOutput(-0.9);
+    System.out.println("shoot command");
+    //if(RobotContainer.speakerShooter.targetSpeed()){
       //RobotContainer.intakeWheels.intakeSpin(-0.2);
-      RobotContainer.intakeRollers.feedOut();
-    }
+      //RobotContainer.intakeRollers.feedOut();
+    //}
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.speakerShooter.shootSpeaker(0);
-    RobotContainer.intakeRollers.stop();
+    //RobotContainer.speakerShooter.shootSpeaker(0);
+    RobotContainer.speakerShooter.percentOutput(0);
+    //RobotContainer.intakeRollers.stop();
   }
 
   // Returns true when the command should end.

@@ -32,6 +32,7 @@ public class Wrist extends SubsystemBase {
 
   private CANSparkMax wristSpark;
   public Wrist() {
+    /* 
     wristSpark = new CANSparkMax(RobotMap.wristNEOID, MotorType.kBrushless);
 
     wristSpark.restoreFactoryDefaults();
@@ -68,10 +69,12 @@ public class Wrist extends SubsystemBase {
     m_pidWristController.setSmartMotionMinOutputVelocity(0, 0);
     m_pidWristController.setSmartMotionAllowedClosedLoopError(0.2, 0);  
 
+    */
+
   }
 
   //positions for wrist: active intake, store/feed, amp shoot, trap shoot
-
+/* 
   public void resetEncoders(){
     m_Wrist_encoder.setPosition(0);
   }
@@ -98,6 +101,7 @@ public class Wrist extends SubsystemBase {
   public void goToPositionBySmartMotion(double postition){
     m_pidWristController.setReference(postition, CANSparkMax.ControlType.kSmartMotion);
   }
+  */
 
   @Override
   public void periodic() {

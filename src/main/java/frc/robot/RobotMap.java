@@ -86,15 +86,15 @@ public static int climbPositionButtonNumber = 5; //left bumper //this button is 
 
 //TALONS/TALON ID NUMBERS!
 
-public static int analogDistanceSensorPort1 = 0; 
+public static int analogDistanceSensorPort1 = 1; 
 public static int digitalDistanceSensorPort2 = 0; 
-public static int digitalDistanceSensorPort3 = 1; 
+public static int digitalDistanceSensorPort3 = 3; 
 //public static int digitalDistanceSensorPort4 = 3; 
 //public static int digitalDistanceSensorPort5 = 4; 
 
 //talon motor IDs
 public static int shooterTalonLeftID = 5;
-public static int shooterTalonRightID = 6;
+public static int shooterTalonRightID = 10;
 
 //non-talon motor IDs
 public static int intakeNEOTopID = 7;
@@ -113,7 +113,7 @@ public static double motionMagicTimeOut = 4;// in regular, it should time out in
 
 
 //Values for random things in the code (not swerve drive related)
-public static double shooterVelocity = 0.1;
+public static double shooterVelocity = 0.5;
 public static double shooterSpeed_nativeUnit = 50; //need to configure the correct rpm (phoenix 6 uses rotations per second)
 public static double shooterSpeedTolerance = 10; //need to configure to the correct rpm
 
@@ -127,7 +127,7 @@ public static final int LED_PWMPORT = 9;
 public static final int LED_LENGTH = 20;
 
 //For the Wrist
-public static double wristFullUpDistance = 0.5; //will tune later
+public static double wristFullUpDistance = 0.2; //will tune later
 
 //For the Arm
 public static double armAmpDistance = 0.5;

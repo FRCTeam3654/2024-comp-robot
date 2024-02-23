@@ -91,6 +91,10 @@ public class RobotContainer {
 
         speakerShooter = new SpeakerShooter();
         //intakeWheels = new IntakeWheels();
+        //arm = new Arm();
+        //climb = new Climb();
+        intakeRollers = new IntakeRollers();
+        wrist = new Wrist();
         led = new LEDSubsystem();
         oi = new OI();
          
@@ -132,7 +136,7 @@ public class RobotContainer {
         );
 
        // intakeWheels.setDefaultCommand(new IntakeCommand(2));
-        wrist.setDefaultCommand(new WristSmartMotion(0));
+        //wrist.setDefaultCommand(new WristSmartMotion(0));
 
         // Configure the button bindings
         configureButtonBindings();
@@ -170,15 +174,15 @@ public class RobotContainer {
        // oi.intakeDownButton.onTrue(new GrabDownCommand());
         //oi.intakeUpButton.onTrue(new StoreCommand());
 
-        oi.climbUpButton.whileTrue(new ClimbUpCommand());
+        //oi.climbUpButton.whileTrue(new ClimbUpCommand());
 
         //if(intakeWheels.noteSensor() > 1800){
             //new StoreCommand();
         //}
-        oi.intakeUpButton.onTrue(new StoreCommand());
+        oi.intakeUpButton.onTrue(new InstantCommand(intakeRollers::stop));
         oi.speakerShooterButton.onTrue(new SpeakerShooterCommand());
         oi.intakeDownButton.onTrue(intakeRollers.intakeGamepieceCommand().andThen(new StoreCommand())).onFalse(new InstantCommand(intakeRollers::stop)); //may make the onFalse a store command
-        
+        //oi.intakeDownButton.onTrue(intakeRollers.intakeGamepieceCommand());
     }
 
     /**

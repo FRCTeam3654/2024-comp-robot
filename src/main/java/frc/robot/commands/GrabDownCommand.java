@@ -16,8 +16,8 @@ public class GrabDownCommand extends ParallelCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new IntakeCommand(0),
-      new WristSmartMotion(0)
+      new IntakeCommand(0)//,
+      //new WristSmartMotion(0)
     );
   }
 }
