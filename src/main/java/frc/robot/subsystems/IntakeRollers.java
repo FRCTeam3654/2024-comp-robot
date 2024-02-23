@@ -132,11 +132,11 @@ public class IntakeRollers extends SubsystemBase {
     }
 
     public boolean hasGamePiece(){
-        SmartDashboard.putNumber("intakeSensorValue", intakeNoteSensor.getValue());
+        SmartDashboard.putNumber("intakeSensor.getVoltage()", intakeNoteSensor.getVoltage());
         if(RobotContainer.oi.intakeUpButton.getAsBoolean()){
             return true;
         }
-        return (intakeNoteSensor.getValue() > 1800);
+        return (intakeNoteSensor.getVoltage() > 1.5);
     }
 
     @Override

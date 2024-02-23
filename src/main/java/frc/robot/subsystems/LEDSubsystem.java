@@ -7,14 +7,19 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 
 public class LEDSubsystem extends SubsystemBase {
-  private final AddressableLED m_led = new AddressableLED(RobotMap.LED_PWMPORT);
+  private final AddressableLED m_led_left = new AddressableLED(RobotMap.LED_PWMPORT_LEFT);
+  private final AddressableLED m_led_right = new AddressableLED(RobotMap.LED_PWMPORT_RIGHT);
   private final AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(RobotMap.LED_LENGTH);
   private int m_rainbowFirstPixelHue;
 
   public LEDSubsystem() {
-    m_led.setLength(m_ledBuffer.getLength());
-    m_led.setData(m_ledBuffer);
-    m_led.start();
+    m_led_left.setLength(m_ledBuffer.getLength());
+    m_led_left.setData(m_ledBuffer);
+    m_led_left.start();
+
+    m_led_right.setLength(m_ledBuffer.getLength());
+    m_led_right.setData(m_ledBuffer);
+    m_led_right.start();
   }
 
   @Override
@@ -33,7 +38,8 @@ public class LEDSubsystem extends SubsystemBase {
     m_rainbowFirstPixelHue += 3;
     // Check bounds
     m_rainbowFirstPixelHue %= 180;
-    m_led.setData(m_ledBuffer);
+    m_led_left.setData(m_ledBuffer);
+    m_led_right.setData(m_ledBuffer);
   }
 
   private void setFrontAll(Color color) {
@@ -62,6 +68,7 @@ public class LEDSubsystem extends SubsystemBase {
     for (var i = 0; i < m_ledBuffer.getLength(); i++) {
       m_ledBuffer.setLED(i, color);
     }
-    m_led.setData(m_ledBuffer);
+    m_led_left.setData(m_ledBuffer);
+    m_led_right.setData(m_ledBuffer);
   }
 }
