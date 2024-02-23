@@ -6,45 +6,34 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
-import edu.wpi.first.wpilibj.Timer;
 
 
-public class DropNoteTrapCommand extends Command {
-  /** Creates a new DropNoteTrapCommand. */
-  private double trapTimer = 0;
-  private double trapTimeout = 2;
-
-  public DropNoteTrapCommand() {
+public class ClimbUpCommand extends Command {
+  /** Creates a new ClimbUpCommand. */
+  public ClimbUpCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(RobotContainer.intakeRollers);
+    addRequirements(RobotContainer.climb);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    trapTimer = Timer.getFPGATimestamp();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //RobotContainer.intakeWheels.intakeMove(0.2);
-    RobotContainer.intakeRollers.feedOut();
-    }
+    RobotContainer.climb.climbUp(0.3);
+  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    //RobotContainer.intakeWheels.intakeMove(0);
-    RobotContainer.intakeRollers.stop();
+    RobotContainer.climb.climbUp(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (!RobotContainer.intakeRollers.hasGamePiece() || (trapTimer + trapTimeout) < Timer.getFPGATimestamp()){ //distance sensor value needs to be tuned
-      return true;
-    }
     return false;
   }
 }

@@ -19,11 +19,11 @@ public class IntakeCommand extends Command {
 
 
   public IntakeCommand(){
-    addRequirements(RobotContainer.intakeWheels);
+    //addRequirements(RobotContainer.intakeWheels);
   }
   public IntakeCommand(int intakemode) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(RobotContainer.intakeWheels);
+    //addRequirements(RobotContainer.intakeWheels);
     this.intakeMode = intakemode;
   }
 
@@ -40,6 +40,7 @@ public class IntakeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    /*
     if(RobotContainer.intakeWheels.noteSensor() > 1800){
       RobotContainer.intakeWheels.intakeSpin(0);
       WristSmartMotion wristSmartMotion = new WristSmartMotion(1);
@@ -62,6 +63,7 @@ public class IntakeCommand extends Command {
         RobotContainer.intakeWheels.intakeSpin(0);
       }
     }
+    */
   }
 
   // Called once the command ends or is interrupted.

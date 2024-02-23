@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
+import frc.robot.RobotContainer;
 
 
 public class IntakeRollers extends SubsystemBase {
@@ -38,7 +39,7 @@ public class IntakeRollers extends SubsystemBase {
 
 
     private double target = 0;
-    private ArmFeedforward m_intakFeedforward = new ArmFeedforward(0, 0, 0);
+    private ArmFeedforward m_intakeFeedforward = new ArmFeedforward(0, 0, 0);
 
 
 
@@ -111,7 +112,7 @@ public class IntakeRollers extends SubsystemBase {
     }
 
     public void feedIn() {
-        target = 0.2;
+        target = -0.2;
     }
 
     public void feedIn(double percentDuty) {
@@ -119,11 +120,11 @@ public class IntakeRollers extends SubsystemBase {
     }
 
     public void feedOut() {
-        target = -0.2;
+        target = 0.2;
     }
 
     public void feedOut(double percentDuty) {
-        target = (-1.0) *  percentDuty;
+        target = (1.0) *  percentDuty;
     }
 
     public void stop() {
@@ -131,7 +132,11 @@ public class IntakeRollers extends SubsystemBase {
     }
 
     public boolean hasGamePiece(){
-        return (intakeNoteSensor.getAverageValue() > 1800);
+        SmartDashboard.putNumber("intakeSensorValue", intakeNoteSensor.getValue());
+        if(RobotContainer.oi.intakeUpButton.getAsBoolean()){
+            return true;
+        }
+        return (intakeNoteSensor.getValue() > 1800);
     }
 
     @Override
@@ -144,6 +149,8 @@ public class IntakeRollers extends SubsystemBase {
 
     public Command intakeGamepieceCommand(){
         Command result = run(this::feedIn).until(this::hasGamePiece).andThen(runOnce(this::stop));
+        //Command result = run(this::feedIn).until(this::hasGamePiece);
+
         return result;
     } 
     

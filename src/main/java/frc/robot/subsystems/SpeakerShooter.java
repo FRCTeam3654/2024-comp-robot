@@ -63,20 +63,25 @@ public class SpeakerShooter extends SubsystemBase {
     // ref: https://docs.ctre-phoenix.com/en/stable/ch18_CommonAPI.html 
     //      https://pro.docs.ctr-electronics.com/en/latest/docs/migration/migration-guide/status-signals-guide.html
     // Note: When different update frequencies are specified for signals that share a status frame, the highest update frequency of all the relevant signals will be applied to the entire frame. Users can get a signal’s applied update frequency using the getAppliedUpdateFrequency() method.
-    shooterTalonRight.getPosition().setUpdateFrequency(5);  // phoenix 6 syntax
-    shooterTalonRight.getVelocity().setUpdateFrequency(5);
+    //shooterTalonRight.getPosition().setUpdateFrequency(5);  // phoenix 6 syntax
+    //shooterTalonRight.getVelocity().setUpdateFrequency(5);
     //shooterTalonRight.getSupplyCurrent().setUpdateFrequency(5); // not sure which one is "Brushed Supply Current Measurement"
     //shooterTalonRight.getStickyFault_Hardware().setUpdateFrequency(5); // so many, not sure which
 
-    shooterTalonRight.getFault_Hardware().setUpdateFrequency(20);// group 1, default 10 ms, set to 20 ms Motor controllers that are followers can have slower update rates for this group without impacting performance.
-    shooterTalonRight.getForwardLimit().setUpdateFrequency(20);
+    //shooterTalonRight.getFault_Hardware().setUpdateFrequency(20);// group 1, default 10 ms, set to 20 ms Motor controllers that are followers can have slower update rates for this group without impacting performance.
+    //shooterTalonRight.getForwardLimit().setUpdateFrequency(20);
 
     zeroSensors();
     
   }
 
   public void shootSpeaker(double velocity){
-    //shooterTalonLeft.setControl(new VelocityDutyCycle(velocity));
+    shooterTalonLeft.setControl(new VelocityDutyCycle(velocity));
+  }
+
+  public void percentOutput(double percentDuty){
+    System.out.println("percent 0.3");
+    shooterTalonLeft.setControl(new DutyCycleOut(percentDuty));
   }
 
   
@@ -121,9 +126,10 @@ public class SpeakerShooter extends SubsystemBase {
   
 
   public void shooterToVelocity(double speed) {
-    shooterTalonLeft.setControl(ShooterConstants.shooterControl.withVelocity(speed));
-
+    //shooterTalonLeft.setControl(ShooterConstants.shooterControl.withVelocity(speed));
+    shooterTalonLeft.setControl(ShooterConstants.shooterControl.withVelocity(50));
     //shooterMotorBottom.setControl(ShooterConstants.shooterControl.withVelocity(speed));
+    System.out.println("speed 50");
   }
 
   void zeroSensors() {

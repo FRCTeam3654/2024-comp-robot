@@ -27,7 +27,9 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 public class RobotContainer {
     public static OI oi;
     public static SpeakerShooter speakerShooter;
-    public static IntakeWheels intakeWheels;
+    public static Climb climb;
+    //public static IntakeWheels intakeWheels;
+    public static IntakeRollers intakeRollers;
     public static Wrist wrist;
     public static Arm arm;
     public static LEDSubsystem led;
@@ -89,6 +91,10 @@ public class RobotContainer {
 
         speakerShooter = new SpeakerShooter();
         //intakeWheels = new IntakeWheels();
+        //arm = new Arm();
+        //climb = new Climb();
+        intakeRollers = new IntakeRollers();
+        wrist = new Wrist();
         led = new LEDSubsystem();
         oi = new OI();
          
@@ -124,11 +130,13 @@ public class RobotContainer {
                 () -> -oi.driverStick.getRawAxis(rotationAxis), 
                 //true,
                 () -> oi.robotCentric.getAsBoolean(),
-                () -> true
+                () -> oi.slowSpeed.getAsBoolean()
+                //() -> true
             )
         );
 
        // intakeWheels.setDefaultCommand(new IntakeCommand(2));
+        //wrist.setDefaultCommand(new WristSmartMotion(0));
 
         // Configure the button bindings
         configureButtonBindings();
@@ -166,10 +174,15 @@ public class RobotContainer {
        // oi.intakeDownButton.onTrue(new GrabDownCommand());
         //oi.intakeUpButton.onTrue(new StoreCommand());
 
+        //oi.climbUpButton.whileTrue(new ClimbUpCommand());
+
         //if(intakeWheels.noteSensor() > 1800){
             //new StoreCommand();
         //}
- 
+        oi.intakeUpButton.onTrue(new InstantCommand(intakeRollers::stop));
+        oi.speakerShooterButton.onTrue(new SpeakerShooterCommand());
+        oi.intakeDownButton.onTrue(intakeRollers.intakeGamepieceCommand().andThen(new StoreCommand())).onFalse(new InstantCommand(intakeRollers::stop)); //may make the onFalse a store command
+        //oi.intakeDownButton.onTrue(intakeRollers.intakeGamepieceCommand());
     }
 
     /**
@@ -186,8 +199,8 @@ public class RobotContainer {
         // return new PathPlannerAuto("3Piece");
         //return new PathPlannerAuto("4Piece");
         //return new PathPlannerAuto("5Piece");
-        //return new PathPlannerAuto("4PieceLong");
+        return new PathPlannerAuto("4PieceLong");
 
-        return autoChooser.getSelected();
+        //return autoChooser.getSelected();
     }
 }

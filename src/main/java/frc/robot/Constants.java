@@ -53,8 +53,8 @@ public final class Constants {
                 .SDSMK4i(COTSFalconSwerveConstants.driveGearRatios.SDSMK4i_L2);
 
         /* Drivetrain Constants */
-        public static final double trackWidth = Units.inchesToMeters(17.625);// 0.62;
-        public static final double wheelBase = Units.inchesToMeters(17.625);//0.62;
+        public static final double trackWidth = Units.inchesToMeters(20.625);// 0.62;
+        public static final double wheelBase = Units.inchesToMeters(20.625);//0.62;
         public static final double wheelCircumference = chosenModule.wheelCircumference;
 
         /*
@@ -118,11 +118,11 @@ public final class Constants {
 
         /* Swerve Profiling Values */
         /** Meters per Second */
-        public static final double maxSpeed = 1;// 2;// 4.5; // TODO: This must be tuned to specific robot
+        public static final double maxSpeed = 4;// 2;// 4.5; // TODO: This must be tuned to specific robot
         public static final double XYSlowRatio = 0.25; // TODO: make it more accrute
         public static final double rotationSlowRatio = 0.25; // TODO: make it more accrute
         /** Radians per Second */
-        public static final double maxAngularVelocity = 3;//10.0; // TODO: This must be tuned to specific robot
+        public static final double maxAngularVelocity = 8;//10.0; // TODO: This must be tuned to specific robot
 
         /* Neutral Modes */
         public static final IdleMode angleNeutralMode = IdleMode.kCoast;
@@ -172,17 +172,17 @@ public final class Constants {
 
     public static final class AutoConstants { // TODO: The below constants are used in the example auto, and must be
                                               // tuned to specific robot
-        public static final double kMaxSpeedMetersPerSecond = 1;// 2; //3.5;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 4.5;//9; // // ours are like 4.5
-        public static final double kMaxAngularSpeedRadiansPerSecond = 4.5; //9; // ours are Math.PI
-        public static final double kMaxAngularSpeedRadiansPerSecondSquared = 4.5; //9; // ours are Math.PI
+        public static final double kMaxSpeedMetersPerSecond = 3.5;// 2; //3.5;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 6;//9; // // ours are like 4.5
+        public static final double kMaxAngularSpeedRadiansPerSecond = 6; //9; // ours are Math.PI
+        public static final double kMaxAngularSpeedRadiansPerSecondSquared = 6; //9; // ours are Math.PI
 
-        public static final double kPXController = 0.5;
-        public static final double kPYController = 0.5;
+        public static final double kPXController = 0.8;
+        public static final double kPYController = 0.8;
         public static final double kPThetaController = 3.5;
         
         public static final PIDConstants rotation_PID = new PIDConstants(3, 0);
-        public static final PIDConstants XY_PID =  new PIDConstants(0.5, 0);  //new PIDConstants(3, 0); // ours are like 0.5 ??
+        public static final PIDConstants XY_PID =  new PIDConstants(1.5, 0);  //new PIDConstants(3, 0); // ours are like 0.5 ??
 
         public static final double driveBaseRadius = Math.sqrt(Math.pow((Constants.Swerve.wheelBase / 2), 2)
                 + Math.pow((Constants.Swerve.trackWidth / 2), 2));
