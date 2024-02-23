@@ -109,7 +109,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
       layout = null;
     }
     this.aprilTagFieldLayout = layout;
-    
+   
 
     ShuffleboardTab tab = Shuffleboard.getTab("Vision");
 
@@ -209,7 +209,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         
         //Optional<Pose3d> tagPose = aprilTagFieldLayout == null ? Optional.empty() : aprilTagFieldLayout.getTagPose(fiducialId);
         
-        targetPose = targetPoses.get(fiducialId); // for real, need use fieldlayout, and fiducialId 
+        targetPose = this.aprilTagFieldLayout.getTagPose(fiducialId).get();
+        //targetPose = targetPoses.get(fiducialId); // for real, need use fieldlayout, and fiducialId 
         
       
 
