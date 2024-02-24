@@ -49,7 +49,7 @@ public class WristSmartMotion extends Command {
       wristMoveNumber = wristMoveNumber + 1;
 
       if(mode == 0){ //moves full down for intake
-        targetPos = -1 * RobotMap.wristFullUpDistance;
+        targetPos = -35;
         wristTimer = Timer.getFPGATimestamp();
         RobotContainer.wrist.goToPositionBySmartMotion(targetPos);
 

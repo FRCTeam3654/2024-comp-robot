@@ -133,7 +133,7 @@ public class IntakeRollers extends SubsystemBase {
 
     public boolean hasGamePiece(){
         SmartDashboard.putNumber("intakeSensor.getVoltage()", intakeNoteSensor.getVoltage());
-        SmartDashboard.putNumber("intakeSensor.getAverageValue()", intakeNoteSensor.getAverageValue());
+        //SmartDashboard.putNumber("intakeSensor.getAverageValue()", intakeNoteSensor.getAverageValue());
 
         if(RobotContainer.oi.intakeUpButton.getAsBoolean()){
             return true;
@@ -147,7 +147,9 @@ public class IntakeRollers extends SubsystemBase {
         // This method will be called once per scheduler run
       
         lowerWheels.set(target);
-        
+        SmartDashboard.putNumber("intakeSensor.getAverageValue()", intakeNoteSensor.getValue());
+        SmartDashboard.putNumber("intakeSensor.getVoltage()", intakeNoteSensor.getVoltage());
+
     }
 
     public Command intakeGamepieceCommand(){

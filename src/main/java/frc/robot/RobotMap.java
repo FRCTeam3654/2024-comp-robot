@@ -128,7 +128,7 @@ public static final int LED_PWMPORT_RIGHT = 8;
 public static final int LED_LENGTH = 9;
 
 //For the Wrist
-public static double wristFullUpDistance = 0.2; //will tune later
+public static double wristFullUpDistance = 2; //will tune later
 
 //For the Arm
 public static double armAmpDistance = 0.5;
