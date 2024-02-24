@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
@@ -34,20 +35,31 @@ public class Arm extends SubsystemBase {
   private double target = 0;
  
 
- 
-  private CANSparkMax armSpark;
-  public Arm() {
-    /* 
-    armSpark = new CANSparkMax(RobotMap.wristNEOID, MotorType.kBrushless);
+ private DigitalInput armZeroSensor;
 
-    armSpark.restoreFactoryDefaults();
+  //private CANSparkMax armSpark;
+
+
+  // need gear ratio + digial IO 
+
+
+  public Arm() {
+     
+    armMotor = new CANSparkMax(RobotMap.wristNEOID, MotorType.kBrushless);
+
+    armMotor.restoreFactoryDefaults();
+    
+    armMotor.setSmartCurrentLimit(30, 25);
+    armMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+
+    armMotor.burnFlash();
 
     m_pidArmController = armMotor.getPIDController();
     m_Arm_encoder = armMotor.getEncoder();
 
-    //upperWheels.setInverted(true);
+    // 
 
-    kArmP = 0.3;  //6e-5 //make larger if it doesn't hold //0.1
+    kArmP = 0.015; //0.3; //shoulderP = 0.026;
     kArmI = 0;
     kArmD = 1;//0; 
     kArmIz = 0; 
@@ -63,7 +75,7 @@ public class Arm extends SubsystemBase {
     m_pidArmController.setIZone(kArmIz);
     m_pidArmController.setFF(kArmFF);
 
-    armMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    
 
     kArmMinOutput = -0.3;
     kArmMaxOutput = 0.3; 
@@ -74,22 +86,21 @@ public class Arm extends SubsystemBase {
     m_pidArmController.setSmartMotionMinOutputVelocity(0, 0);
     m_pidArmController.setSmartMotionAllowedClosedLoopError(0.2, 0);  
 
-    */
+    armZeroSensor = new DigitalInput(0) ; // verify the port
 
   }
 
   //positions for wrist: active intake, store/feed, amp shoot, trap shoot
 
   public void resetEncoders(){
-    //m_Arm_encoder.setPosition(0);
+    m_Arm_encoder.setPosition(0);
   }
 
-  //public double getSensorReading(){
-   // return m_Arm_encoder.getPosition();
-  //}
-/* 
+  public double getSensorReading(){
+    return m_Arm_encoder.getPosition();
+  }
+
   public void stayStill(double rotations){
-    //CANSparkMax.ControlType.kSmartMotion
     m_pidArmController.setReference(rotations, CANSparkMax.ControlType.kPosition);
   }
 
@@ -145,36 +156,16 @@ public class Arm extends SubsystemBase {
     public void stop() {
         target = 0;
     }
-    */
+    
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
- 
-    //armSpark.set(target);
-  }
-/* 
-     public Command armAmpCommand(){
-        //Command result = run(this::feedIn).until(this::hasGamePiece).andThen(runOnce(this::stop));
-        Command result = run(this::amp);
-
-        return result;
-    } 
-    
-    public Command armStoreCommand(){
-        Command result = runOnce(this::store);
-        return result;
-    } 
-
-    public Command armTrapCommand(){
-        Command result = runOnce(this::trap);
-        return result;
-    } 
-
-    public Command stopC(){
-        Command result = runOnce(this::stop);
-        return result;
+    if ( armZeroSensor != null && armZeroSensor.get() == true ) {
+       /// need zero the arm's position to 0
+       SmartDashboard.putBoolean("arm Digital Input Sensor ", armZeroSensor.get());
     }
-    */
+  }
+
   }
 
