@@ -71,7 +71,7 @@ public class WristSmartMotion extends Command {
       
       else if(mode == 2){ //moves for amp
         wristTimer = Timer.getFPGATimestamp();
-        targetPos = 0.5 * RobotMap.wristFullUpDistance;
+        targetPos = 35;
        
         //RobotContainer.wrist.goToPositionBySmartMotion(targetPos); //change value depending on how much we want it to move
         System.out.println("should i be moving to amp");

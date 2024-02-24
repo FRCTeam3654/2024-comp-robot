@@ -179,13 +179,15 @@ public class RobotContainer {
         //oi.climbUpButton.whileTrue(new ClimbUpCommand());
 
        
-        oi.intakeUpButton.onTrue(new InstantCommand(intakeRollers::stop));
+        //oi.intakeUpButton.onTrue(new InstantCommand(intakeRollers::stop));
+        oi.intakeUpButton.onTrue(new StoreCommand());
         oi.speakerShooterButton.onTrue(new SpeakerShooterCommand());
         //oi.intakeDownButton.onTrue(intakeRollers.intakeGamepieceCommand().andThen(new StoreCommand())).onFalse(new InstantCommand(intakeRollers::stop)); //may make the onFalse a store command
         //oi.intakeDownButton.onTrue(intakeRollers.intakeGamepieceCommand().andThen(new WristSmartMotion(0))).onFalse(new InstantCommand(intakeRollers::stop)); //may make the onFalse a store command
-       //oi.intakeDownButton.onTrue(new WristSmartMotion(0)); //may make the onFalse a store command
+      // oi.intakeDownButton.onTrue(new WristSmartMotion(0)); //may make the onFalse a store command
         //oi.intakeDownButton.onTrue(intakeRollers.intakeGamepieceCommand());
         oi.intakeDownButton.onTrue(new ParallelCommandGroup(intakeRollers.intakeGamepieceCommand(), new WristSmartMotion(0)));
+        //oi.intakeDownButton.onTrue(new GrabDownCommand());
     }
 
     /**

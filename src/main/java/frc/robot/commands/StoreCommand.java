@@ -19,8 +19,8 @@ public class StoreCommand extends ParallelCommandGroup {
     addCommands(
       new InstantCommand(
         RobotContainer.intakeRollers::stop
-      )//,
-      //new WristSmartMotion(1)
+      ),
+      new WristSmartMotion(1)
     );
   }
 }

@@ -39,26 +39,27 @@ public class SpeakerShooterCommand extends Command {
   @Override
   public void execute() {
     //RobotContainer.speakerShooter.shootSpeaker(shooterVelocity); // at about 95 (about 20k old value)
-    RobotContainer.speakerShooter.percentOutput(-0.9);
+    //RobotContainer.speakerShooter.percentOutput(-0.9);
+    RobotContainer.speakerShooter.shootSpeaker(-90);
     System.out.println("shoot command");
-    //if(RobotContainer.speakerShooter.targetSpeed()){
+    if(RobotContainer.speakerShooter.isAtSpeed(-90)){
       //RobotContainer.intakeWheels.intakeSpin(-0.2);
-      //RobotContainer.intakeRollers.feedOut();
-    //}
+      RobotContainer.intakeRollers.feedOut();
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     //RobotContainer.speakerShooter.shootSpeaker(0);
-    RobotContainer.speakerShooter.percentOutput(0);
-    //RobotContainer.intakeRollers.stop();
+    RobotContainer.speakerShooter.shootSpeaker(0);
+    RobotContainer.intakeRollers.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (shooterTimer + 3 < Timer.getFPGATimestamp()){
+    if (shooterTimer + 2.5 < Timer.getFPGATimestamp()){
       return true;
     }
 

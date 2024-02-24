@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotMap;
 import frc.robot.RobotContainer;
 
@@ -82,7 +83,8 @@ public class IntakeRollers extends SubsystemBase {
         m_pidIntakeLowerController.setIZone(kIntakeIz);
         m_pidIntakeLowerController.setFF(kIntakeFF);
 
-        upperWheels.follow(lowerWheels);
+        //upperWheels.follow(lowerWheels);
+        //lowerWheels.follow(lowerWheels);
 
         upperWheels.setIdleMode(CANSparkMax.IdleMode.kBrake);
         lowerWheels.setIdleMode(CANSparkMax.IdleMode.kBrake);
@@ -112,7 +114,8 @@ public class IntakeRollers extends SubsystemBase {
     }
 
     public void feedIn() {
-        target = -0.2;
+        target = -0.3;
+        //lowerWheels.set(target);
     }
 
     public void feedIn(double percentDuty) {
@@ -120,7 +123,7 @@ public class IntakeRollers extends SubsystemBase {
     }
 
     public void feedOut() {
-        target = 0.2;
+        target = 0.3;
     }
 
     public void feedOut(double percentDuty) {
@@ -135,26 +138,28 @@ public class IntakeRollers extends SubsystemBase {
         SmartDashboard.putNumber("intakeSensor.getVoltage()", intakeNoteSensor.getVoltage());
         //SmartDashboard.putNumber("intakeSensor.getAverageValue()", intakeNoteSensor.getAverageValue());
 
-        if(RobotContainer.oi.intakeUpButton.getAsBoolean()){
+        if((intakeNoteSensor.getVoltage() > 1.5) || RobotContainer.oi.intakeUpButton.getAsBoolean() || intakeNoteSensor.getAverageValue() > 1800){
             return true;
         }
         //return (intakeNoteSensor.getVoltage() > 1.5);
-        return (intakeNoteSensor.getAverageValue() > 1800);
+        //return (intakeNoteSensor.getAverageValue() > 2000);
+        return false;
     }
 
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-      
-        lowerWheels.set(target);
+      lowerWheels.set(target);
+      upperWheels.set(target);
+        //lowerWheels.set(target);
         SmartDashboard.putNumber("intakeSensor.getAverageValue()", intakeNoteSensor.getValue());
         SmartDashboard.putNumber("intakeSensor.getVoltage()", intakeNoteSensor.getVoltage());
 
     }
 
     public Command intakeGamepieceCommand(){
-        Command result = run(this::feedIn).until(this::hasGamePiece).andThen(runOnce(this::stop));
-        //Command result = run(this::feedIn).until(this::hasGamePiece);
+        //Command result = run(this::feedIn);
+        Command result = run(this::feedIn).until(this::hasGamePiece).andThen(new WaitCommand(0.03)).andThen(this::stop);
 
         return result;
     } 

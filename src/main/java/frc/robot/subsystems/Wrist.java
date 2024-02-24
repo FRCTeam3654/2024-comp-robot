@@ -44,7 +44,7 @@ public class Wrist extends SubsystemBase {
 
     //upperWheels.setInverted(true);
 
-    kWristP = 0.001;  //6e-5 //make larger if it doesn't hold //0.1
+    kWristP = 0.0005;  //6e-5 //make larger if it doesn't hold //0.1
     kWristI = 0;
     kWristD = 0;//0; 
     kWristIz = 0; 
