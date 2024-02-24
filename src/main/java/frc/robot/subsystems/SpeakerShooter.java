@@ -15,8 +15,10 @@ import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 
@@ -27,36 +29,59 @@ public class SpeakerShooter extends SubsystemBase {
   private TalonFX shooterTalonLeft  = new TalonFX (RobotMap.shooterTalonLeftID);
   private TalonFX shooterTalonRight  = new TalonFX (RobotMap.shooterTalonRightID);
 
+  private VelocityVoltage m_LeftVoltage = new VelocityVoltage(0);
+  //private VelocityVoltage m_RightVoltage = new VelocityVoltage(0);
+
+  private double goalSpeedRPS = 0;
+
   public TalonFXConfiguration shooterLeftFXConfig = new TalonFXConfiguration();
   public TalonFXConfiguration shooterRightFXConfig = new TalonFXConfiguration();
   
 
   public SpeakerShooter() {
     
-    shooterTalonLeft.getConfigurator().apply(new TalonFXConfiguration()); //configs factory default
-    shooterTalonRight.getConfigurator().apply(new TalonFXConfiguration());
+    // https://github.com/FRC-5013-Park-Hill-Robotics/2024-Crescendo/blob/main/src/main/java/frc/robot/constants/LauncherConstants.java
+    shooterLeftFXConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    shooterLeftFXConfig.Slot0.kP = 0.1; // 0.0254;
+    shooterLeftFXConfig.Slot0.kI = 0;
+    shooterLeftFXConfig.Slot0.kD = 0;
+    shooterLeftFXConfig.Slot0.kS = 0.15;//0.395;
+    shooterLeftFXConfig.Slot0.kV = 1.5;//0.122;
+    shooterLeftFXConfig.Slot0.kA = 0.0;
+    shooterLeftFXConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    shooterLeftFXConfig.CurrentLimits.StatorCurrentLimit = 50;
+    shooterLeftFXConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    shooterTalonLeft.set(0);
+    shooterTalonLeft.getConfigurator().apply(shooterLeftFXConfig); 
+    m_LeftVoltage.withSlot(0);
 
+    shooterRightFXConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    shooterRightFXConfig.Slot0.kP = 0.1; //0.0254;
+    shooterRightFXConfig.Slot0.kI = 0;
+    shooterRightFXConfig.Slot0.kD = 0;
+    shooterRightFXConfig.Slot0.kS = 0.395;
+    shooterRightFXConfig.Slot0.kV = 0.122;
+    shooterRightFXConfig.Slot0.kA = 0.0;
+    shooterRightFXConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    shooterLeftFXConfig.CurrentLimits.StatorCurrentLimit = 50;
+    shooterLeftFXConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    shooterTalonRight.set(0);
+    shooterTalonRight.getConfigurator().apply(shooterRightFXConfig);
+    m_LeftVoltage.withSlot(0);
+
+    
     shooterTalonLeft.setControl(new VelocityDutyCycle(0)); //sets to velocity duty cycle
     shooterTalonRight.setControl(new VelocityDutyCycle(0));
 
     shooterTalonRight.setControl(new Follower(RobotMap.shooterTalonLeftID, true)); //sets right to follow and the true means will oppose the left's direction
     
-    shooterRightFXConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    shooterLeftFXConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+
     
     // Zero the sensor once on robot boot up 
 		shooterTalonLeft.setPosition(0);
     shooterTalonRight.setPosition(0);
 
-    //shooterTalonLeft.configNeutralDeadband(0.00, RobotMap.pidLoopTimeout); //during testing was 0.001
-    //shooterTalonRight.configNeutralDeadband(0.00, RobotMap.pidLoopTimeout); //during testing was 0.001
-    shooterRightFXConfig.MotorOutput.withDutyCycleNeutralDeadband(0);
-    shooterLeftFXConfig.MotorOutput.withDutyCycleNeutralDeadband(0);
-    //shooterTalonLeft.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, RobotMap.pidLoopTimeout);
-    //shooterTalonRight.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, RobotMap.pidLoopTimeout);
-    shooterTalonLeft.getConfigurator().apply(new FeedbackConfigs());
-    shooterTalonRight.getConfigurator().apply(new FeedbackConfigs());
-
+    
 
     // reduce the frame rate of the follower in order to reduce the can bus utilization
     // phoenix 5 version: :  m_talonFX.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 200);
@@ -71,13 +96,24 @@ public class SpeakerShooter extends SubsystemBase {
     //shooterTalonRight.getFault_Hardware().setUpdateFrequency(20);// group 1, default 10 ms, set to 20 ms Motor controllers that are followers can have slower update rates for this group without impacting performance.
     //shooterTalonRight.getForwardLimit().setUpdateFrequency(20);
 
-    zeroSensors();
+
     
   }
 
   public void shootSpeaker(double velocity){
-    shooterTalonLeft.setControl(new VelocityDutyCycle(velocity));
+    //shooterTalonLeft.setControl(new VelocityDutyCycle(velocity));
+    this.goalSpeedRPS = velocity; // in rps
+    if(goalSpeedRPS == 0){
+      shooterTalonLeft.setVoltage(0);
+    } else {
+      m_LeftVoltage.withVelocity(goalSpeedRPS);
+      shooterTalonLeft.setControl(m_LeftVoltage);
+    }
   }
+
+
+
+
 
   public void percentOutput(double percentDuty){
     System.out.println("percent 0.3");
@@ -85,66 +121,13 @@ public class SpeakerShooter extends SubsystemBase {
   }
 
   
-  public boolean targetSpeed(){
-
-    
-    // double speedLeft = shooterTalonLeft.getSelectedSensorVelocity(RobotMap.kPIDLoopIDx);
-    // SmartDashboard.putNumber("Shooter Speed Top", speedTop);
-    // double speedTopDifferential = speedTop - RobotMap.shooterTopSpeed_nativeUnit;
-    // SmartDashboard.putNumber("Shooter Speed Top Differential", speedTopDifferential);
-
-    // double speedRight = shooterTalonRight.getSelectedSensorVelocity(RobotMap.kPIDLoopIDx);
-    // SmartDashboard.putNumber("Shooter Speed 2", speedBottom);
-    // double speedBottomDifferential = speedBottom - RobotMap.shooterBottomSpeed_nativeUnit;
-    // SmartDashboard.putNumber("Shooter Speed Differential", speedBottomDifferential);
-     
-
-
-     
-    double speedLeft = shooterTalonLeft.getVelocity().getValueAsDouble();
-    SmartDashboard.putNumber("Shooter Speed Left", speedLeft);
-    double speedLeftDifferential = speedLeft - RobotMap.shooterSpeed_nativeUnit;
-    SmartDashboard.putNumber("Shooter Speed Top Differential", speedLeftDifferential);
-
-    double speedRight = shooterTalonRight.getVelocity().getValueAsDouble();
-    SmartDashboard.putNumber("Shooter Speed 2", speedRight);
-    double speedRightDifferential = speedRight - RobotMap.shooterSpeed_nativeUnit;
-    SmartDashboard.putNumber("Shooter Speed Differential", speedRightDifferential);
-
-    if ((Math.abs(speedRightDifferential) < RobotMap.shooterSpeedTolerance) && (Math.abs(speedLeftDifferential) < RobotMap.shooterSpeedTolerance)){
-      return true;
-    }
-    else{
-      return false;
-    }
-    
-
-    // temp
-    //return true;
-
-  }
+  
   
 
-  public void shooterToVelocity(double speed) {
-    //shooterTalonLeft.setControl(ShooterConstants.shooterControl.withVelocity(speed));
-    shooterTalonLeft.setControl(ShooterConstants.shooterControl.withVelocity(50));
-    //shooterMotorBottom.setControl(ShooterConstants.shooterControl.withVelocity(speed));
-    System.out.println("speed 50");
-  }
-
-  void zeroSensors() {
-    //ballShooterTalon.getSensorCollection().setQuadraturePosition(0, RobotMap.pidLoopTimeout);
-    //shooterTalonLeft.setPosition(0, RobotMap.kPIDLoopIDx, RobotMap.pidLoopTimeout);
-    
-    //shooterTalonLeft.setPosition(0);
-    //shooterTalonRight.setPosition(0);
-
-    //ballShooterBottomTalon.setSelectedSensorPosition(0, RobotMap.kPIDLoopIDx, RobotMap.pidLoopTimeout);
-    System.out.println("Shooter Sensor is zeroed");
-  }
-
+  
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+   
   }
 }
