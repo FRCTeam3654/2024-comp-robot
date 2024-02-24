@@ -47,9 +47,11 @@ public class Arm extends SubsystemBase {
      
     armMotor = new CANSparkMax(RobotMap.wristNEOID, MotorType.kBrushless);
 
+    //It is good practice to call the spark.restoreFactoryDefaults() before doing any configuration 
     armMotor.restoreFactoryDefaults();
     
     armMotor.setSmartCurrentLimit(30, 25);
+    armMotor.setSecondaryCurrentLimit(45);
     armMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
     armMotor.burnFlash();

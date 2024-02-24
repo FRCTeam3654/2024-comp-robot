@@ -45,19 +45,31 @@ public class Climb extends SubsystemBase {
     climbSpark1.restoreFactoryDefaults();
     climbSpark2.restoreFactoryDefaults();
 
+     climbSpark1.setSmartCurrentLimit(30, 25);
+     climbSpark1.setSecondaryCurrentLimit(45);
+     climbSpark1.setIdleMode(CANSparkMax.IdleMode.kBrake);
+
+     climbSpark1.burnFlash();
+
+     climbSpark2.setSmartCurrentLimit(30, 25);
+     climbSpark2.setSecondaryCurrentLimit(45);
+     climbSpark2.setIdleMode(CANSparkMax.IdleMode.kBrake);
+
+    climbSpark2.burnFlash();
+
     m_pidClimb1Controller = climbMotor1.getPIDController();
     m_pidClimb2Controller = climbMotor2.getPIDController();
 
     m_Climb1_encoder = climbMotor1.getEncoder();  
     m_Climb2_encoder = climbMotor2.getEncoder();
 
-    //upperWheels.setInverted(true);
 
-    kClimbP = 0.3;  //6e-5 //make larger if it doesn't hold //0.1
+
+    kClimbP = 0.1;//0.3;  //6e-5 //make larger if it doesn't hold //0.1
     kClimbI = 0;
-    kClimbD = 1;//0; 
+    kClimbD = 0.1;//0; 
     kClimbIz = 0; 
-    kClimbFF = 0.000156;//  0.000015; //0.000156
+    kClimbFF = 0.000156;//  0.000015; //0.000156 // 0.1
     kClimbMinOutput = -1;
     kclimbMaxOutput = 1; 
     maxRPM = 5700; //5700
@@ -78,8 +90,9 @@ public class Climb extends SubsystemBase {
     climbSpark1.setIdleMode(CANSparkMax.IdleMode.kBrake);
     climbSpark2.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
-    kClimbMinOutput = -0.3;
-    kclimbMaxOutput = 0.3; 
+    kClimbMinOutput = -0.5; // need adjust
+    kclimbMaxOutput = 0.5; 
+
     m_pidClimb1Controller.setOutputRange(kClimbMinOutput, kclimbMaxOutput); 
     m_pidClimb2Controller.setOutputRange(kClimbMinOutput, kclimbMaxOutput);
 
