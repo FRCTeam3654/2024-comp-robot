@@ -38,7 +38,7 @@ public class SpeakerShooterCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //RobotContainer.speakerShooter.shootSpeaker(shooterVelocity);
+    //RobotContainer.speakerShooter.shootSpeaker(shooterVelocity); // at about 95 (about 20k old value)
     RobotContainer.speakerShooter.percentOutput(-0.9);
     System.out.println("shoot command");
     //if(RobotContainer.speakerShooter.targetSpeed()){
@@ -58,7 +58,7 @@ public class SpeakerShooterCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (shooterTimer + 2 < Timer.getFPGATimestamp()){
+    if (shooterTimer + 3 < Timer.getFPGATimestamp()){
       return true;
     }
 

@@ -121,8 +121,26 @@ public class SpeakerShooter extends SubsystemBase {
   }
 
   
+  public double getShooterVelocity() {
+     return shooterTalonLeft.getVelocity().getValueAsDouble();
+  }
   
-  
+  public boolean isAtSpeed( double targetSpeed) {
+     boolean isAt = false;
+     if( Math.abs(targetSpeed) > 0.1 ) {
+          if( Math.abs( (targetSpeed - shooterTalonLeft.getVelocity().getValueAsDouble()) / targetSpeed) < 0.02) {
+            // 2 percent error
+            isAt = true;
+          }
+     }
+     else {
+        if( Math.abs(targetSpeed - shooterTalonLeft.getVelocity().getValueAsDouble()) < 0.1 ) {
+           isAt = true;
+        }
+     }
+
+     return isAt;
+  }
 
   
   @Override
