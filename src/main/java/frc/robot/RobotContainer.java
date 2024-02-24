@@ -176,7 +176,7 @@ public class RobotContainer {
        // oi.intakeDownButton.onTrue(new GrabDownCommand());
         //oi.intakeUpButton.onTrue(new StoreCommand());
 
-        //oi.climbUpButton.whileTrue(new ClimbUpCommand());
+        oi.climbUpButton.whileTrue(new ClimbUpCommand());
 
        
         //oi.intakeUpButton.onTrue(new InstantCommand(intakeRollers::stop));
