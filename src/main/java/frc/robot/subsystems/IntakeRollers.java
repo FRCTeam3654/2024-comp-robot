@@ -124,7 +124,7 @@ public class IntakeRollers extends SubsystemBase {
     }
 
     public void feedOut(double percentDuty) {
-        target = (1.0) *  percentDuty;
+        target = (-1.0) *  percentDuty;
     }
 
     public void stop() {
@@ -133,10 +133,13 @@ public class IntakeRollers extends SubsystemBase {
 
     public boolean hasGamePiece(){
         SmartDashboard.putNumber("intakeSensor.getVoltage()", intakeNoteSensor.getVoltage());
+        SmartDashboard.putNumber("intakeSensor.getAverageValue()", intakeNoteSensor.getAverageValue());
+
         if(RobotContainer.oi.intakeUpButton.getAsBoolean()){
             return true;
         }
-        return (intakeNoteSensor.getVoltage() > 1.5);
+        //return (intakeNoteSensor.getVoltage() > 1.5);
+        return (intakeNoteSensor.getAverageValue() > 1800);
     }
 
     @Override
