@@ -45,26 +45,26 @@ public class ArmSmartMotion extends Command {
       armTimer = Timer.getFPGATimestamp();
       targetPos = RobotMap.armAmpDistance;
       //RobotContainer.arm.goToPositionBySmartMotion(targetPos);
-      //RobotContainer.wrist.setMotionMagic(0, 2000, 2000);
+
       System.out.println("should i be moving down");
       isSmartMotionInProgress = true;
-      IntakeCommand.changeMode(0);
+      //IntakeCommand.changeMode(0);
     }
 
     else if(mode == 1){ //moves to storage position
       armTimer = Timer.getFPGATimestamp();
-      //RobotContainer.wrist.setMotionMagic(RobotMap.wristFullUpDistance, 2000, 2000);
+   
       targetPos = 0;
      // RobotContainer.arm.goToPositionBySmartMotion(targetPos); //change value depending on how much we want it to move
       System.out.println("should i be moving to storage");
       isSmartMotionInProgress = true;
-      IntakeCommand.changeMode(2);
+      //IntakeCommand.changeMode(2);
 
     }
     
     else if(mode == 2){ //moves for amp
       armTimer = Timer.getFPGATimestamp();
-      //RobotContainer.wrist.setMotionMagic(RobotMap.wristFullUpDistance, 2000, 2000);
+
       targetPos = 0.5 * RobotMap.wristFullUpDistance;
       //RobotContainer.wrist.goToPositionBySmartMotion(targetPos); //change value depending on how much we want it to move
       System.out.println("should i be moving to amp");
@@ -103,14 +103,20 @@ public class ArmSmartMotion extends Command {
       return true;
     }
     else {
-        //double sensorDistance = Math.abs(RobotContainer.arm.getSensorReading());
-        //double percentError = 100 * (targetPos - sensorDistance)/targetPos;
+      double sensorDistance = Math.abs(RobotContainer.arm.getSensorReading());
+      double percentError = 100;
+      if( Math.abs(targetPos) > 0.001 )  {
+        percentError = 100 * (targetPos - sensorDistance)/targetPos;
+      }
+      else {
+        percentError = 10 * Math.abs(targetPos - sensorDistance); // could be 20
+      }
 
-        //if (Math.abs(percentError) < 1){
-        //if (percentLeftError < 0.9 || percentLeftError < 0 )
-       // isSmartMotionInProgress = false;
-        //return true;
-        //}
+      if (Math.abs(percentError) < 1){
+        isSmartMotionInProgress = false;
+        return true;
+      }
+        
     return false;
   }
 }
