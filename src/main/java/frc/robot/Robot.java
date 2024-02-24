@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.Utils.swerve.CTREConfigs;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -17,6 +19,11 @@ import frc.Utils.swerve.CTREConfigs;
  */
 public class Robot extends TimedRobot {
   public static final CTREConfigs ctreConfigs = new CTREConfigs();
+
+  private static final int PDH_CAN_ID = 1;
+
+  public static PowerDistribution m_pdh = new PowerDistribution(PDH_CAN_ID,ModuleType.kRev);
+
 
   private Command m_autonomousCommand;
 
@@ -28,10 +35,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-   // ctreConfigs = new CTREConfigs();
+
+    m_pdh.setSwitchableChannel(true);
+
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
+    
   }
 
   /**

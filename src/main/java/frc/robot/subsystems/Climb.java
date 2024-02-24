@@ -120,9 +120,18 @@ public class Climb extends SubsystemBase {
     return m_Climb1_encoder.getPosition();
   }
 
+  public double getSensorVelocityReading(){
+    return m_Climb1_encoder.getVelocity();
+  }
+
   public void stayStill(double rotations){
     //CANSparkMax.ControlType.kSmartMotion
     m_pidClimb1Controller.setReference(rotations, CANSparkMax.ControlType.kPosition);
+  }
+
+  public void stayStillByVoltage(double voltage){
+    //CANSparkMax.ControlType.kSmartMotion
+    m_pidClimb1Controller.setReference(voltage, CANSparkMax.ControlType.kVoltage);
   }
 
   public void goHome(){
