@@ -51,6 +51,10 @@ public class SpeakerShooter extends SubsystemBase {
     shooterLeftFXConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     shooterLeftFXConfig.CurrentLimits.StatorCurrentLimit = 50;
     shooterLeftFXConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    shooterLeftFXConfig.CurrentLimits.SupplyCurrentLimit = 35;
+    shooterLeftFXConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    shooterLeftFXConfig.CurrentLimits.SupplyCurrentThreshold = 60;
+    shooterLeftFXConfig.CurrentLimits.SupplyTimeThreshold = 0.1;
     shooterTalonLeft.set(0);
     shooterTalonLeft.getConfigurator().apply(shooterLeftFXConfig); 
     m_LeftVoltage.withSlot(0);
@@ -65,6 +69,10 @@ public class SpeakerShooter extends SubsystemBase {
     shooterRightFXConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     shooterLeftFXConfig.CurrentLimits.StatorCurrentLimit = 50;
     shooterLeftFXConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    shooterLeftFXConfig.CurrentLimits.SupplyCurrentLimit = 35;
+    shooterLeftFXConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    shooterLeftFXConfig.CurrentLimits.SupplyCurrentThreshold = 60;
+    shooterLeftFXConfig.CurrentLimits.SupplyTimeThreshold = 0.1;
     shooterTalonRight.set(0);
     shooterTalonRight.getConfigurator().apply(shooterRightFXConfig);
     m_LeftVoltage.withSlot(0);
