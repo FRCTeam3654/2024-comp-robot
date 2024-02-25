@@ -35,7 +35,7 @@ public class ClimbUpCommand extends Command {
   @Override
   public void initialize() {
     // turn off electric magnet
-    Robot.m_pdh.setSwitchableChannel(false);
+    //Robot.m_pdh.setSwitchableChannel(false);
     inititalPosition = RobotContainer.climb.getSensorReading();
   }
 

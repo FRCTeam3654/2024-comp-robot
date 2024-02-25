@@ -100,7 +100,7 @@ public class RobotContainer {
         led = new LEDSubsystem();
         oi = new OI();
          
-        /* 
+        
         try {
             System.out.println("Ready to sleep for 5 seconds ...");
             Thread.sleep(5000); // try this
@@ -122,7 +122,7 @@ public class RobotContainer {
         catch(Exception e) {
             System.out.println("error "+e);
         }
-        */
+        
 
         swerve.setDefaultCommand(
             new TeleopSwerve(
@@ -176,7 +176,7 @@ public class RobotContainer {
        // oi.intakeDownButton.onTrue(new GrabDownCommand());
         //oi.intakeUpButton.onTrue(new StoreCommand());
 
-        oi.climbUpButton.whileTrue(new ClimbUpCommand());
+        //oi.climbUpButton.whileTrue(new ClimbUpCommand());
 
        
         //oi.intakeUpButton.onTrue(new InstantCommand(intakeRollers::stop));
@@ -186,8 +186,10 @@ public class RobotContainer {
         //oi.intakeDownButton.onTrue(intakeRollers.intakeGamepieceCommand().andThen(new WristSmartMotion(0))).onFalse(new InstantCommand(intakeRollers::stop)); //may make the onFalse a store command
       // oi.intakeDownButton.onTrue(new WristSmartMotion(0)); //may make the onFalse a store command
         //oi.intakeDownButton.onTrue(intakeRollers.intakeGamepieceCommand());
-        oi.intakeDownButton.onTrue(new ParallelCommandGroup(intakeRollers.intakeGamepieceCommand(), new WristSmartMotion(0)));
-        //oi.intakeDownButton.onTrue(new GrabDownCommand());
+        //oi.intakeDownButton.onTrue(new ParallelCommandGroup(intakeRollers.intakeGamepieceCommand(), new WristSmartMotion(0)));
+        //oi.ampButton.onTrue(arm.ampCommand());
+        //oi.ampButton.onTrue(new ParallelCommandGroup())
+        oi.intakeDownButton.onTrue((new ParallelDeadlineGroup(intakeRollers.intakeGamepieceCommand(), new WristSmartMotion(0))).andThen(new StoreCommand()));
     }
 
     /**

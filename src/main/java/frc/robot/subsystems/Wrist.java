@@ -103,6 +103,22 @@ public class Wrist extends SubsystemBase {
   public void goToPositionBySmartMotion(double postition){
     m_pidWristController.setReference(postition, CANSparkMax.ControlType.kSmartMotion);
   }
+
+  public boolean isAtPos( double targetPos) {
+    boolean isAt = false;
+    if( Math.abs(targetPos) > 0.1 ) {
+         if( Math.abs( (targetPos - getSensorReading()) / targetPos) < 0.05) {
+           // 2 percent error
+           isAt = true;
+         }
+        }
+    else{
+      isAt = false;
+    }
+
+    return isAt;
+ 
+}
   
 
   @Override

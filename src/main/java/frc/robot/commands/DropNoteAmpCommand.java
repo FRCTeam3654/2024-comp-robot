@@ -13,10 +13,16 @@ public class DropNoteAmpCommand extends Command {
   /** Creates a new DropNoteTrapCommand. */
   private double ampTimer = 0;
   private double ampTimeout = 2;
+  private double wristTargetPos;
+  private double armTargetPos;
+  private boolean isWristSmartMotionInProgress = false;
+
 
   public DropNoteAmpCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.intakeRollers);
+    addRequirements(RobotContainer.wrist);
+    addRequirements(RobotContainer.arm);
   }
 
   // Called when the command is initially scheduled.
@@ -29,7 +35,11 @@ public class DropNoteAmpCommand extends Command {
   @Override
   public void execute() {
     //RobotContainer.intakeWheels.intakeMove(-0.2);
-    RobotContainer.intakeRollers.feedIn();
+    //RobotContainer.intakeRollers.feedIn();
+    //if(RobotContainer.wrist.isAtPos())
+    if(RobotContainer.wrist.isAtPos(wristTargetPos) && RobotContainer.arm.isAtPos(armTargetPos)){
+      RobotContainer.intakeRollers.feedOut();
+    }
   }
 
   // Called once the command ends or is interrupted.

@@ -41,21 +41,22 @@ public class ArmSmartMotion extends Command {
     if(isSmartMotionButtonPressed == true){
     //wristMoveNumber = wristMoveNumber + 1;
 
-    if(mode == 0){ //moves full down for intake
+    if(mode == 0){ //storage position
       armTimer = Timer.getFPGATimestamp();
-      targetPos = RobotMap.armAmpDistance;
-      //RobotContainer.arm.goToPositionBySmartMotion(targetPos);
+      RobotContainer.arm.goToPositionBySmartMotion(targetPos);
+      targetPos = 0;
 
       System.out.println("should i be moving down");
       isSmartMotionInProgress = true;
       //IntakeCommand.changeMode(0);
     }
 
-    else if(mode == 1){ //moves to storage position
+    else if(mode == 1){ //amp position
       armTimer = Timer.getFPGATimestamp();
    
-      targetPos = 0;
-     // RobotContainer.arm.goToPositionBySmartMotion(targetPos); //change value depending on how much we want it to move
+      targetPos = RobotMap.armAmpDistance;
+
+      RobotContainer.arm.goToPositionBySmartMotion(targetPos); //change value depending on how much we want it to move
       System.out.println("should i be moving to storage");
       isSmartMotionInProgress = true;
       //IntakeCommand.changeMode(2);
@@ -65,8 +66,8 @@ public class ArmSmartMotion extends Command {
     else if(mode == 2){ //moves for amp
       armTimer = Timer.getFPGATimestamp();
 
-      targetPos = 0.5 * RobotMap.wristFullUpDistance;
-      //RobotContainer.wrist.goToPositionBySmartMotion(targetPos); //change value depending on how much we want it to move
+      //targetPos = 0.5 * RobotMap.wristFullUpDistance;
+      RobotContainer.arm.goToPositionBySmartMotion(targetPos); //change value depending on how much we want it to move
       System.out.println("should i be moving to amp");
       isSmartMotionInProgress = true;
     }

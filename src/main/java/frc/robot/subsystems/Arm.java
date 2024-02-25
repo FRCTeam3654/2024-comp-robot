@@ -123,35 +123,35 @@ public class Arm extends SubsystemBase {
   
     public void amp() {
         target = 15;
-        m_pidArmController.setReference(target, CANSparkMax.ControlType.kSmartMotion);
+        //m_pidArmController.setReference(target, CANSparkMax.ControlType.kSmartMotion);
     }
 
     public void amp(double smartMotionPos) {
         target = smartMotionPos;
-        m_pidArmController.setReference(smartMotionPos, CANSparkMax.ControlType.kSmartMotion);
+        //m_pidArmController.setReference(smartMotionPos, CANSparkMax.ControlType.kSmartMotion);
 
     }
 
     public void store() {
         target = 0;
-        m_pidArmController.setReference(target, CANSparkMax.ControlType.kSmartMotion);
+        //m_pidArmController.setReference(target, CANSparkMax.ControlType.kSmartMotion);
 
     }
 
     public void store(double smartMotionPos) {
         target = smartMotionPos;
-        m_pidArmController.setReference(smartMotionPos, CANSparkMax.ControlType.kSmartMotion);
+        //m_pidArmController.setReference(smartMotionPos, CANSparkMax.ControlType.kSmartMotion);
 
     }
 
     public void trap() {
         target = 15;
-        m_pidArmController.setReference(target, CANSparkMax.ControlType.kSmartMotion);
+        //m_pidArmController.setReference(target, CANSparkMax.ControlType.kSmartMotion);
     }
 
     public void trap(double smartMotionPos) {
         target = smartMotionPos;
-        m_pidArmController.setReference(smartMotionPos, CANSparkMax.ControlType.kSmartMotion);
+        //m_pidArmController.setReference(smartMotionPos, CANSparkMax.ControlType.kSmartMotion);
 
     }
 
@@ -159,14 +159,43 @@ public class Arm extends SubsystemBase {
         target = 0;
     }
     
+    public boolean isAtPos( double targetPos) {
+      boolean isAt = false;
+      if( Math.abs(targetPos) > 0.1 ) {
+           if( Math.abs( (targetPos - getSensorReading()) / targetPos) < 0.05) {
+             // 2 percent error
+             isAt = true;
+           }
+          }
+      else{
+        isAt = false;
+      }
+ 
+      return isAt;
+   
+  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    m_pidArmController.setReference(target, CANSparkMax.ControlType.kSmartMotion);
     if ( armZeroSensor != null && armZeroSensor.get() == true ) {
        /// need zero the arm's position to 0
        SmartDashboard.putBoolean("arm Digital Input Sensor ", armZeroSensor.get());
     }
+  }
+
+  public Command ampCommand(){
+    //Command result = run(this::feedIn);
+    Command result = run(this::amp);
+
+    return result;
+} 
+
+  public Command storeCommand(){
+    Command result = run(this::store);
+    
+    return result;
   }
 
   }

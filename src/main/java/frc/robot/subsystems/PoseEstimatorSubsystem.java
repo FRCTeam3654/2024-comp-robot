@@ -183,7 +183,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     if(photonCamera == null ) {
         noCameraCycleCnt++;
         if(noCameraCycleCnt > 3) {
-          RobotContainer.led.setAll(Color.kBlack);
+          //RobotContainer.led.setAll(Color.kBlack);
+          RobotContainer.led.setAll(Color.kLemonChiffon);
         }
     } 
     else if(photonCamera != null ) {
