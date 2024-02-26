@@ -96,7 +96,7 @@ public class OI {
   intakeUpButton = new JoystickButton(operatorStick, RobotMap.intakeUpButtonNumber);
   climbUpButton = new POVButton(operatorStick, 0);
   climbPosButton = new JoystickButton(operatorStick, RobotMap.climbPositionButtonNumber);
-  ampButton = new JoystickButton(operatorStick, RobotMap.ampButtonNumber);
+  //ampButton = new JoystickButton(operatorStick, RobotMap.ampButtonNumber);
   trapButton = new JoystickButton(operatorStick, RobotMap.trapButtonNumber);
 
 

@@ -94,7 +94,7 @@ public class RobotContainer {
         speakerShooter = new SpeakerShooter();
         //intakeWheels = new IntakeWheels();
         //arm = new Arm();
-        //climb = new Climb();
+        climb = new Climb();
         intakeRollers = new IntakeRollers();
         wrist = new Wrist();
         led = new LEDSubsystem();
@@ -176,7 +176,7 @@ public class RobotContainer {
        // oi.intakeDownButton.onTrue(new GrabDownCommand());
         //oi.intakeUpButton.onTrue(new StoreCommand());
 
-        //oi.climbUpButton.whileTrue(new ClimbUpCommand());
+        oi.climbUpButton.whileTrue(new ClimbUpCommand());
 
        
         //oi.intakeUpButton.onTrue(new InstantCommand(intakeRollers::stop));

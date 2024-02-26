@@ -35,7 +35,7 @@ public class ClimbUpCommand extends Command {
   @Override
   public void initialize() {
     // turn off electric magnet
-    //Robot.m_pdh.setSwitchableChannel(false);
+    Robot.m_pdh.setSwitchableChannel(false);
     inititalPosition = RobotContainer.climb.getSensorReading();
   }
 
@@ -43,14 +43,15 @@ public class ClimbUpCommand extends Command {
   @Override
   public void execute() {
     // after certain range of distance, stop pulling up
-    currentPosition = RobotContainer.climb.getSensorReading();
+    //currentPosition = RobotContainer.climb.getSensorReading();
 
-    currentVelocity = RobotContainer.climb.getSensorVelocityReading(); // in RPM for rev motor
+    //currentVelocity = RobotContainer.climb.getSensorVelocityReading(); // in RPM for rev motor
 
     // need stop pulling when robot is at the max height 
-    if( Math.abs(currentPosition - inititalPosition) < MIN_DISTANCE ) {
-        RobotContainer.climb.climbUp(0.3);
-    }
+    //if( Math.abs(currentPosition - inititalPosition) < MIN_DISTANCE ) {
+        RobotContainer.climb.climbUp(-0.3);
+    //}
+    /* 
     else {
         // deceleration, currentVelocity is close to 0
         // could use other sensor value too like current SPIKE, or jerk (change in acceleration from Pigeon2)
@@ -63,8 +64,9 @@ public class ClimbUpCommand extends Command {
            RobotContainer.climb.stayStillByVoltage(STAY_STILL_VOLTAGE);
         }
     }
+    */
     
-    previousVelocity = currentVelocity ;
+    //previousVelocity = currentVelocity ;
   }
 
   // Called once the command ends or is interrupted.

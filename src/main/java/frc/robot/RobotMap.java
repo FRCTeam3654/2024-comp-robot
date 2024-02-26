@@ -100,7 +100,12 @@ public static int shooterTalonRightID = 10;
 public static int intakeNEOTopID = 7;
 public static int intakeNEOBottomID = 8;
 
+public static int climbMotor1ID = 30;
+public static int climbMotor2ID = 40;
+
 public static int wristNEOID = 9;
+
+public static int armNEOID = 25;
 
 public static double joystickDeadBand = 0.08;
 
