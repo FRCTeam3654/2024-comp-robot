@@ -185,6 +185,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         if(noCameraCycleCnt > 3) {
           //RobotContainer.led.setAll(Color.kBlack);
           RobotContainer.led.setAll(Color.kLemonChiffon);
+          //RobotContainer.ledLeft.setAll(Color.kLemonChiffon);
+
         }
     } 
     else if(photonCamera != null ) {
@@ -200,9 +202,13 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         // Color:  Speaker -> Green; Amp --> Blue;  Note --> Red;   Source --> Yellow  
         if( fiducialId == 2 ) {
           RobotContainer.led.setAll(Color.kGreen); 
+          //RobotContainer.ledLeft.setAll(Color.kGreen); 
+
         }
         else if( fiducialId == 1 ) {
           RobotContainer.led.setAll(Color.kBlue);
+          //RobotContainer.ledLeft.setAll(Color.kBlue);
+
         }
 
 

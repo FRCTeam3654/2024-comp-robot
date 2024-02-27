@@ -12,10 +12,11 @@ import edu.wpi.first.wpilibj.Timer;
 public class DropNoteAmpCommand extends Command {
   /** Creates a new DropNoteTrapCommand. */
   private double ampTimer = 0;
-  private double ampTimeout = 2;
-  private double wristTargetPos;
-  private double armTargetPos;
+  private double ampTimeout = 30;
+  private double wristTargetPos = -15;
+  private double armTargetPos = 44.5;
   private boolean isWristSmartMotionInProgress = false;
+  private boolean isArmSmartMotionInProgress = false;
 
 
   public DropNoteAmpCommand() {
@@ -29,6 +30,7 @@ public class DropNoteAmpCommand extends Command {
   @Override
   public void initialize() {
     ampTimer = Timer.getFPGATimestamp();
+    RobotContainer.wrist.goToPositionBySmartMotion(-16.8); //this should be the store pos bc the motors zero at start
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -36,9 +38,15 @@ public class DropNoteAmpCommand extends Command {
   public void execute() {
     //RobotContainer.intakeWheels.intakeMove(-0.2);
     //RobotContainer.intakeRollers.feedIn();
-    //if(RobotContainer.wrist.isAtPos())
-    if(RobotContainer.wrist.isAtPos(wristTargetPos) && RobotContainer.arm.isAtPos(armTargetPos)){
-      RobotContainer.intakeRollers.feedOut();
+    if(isArmSmartMotionInProgress == false){
+      if(RobotContainer.wrist.isAtPos(-16.8)){
+            RobotContainer.arm.goToPositionBySmartMotion(armTargetPos);
+            isArmSmartMotionInProgress = true;
+          }
+    }
+    
+    if(RobotContainer.wrist.isAtPos(-16.8) && RobotContainer.arm.isAtPos(44.5)){
+      RobotContainer.intakeRollers.feedIn(-1, -0.7);
     }
   }
 
@@ -47,6 +55,7 @@ public class DropNoteAmpCommand extends Command {
   public void end(boolean interrupted) {
     //RobotContainer.intakeWheels.intakeMove(0);
     RobotContainer.intakeRollers.stop();
+    isArmSmartMotionInProgress = false;
   }
 
   // Returns true when the command should end.

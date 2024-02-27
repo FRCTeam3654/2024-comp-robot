@@ -34,7 +34,8 @@ public class ArmSmartMotion extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-   if(RobotContainer.oi.intakeDownButton.getAsBoolean() || RobotContainer.oi.intakeUpButton.getAsBoolean() || mode == 1){
+    System.out.println("is arm initialized");
+   if(RobotContainer.oi.ampButton.getAsBoolean() || RobotContainer.oi.intakeUpButton.getAsBoolean() || mode == 1){
     isSmartMotionButtonPressed = true;
    }
 
@@ -46,7 +47,7 @@ public class ArmSmartMotion extends Command {
       RobotContainer.arm.goToPositionBySmartMotion(targetPos);
       targetPos = 0;
 
-      System.out.println("should i be moving down");
+      System.out.println("should i be moving to storage");
       isSmartMotionInProgress = true;
       //IntakeCommand.changeMode(0);
     }
@@ -54,10 +55,10 @@ public class ArmSmartMotion extends Command {
     else if(mode == 1){ //amp position
       armTimer = Timer.getFPGATimestamp();
    
-      targetPos = RobotMap.armAmpDistance;
+      targetPos = 44.5;
 
       RobotContainer.arm.goToPositionBySmartMotion(targetPos); //change value depending on how much we want it to move
-      System.out.println("should i be moving to storage");
+      System.out.println("should amp be moving to amp");
       isSmartMotionInProgress = true;
       //IntakeCommand.changeMode(2);
 

@@ -49,7 +49,7 @@ public class ClimbUpCommand extends Command {
 
     // need stop pulling when robot is at the max height 
     //if( Math.abs(currentPosition - inititalPosition) < MIN_DISTANCE ) {
-        RobotContainer.climb.climbUp(-0.3);
+        RobotContainer.climb.climbUp(-0.15);
     //}
     /* 
     else {

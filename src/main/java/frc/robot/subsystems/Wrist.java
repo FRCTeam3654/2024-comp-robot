@@ -30,6 +30,8 @@ public class Wrist extends SubsystemBase {
   private SparkPIDController m_pidWristController;
   private RelativeEncoder m_Wrist_encoder;
 
+  private double target;
+
 
   //private CANSparkMax wristSpark;
 
@@ -104,6 +106,7 @@ public class Wrist extends SubsystemBase {
     m_pidWristController.setReference(postition, CANSparkMax.ControlType.kSmartMotion);
   }
 
+
   public boolean isAtPos( double targetPos) {
     boolean isAt = false;
     if( Math.abs(targetPos) > 0.1 ) {
@@ -113,7 +116,11 @@ public class Wrist extends SubsystemBase {
          }
         }
     else{
-      isAt = false;
+      //isAt = false;
+      if( Math.abs( (targetPos - getSensorReading())) < 0.1) {
+        return true;
+      }
+
     }
 
     return isAt;
@@ -124,5 +131,7 @@ public class Wrist extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+
   }
 }

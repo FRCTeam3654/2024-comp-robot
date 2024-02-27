@@ -63,7 +63,7 @@ public class WristSmartMotion extends Command {
         targetPos = 0;
 
         RobotContainer.wrist.goToPositionBySmartMotion(targetPos); //this should be the store pos bc the motors zero at start
-        System.out.println("should i be moving to storage");
+        System.out.println("should i be moving to up");
         isSmartMotionInProgress = true;
         //IntakeCommand.changeMode(2);
 

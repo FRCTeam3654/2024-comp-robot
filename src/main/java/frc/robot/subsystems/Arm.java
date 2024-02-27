@@ -45,7 +45,7 @@ public class Arm extends SubsystemBase {
 
   public Arm() {
      
-    armMotor = new CANSparkMax(RobotMap.wristNEOID, MotorType.kBrushless);
+    armMotor = new CANSparkMax(RobotMap.armNEOID, MotorType.kBrushless);
 
     //It is good practice to call the spark.restoreFactoryDefaults() before doing any configuration 
     armMotor.restoreFactoryDefaults();
@@ -61,7 +61,7 @@ public class Arm extends SubsystemBase {
 
     // 
 
-    kArmP = 0.015; //0.3; //shoulderP = 0.026;
+    kArmP = 0.001; //0.3; //shoulderP = 0.026;
     kArmI = 0;
     kArmD = 1;//0; 
     kArmIz = 0; 
@@ -79,8 +79,8 @@ public class Arm extends SubsystemBase {
 
     
 
-    kArmMinOutput = -0.3;
-    kArmMaxOutput = 0.3; 
+    kArmMinOutput = -0.6;
+    kArmMaxOutput = 0.6; 
     m_pidArmController.setOutputRange(kArmMinOutput, kArmMaxOutput); 
 
     m_pidArmController.setSmartMotionMaxVelocity(1500, 0); //maxVel in rpm; will need to adjust
@@ -168,9 +168,13 @@ public class Arm extends SubsystemBase {
            }
           }
       else{
-        isAt = false;
+        //isAt = false;
+        if( Math.abs( (targetPos - getSensorReading())) < 0.1) {
+          return true;
+        }
+  
       }
- 
+  
       return isAt;
    
   }
@@ -178,7 +182,7 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    m_pidArmController.setReference(target, CANSparkMax.ControlType.kSmartMotion);
+    //m_pidArmController.setReference(target, CANSparkMax.ControlType.kSmartMotion);
     if ( armZeroSensor != null && armZeroSensor.get() == true ) {
        /// need zero the arm's position to 0
        SmartDashboard.putBoolean("arm Digital Input Sensor ", armZeroSensor.get());

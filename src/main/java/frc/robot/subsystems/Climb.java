@@ -65,7 +65,7 @@ public class Climb extends SubsystemBase {
 
 
 
-    kClimbP = 1;//0.3;  //6e-5 //make larger if it doesn't hold //0.1
+    kClimbP = 0.8;//0.3;  //6e-5 //make larger if it doesn't hold //0.1
     kClimbI = 0;
     kClimbD = 0.1;//0; 
     kClimbIz = 0; 

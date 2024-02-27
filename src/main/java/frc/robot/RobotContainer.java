@@ -35,6 +35,7 @@ public class RobotContainer {
     public static Wrist wrist;
     public static Arm arm;
     public static LEDSubsystem led;
+    public static LEDSubsystemLeft ledLeft;
   
     /* Controllers */
     //private final Joystick driver = new Joystick(0); // moved to OI for consistency
@@ -93,11 +94,12 @@ public class RobotContainer {
 
         speakerShooter = new SpeakerShooter();
         //intakeWheels = new IntakeWheels();
-        //arm = new Arm();
+        arm = new Arm();
         climb = new Climb();
         intakeRollers = new IntakeRollers();
         wrist = new Wrist();
         led = new LEDSubsystem();
+        //ledLeft = new LEDSubsystemLeft();
         oi = new OI();
          
         
@@ -177,6 +179,7 @@ public class RobotContainer {
         //oi.intakeUpButton.onTrue(new StoreCommand());
 
         oi.climbUpButton.whileTrue(new ClimbUpCommand());
+        oi.ampButton.onTrue(new DropNoteAmpCommand());
 
        
         //oi.intakeUpButton.onTrue(new InstantCommand(intakeRollers::stop));
@@ -187,9 +190,11 @@ public class RobotContainer {
       // oi.intakeDownButton.onTrue(new WristSmartMotion(0)); //may make the onFalse a store command
         //oi.intakeDownButton.onTrue(intakeRollers.intakeGamepieceCommand());
         //oi.intakeDownButton.onTrue(new ParallelCommandGroup(intakeRollers.intakeGamepieceCommand(), new WristSmartMotion(0)));
-        //oi.ampButton.onTrue(arm.ampCommand());
+        //oi.ampButton.onTrue((new DropNoteAmpCommand()).andThen(new StoreCommand()));
         //oi.ampButton.onTrue(new ParallelCommandGroup())
         oi.intakeDownButton.onTrue((new ParallelDeadlineGroup(intakeRollers.intakeGamepieceCommand(), new WristSmartMotion(0))).andThen(new StoreCommand()));
+        //oi.intakeDownButton.onTrue((new ParallelDeadlineGroup(intakeRollers.intakeGamepieceCommand(), new WristSmartMotion(0))).andThen(new StoreCommand()));
+
     }
 
     /**

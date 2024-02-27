@@ -39,7 +39,9 @@ public class IntakeRollers extends SubsystemBase {
 
 
 
-    private double target = 0;
+    private double target1 = 0;
+    private double target2 = 0;
+
     private ArmFeedforward m_intakeFeedforward = new ArmFeedforward(0, 0, 0);
 
 
@@ -114,31 +116,39 @@ public class IntakeRollers extends SubsystemBase {
     }
 
     public void feedIn() {
-        target = -0.3;
+        target1 = -0.5;
+        target2 = -0.5;
+
         //lowerWheels.set(target);
     }
 
-    public void feedIn(double percentDuty) {
-        target = percentDuty;
+    public void feedIn(double percentDuty1, double percentDuty2) {
+        target1 = percentDuty1;
+        target2 = percentDuty2;
+
     }
 
     public void feedOut() {
-        target = 0.3;
+        target1 = 0.5;
+        target2 = 0.5;
     }
 
     public void feedOut(double percentDuty) {
-        target = (-1.0) *  percentDuty;
+        target1 = (-1.0) *  percentDuty;
+        target2 = (-1.0) *  percentDuty;
+
     }
 
     public void stop() {
-        target = 0;
+        target1 = 0;
+        target2 = 0;
     }
 
     public boolean hasGamePiece(){
         SmartDashboard.putNumber("intakeSensor.getVoltage()", intakeNoteSensor.getVoltage());
         //SmartDashboard.putNumber("intakeSensor.getAverageValue()", intakeNoteSensor.getAverageValue());
 
-        if((intakeNoteSensor.getVoltage() > 1.5) || RobotContainer.oi.intakeUpButton.getAsBoolean() || intakeNoteSensor.getAverageValue() > 1800){
+        if((intakeNoteSensor.getVoltage() > 1.8) || RobotContainer.oi.intakeUpButton.getAsBoolean() || intakeNoteSensor.getAverageValue() > 1900){
             return true;
         }
         //return (intakeNoteSensor.getVoltage() > 1.5);
@@ -149,8 +159,8 @@ public class IntakeRollers extends SubsystemBase {
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-      lowerWheels.set(target);
-      upperWheels.set(target);
+      lowerWheels.set(target1);
+      upperWheels.set(target2);
         //lowerWheels.set(target);
         SmartDashboard.putNumber("intakeSensor.getAverageValue()", intakeNoteSensor.getValue());
         SmartDashboard.putNumber("intakeSensor.getVoltage()", intakeNoteSensor.getVoltage());
@@ -159,7 +169,7 @@ public class IntakeRollers extends SubsystemBase {
 
     public Command intakeGamepieceCommand(){
         //Command result = run(this::feedIn);
-        Command result = run(this::feedIn).until(this::hasGamePiece).andThen(new WaitCommand(0.03)).andThen(this::stop);
+        Command result = run(this::feedIn).until(this::hasGamePiece).andThen(new WaitCommand(0.07)).andThen(this::stop);
 
         return result;
     } 

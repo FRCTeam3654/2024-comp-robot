@@ -6,6 +6,8 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotContainer;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -20,7 +22,11 @@ public class StoreCommand extends ParallelCommandGroup {
       new InstantCommand(
         RobotContainer.intakeRollers::stop
       ),
-      new WristSmartMotion(1)
+      new ArmSmartMotion(0),
+      new SequentialCommandGroup(
+        new WaitCommand(1),
+        new WristSmartMotion(1)
+        )
     );
   }
 }
