@@ -13,7 +13,7 @@ public class ClimbPositionCommand extends Command {
   /** Creates a new DropNoteTrapCommand. */
   private double climbPosTimer = 0;
   private double climbPosTimeout = 30;
-  private double wristTargetPos = -28;
+  private double wristTargetPos = -20;
   private double armTargetPos = 33;
   private boolean isWristSmartMotionInProgress = false;
   private boolean isArmSmartMotionInProgress = false;
@@ -38,7 +38,7 @@ public class ClimbPositionCommand extends Command {
     //RobotContainer.intakeWheels.intakeMove(-0.2);
     //RobotContainer.intakeRollers.feedIn();
     if(isArmSmartMotionInProgress == false){
-      if(RobotContainer.wrist.isAtPos(-12)){
+      if(RobotContainer.wrist.isAtPos(-7)){
             RobotContainer.arm.goToPositionBySmartMotion(armTargetPos);
             isArmSmartMotionInProgress = true;
           }
