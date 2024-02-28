@@ -36,6 +36,7 @@ public class IntakeRollers extends SubsystemBase {
     private RelativeEncoder m_intakeLower_encoder;
 
     private AnalogInput intakeNoteSensor;
+    private double prevSensorReading;
 
 
 
@@ -144,11 +145,27 @@ public class IntakeRollers extends SubsystemBase {
         target2 = 0;
     }
 
+    public void centerNote(){
+        target1 = -0.2;
+        target2 = -0.2;
+
+        double currentSensorReading = intakeNoteSensor.getAverageValue();
+        if( (currentSensorReading - prevSensorReading) < 0 && currentSensorReading < 2300){
+            target1 = 0.2;
+            target2 = 0.2;
+        }
+        else if ((currentSensorReading - prevSensorReading) < 0 && currentSensorReading > 2300){
+            target1 = 0;
+            target2 = 0;
+        }
+    }
+
     public boolean hasGamePiece(){
         SmartDashboard.putNumber("intakeSensor.getVoltage()", intakeNoteSensor.getVoltage());
         //SmartDashboard.putNumber("intakeSensor.getAverageValue()", intakeNoteSensor.getAverageValue());
 
         if((intakeNoteSensor.getVoltage() > 1.8) || RobotContainer.oi.intakeUpButton.getAsBoolean() || intakeNoteSensor.getAverageValue() > 1900){
+            prevSensorReading =  intakeNoteSensor.getAverageValue();
             return true;
         }
         //return (intakeNoteSensor.getVoltage() > 1.5);
@@ -169,10 +186,18 @@ public class IntakeRollers extends SubsystemBase {
 
     public Command intakeGamepieceCommand(){
         //Command result = run(this::feedIn);
-        Command result = run(this::feedIn).until(this::hasGamePiece).andThen(new WaitCommand(0.07)).andThen(this::stop);
+        //Command result = run(this::feedIn).until(this::hasGamePiece).andThen(new WaitCommand(0.04)).andThen(this::stop);
+
+        Command result = run(this::feedIn).until(this::hasGamePiece).andThen(this::stop);
 
         return result;
     } 
+
+    public Command centerNoteCommand(){
+        Command result = run(this::centerNote);
+
+        return result;
+    }
     
     public Command takeIn(){
         Command result = runOnce(this::feedIn);

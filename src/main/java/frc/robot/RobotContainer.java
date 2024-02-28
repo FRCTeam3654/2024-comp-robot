@@ -177,13 +177,13 @@ public class RobotContainer {
        // oi.turnRight180Button.whileTrue(chaseTagCommand);
        // oi.intakeDownButton.onTrue(new GrabDownCommand());
         //oi.intakeUpButton.onTrue(new StoreCommand());
-
+        oi.climbPosButton.onTrue(new ClimbPositionCommand());
         oi.climbUpButton.whileTrue(new ClimbUpCommand());
         oi.ampButton.onTrue(new DropNoteAmpCommand());
 
        
         //oi.intakeUpButton.onTrue(new InstantCommand(intakeRollers::stop));
-        oi.intakeUpButton.onTrue(new StoreCommand());
+        oi.intakeUpButton.onTrue(new StoreCommand(1));
         oi.speakerShooterButton.onTrue(new SpeakerShooterCommand());
         //oi.intakeDownButton.onTrue(intakeRollers.intakeGamepieceCommand().andThen(new StoreCommand())).onFalse(new InstantCommand(intakeRollers::stop)); //may make the onFalse a store command
         //oi.intakeDownButton.onTrue(intakeRollers.intakeGamepieceCommand().andThen(new WristSmartMotion(0))).onFalse(new InstantCommand(intakeRollers::stop)); //may make the onFalse a store command
@@ -192,8 +192,8 @@ public class RobotContainer {
         //oi.intakeDownButton.onTrue(new ParallelCommandGroup(intakeRollers.intakeGamepieceCommand(), new WristSmartMotion(0)));
         //oi.ampButton.onTrue((new DropNoteAmpCommand()).andThen(new StoreCommand()));
         //oi.ampButton.onTrue(new ParallelCommandGroup())
-        oi.intakeDownButton.onTrue((new ParallelDeadlineGroup(intakeRollers.intakeGamepieceCommand(), new WristSmartMotion(0))).andThen(new StoreCommand()));
-        //oi.intakeDownButton.onTrue((new ParallelDeadlineGroup(intakeRollers.intakeGamepieceCommand(), new WristSmartMotion(0))).andThen(new StoreCommand()));
+        //oi.intakeDownButton.onTrue((new ParallelDeadlineGroup(intakeRollers.intakeGamepieceCommand(), new WristSmartMotion(0))).andThen(new ParallelCommandGroup(new StoreCommand(0.02), intakeRollers.centerNoteCommand())));
+        oi.intakeDownButton.onTrue((new ParallelDeadlineGroup(intakeRollers.intakeGamepieceCommand(), new WristSmartMotion(0))).andThen(new StoreCommand(0.02)));
 
     }
 

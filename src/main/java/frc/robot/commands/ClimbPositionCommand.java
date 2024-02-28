@@ -9,19 +9,18 @@ import frc.robot.RobotContainer;
 import edu.wpi.first.wpilibj.Timer;
 
 
-public class DropNoteAmpCommand extends Command {
+public class ClimbPositionCommand extends Command {
   /** Creates a new DropNoteTrapCommand. */
-  private double ampTimer = 0;
-  private double ampTimeout = 30;
-  private double wristTargetPos = -17;
-  private double armTargetPos = 46;
+  private double climbPosTimer = 0;
+  private double climbPosTimeout = 30;
+  private double wristTargetPos = -28;
+  private double armTargetPos = 33;
   private boolean isWristSmartMotionInProgress = false;
   private boolean isArmSmartMotionInProgress = false;
 
 
-  public DropNoteAmpCommand() {
+  public ClimbPositionCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(RobotContainer.intakeRollers);
     addRequirements(RobotContainer.wrist);
     addRequirements(RobotContainer.arm);
   }
@@ -29,8 +28,8 @@ public class DropNoteAmpCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    ampTimer = Timer.getFPGATimestamp();
-    RobotContainer.wrist.goToPositionBySmartMotion(-16.6); //this should be the store pos bc the motors zero at start
+    climbPosTimer = Timer.getFPGATimestamp();
+    RobotContainer.wrist.goToPositionBySmartMotion(wristTargetPos); //this should be the store pos bc the motors zero at start
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -39,29 +38,25 @@ public class DropNoteAmpCommand extends Command {
     //RobotContainer.intakeWheels.intakeMove(-0.2);
     //RobotContainer.intakeRollers.feedIn();
     if(isArmSmartMotionInProgress == false){
-      if(RobotContainer.wrist.isAtPos(-16.6)){
-            RobotContainer.arm.goToPositionBySmartMotion(46);
+      if(RobotContainer.wrist.isAtPos(-12)){
+            RobotContainer.arm.goToPositionBySmartMotion(armTargetPos);
             isArmSmartMotionInProgress = true;
           }
     }
     
-    if(RobotContainer.wrist.isAtPos(-16.6) && RobotContainer.arm.isAtPos(armTargetPos)){
-      RobotContainer.intakeRollers.feedIn(-1, -0.4);
-    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     //RobotContainer.intakeWheels.intakeMove(0);
-    RobotContainer.intakeRollers.stop();
     isArmSmartMotionInProgress = false;
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (!RobotContainer.intakeRollers.hasGamePiece() || (ampTimer + ampTimeout) < Timer.getFPGATimestamp()){ //distance sensor value needs to be tuned
+    if ((climbPosTimer + climbPosTimeout) < Timer.getFPGATimestamp()){
       return true;
     }
     return false;

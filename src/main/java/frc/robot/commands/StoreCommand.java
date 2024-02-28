@@ -15,7 +15,7 @@ import frc.robot.RobotContainer;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class StoreCommand extends ParallelCommandGroup {
   /** Creates a new IntakeWristCommand. */
-  public StoreCommand() {
+  public StoreCommand(double waitSeconds) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
@@ -24,7 +24,7 @@ public class StoreCommand extends ParallelCommandGroup {
       ),
       new ArmSmartMotion(0),
       new SequentialCommandGroup(
-        new WaitCommand(1),
+        new WaitCommand(waitSeconds),
         new WristSmartMotion(1)
         )
     );
