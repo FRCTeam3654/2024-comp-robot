@@ -39,8 +39,9 @@ public class DropNoteAmpCommand extends Command {
     //RobotContainer.intakeWheels.intakeMove(-0.2);
     //RobotContainer.intakeRollers.feedIn();
     if(isArmSmartMotionInProgress == false){
-      if(RobotContainer.wrist.isAtPos(-16.6)){
-            RobotContainer.arm.goToPositionBySmartMotion(46);
+      if(RobotContainer.wrist.isPastPos (-10)){
+            RobotContainer.arm.goToPositionBySmartMotion(armTargetPos);
+            System.out.println("should I be going to amp");
             isArmSmartMotionInProgress = true;
           }
     }

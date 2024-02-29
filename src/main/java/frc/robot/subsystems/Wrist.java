@@ -126,6 +126,26 @@ public class Wrist extends SubsystemBase {
     return isAt;
  
 }
+
+public boolean isPastPos( double targetPos) {
+    boolean isPast = false;
+    if( Math.abs(targetPos) > 0.1 ) {
+         if( (targetPos - getSensorReading()) > 0 && targetPos < 0) {
+           // 2 percent error
+           isPast = true;
+         }
+        }
+    else{
+      //isAt = false;
+      if( Math.abs( (targetPos - getSensorReading())) < 0.1) {
+        return true;
+      }
+
+    }
+
+    return isPast;
+ 
+}
   
 
   @Override

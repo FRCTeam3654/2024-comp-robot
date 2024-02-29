@@ -129,8 +129,8 @@ public static int maximumVelocityFalcon = 21000; // need to change for new robot
 public static double radianConversionToDegree = 57.2958;
 
 public static final int LED_PWMPORT_LEFT = 9;
-public static final int LED_PWMPORT_RIGHT = 7;
-public static final int LED_LENGTH = 9;
+public static final int LED_PWMPORT_RIGHT = 8;
+public static final int LED_LENGTH = 18;
 
 //For the Wrist
 public static double wristFullUpDistance = 2; //will tune later

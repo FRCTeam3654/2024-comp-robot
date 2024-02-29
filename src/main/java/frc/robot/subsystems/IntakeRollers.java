@@ -126,6 +126,8 @@ public class IntakeRollers extends SubsystemBase {
     public void feedIn(double percentDuty1, double percentDuty2) {
         target1 = percentDuty1;
         target2 = percentDuty2;
+        //prevSensorReading =  intakeNoteSensor.getAverageValue();
+
 
     }
 
@@ -146,15 +148,15 @@ public class IntakeRollers extends SubsystemBase {
     }
 
     public void centerNote(){
-        target1 = -0.2;
-        target2 = -0.2;
+        target1 = -0.03;
+        target2 = -0.03;
 
         double currentSensorReading = intakeNoteSensor.getAverageValue();
-        if( (currentSensorReading - prevSensorReading) < 0 && currentSensorReading < 2300){
-            target1 = 0.2;
-            target2 = 0.2;
+        if( (currentSensorReading - prevSensorReading) < 0 && currentSensorReading < 2450){
+            target1 = 0.03;
+            target2 = 0.03;
         }
-        else if ((currentSensorReading - prevSensorReading) < 0 && currentSensorReading > 2300){
+        else if ((currentSensorReading - prevSensorReading) < 0 && currentSensorReading > 2450){
             target1 = 0;
             target2 = 0;
         }
@@ -168,6 +170,8 @@ public class IntakeRollers extends SubsystemBase {
             prevSensorReading =  intakeNoteSensor.getAverageValue();
             return true;
         }
+
+        prevSensorReading =  intakeNoteSensor.getAverageValue();
         //return (intakeNoteSensor.getVoltage() > 1.5);
         //return (intakeNoteSensor.getAverageValue() > 2000);
         return false;

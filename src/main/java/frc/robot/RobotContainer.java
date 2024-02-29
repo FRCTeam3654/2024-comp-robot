@@ -18,6 +18,7 @@ import frc.robot.autos.*;
 
 import org.photonvision.PhotonCamera;
 
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 /**
@@ -124,7 +125,11 @@ public class RobotContainer {
         catch(Exception e) {
             System.out.println("error "+e);
         }
-        
+
+        NamedCommands.registerCommand("WristSmartMotion(0)", new WristSmartMotion(0));
+        NamedCommands.registerCommand("AutoIntakeCommand", new AutoIntakeCommand());
+        NamedCommands.registerCommand("StoreCommand", new StoreCommand(0.02));
+        NamedCommands.registerCommand("SpeakerShooterCommand", new SpeakerShooterCommand());
 
         swerve.setDefaultCommand(
             new TeleopSwerve(
@@ -190,10 +195,10 @@ public class RobotContainer {
       // oi.intakeDownButton.onTrue(new WristSmartMotion(0)); //may make the onFalse a store command
         //oi.intakeDownButton.onTrue(intakeRollers.intakeGamepieceCommand());
         //oi.intakeDownButton.onTrue(new ParallelCommandGroup(intakeRollers.intakeGamepieceCommand(), new WristSmartMotion(0)));
-        //oi.ampButton.onTrue((new DropNoteAmpCommand()).andThen(new StoreCommand()));
+        //oi.ampButton.onTrue((new DropNoteAmpCommand()).andThen(new StoreCommand(1.5)));
         //oi.ampButton.onTrue(new ParallelCommandGroup())
-        //oi.intakeDownButton.onTrue((new ParallelDeadlineGroup(intakeRollers.intakeGamepieceCommand(), new WristSmartMotion(0))).andThen(new ParallelCommandGroup(new StoreCommand(0.02), intakeRollers.centerNoteCommand())));
-        oi.intakeDownButton.onTrue((new ParallelDeadlineGroup(intakeRollers.intakeGamepieceCommand(), new WristSmartMotion(0))).andThen(new StoreCommand(0.02)));
+        oi.intakeDownButton.onTrue((new ParallelDeadlineGroup(intakeRollers.intakeGamepieceCommand(), new WristSmartMotion(0))).andThen(new ParallelDeadlineGroup(new StoreCommand(0.02), intakeRollers.centerNoteCommand())));
+        //oi.intakeDownButton.onTrue((new ParallelDeadlineGroup(intakeRollers.intakeGamepieceCommand(), new WristSmartMotion(0))).andThen(new StoreCommand(0.02)));
 
     }
 

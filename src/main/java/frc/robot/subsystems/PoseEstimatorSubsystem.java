@@ -50,10 +50,10 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
   //);
 
   // temp code to set up the ApriTag postion at shop
-  public static final HashMap<Integer, Pose3d> targetPoses =  new HashMap<Integer, Pose3d>() {{
-    put(2, new Pose3d(Units.inchesToMeters(60),0,Units.inchesToMeters(10.5), new Rotation3d(0,0,Units.degreesToRadians(180))));
-    put(1, new Pose3d(Units.inchesToMeters(-101),Units.inchesToMeters(49),Units.inchesToMeters(8.5), new Rotation3d(0,0,Units.degreesToRadians(0))));
-  }}   ;   
+  //public static final HashMap<Integer, Pose3d> targetPoses =  new HashMap<Integer, Pose3d>() {{
+    //put(2, new Pose3d(Units.inchesToMeters(60),0,Units.inchesToMeters(10.5), new Rotation3d(0,0,Units.degreesToRadians(180))));
+    //put(1, new Pose3d(Units.inchesToMeters(-101),Units.inchesToMeters(49),Units.inchesToMeters(8.5), new Rotation3d(0,0,Units.degreesToRadians(0))));
+  //}}   ;   
   
   //public static Transform3d tag4Totag2 = targetPoses.get(2).minus(targetPoses.get(4));
   //public static Transform3d tag2Totag4 = tag4Totag2.inverse();
@@ -184,7 +184,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         noCameraCycleCnt++;
         if(noCameraCycleCnt > 3) {
           //RobotContainer.led.setAll(Color.kBlack);
-          RobotContainer.led.setAll(Color.kBisque);
+          RobotContainer.led.setAll(Color.kFuchsia);
           //RobotContainer.ledLeft.setAll(Color.kLemonChiffon);
 
         }
