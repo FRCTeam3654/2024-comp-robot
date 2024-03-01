@@ -28,6 +28,10 @@ public class ChaseTagCommand extends Command {
 
   //public static final Transform3d ROBOT_TO_CAMERA = CAMERA_TO_ROBOT.inverse();
   public static final Transform3d ROBOT_TO_CAMERA = new Transform3d(
+        new Translation3d(Units.inchesToMeters(-7), Units.inchesToMeters(3.5), Units.inchesToMeters(21)),
+        new Rotation3d(0, 0, 0)); 
+
+  public static final Transform3d ROBOT_TO_CAMERA_BACK = new Transform3d(
         new Translation3d(Units.inchesToMeters(12.375), Units.inchesToMeters(0), Units.inchesToMeters(4.25)),
         new Rotation3d(0, 0, 0)); 
 

@@ -164,7 +164,7 @@ public class IntakeRollers extends SubsystemBase {
 
     public boolean hasGamePiece(){
         SmartDashboard.putNumber("intakeSensor.getVoltage()", intakeNoteSensor.getVoltage());
-        //SmartDashboard.putNumber("intakeSensor.getAverageValue()", intakeNoteSensor.getAverageValue());
+        SmartDashboard.putNumber("intakeSensor.getAverageValue()", intakeNoteSensor.getAverageValue());
 
         if((intakeNoteSensor.getVoltage() > 1.8) || RobotContainer.oi.intakeUpButton.getAsBoolean() || intakeNoteSensor.getAverageValue() > 1900){
             prevSensorReading =  intakeNoteSensor.getAverageValue();
@@ -190,9 +190,9 @@ public class IntakeRollers extends SubsystemBase {
 
     public Command intakeGamepieceCommand(){
         //Command result = run(this::feedIn);
-        //Command result = run(this::feedIn).until(this::hasGamePiece).andThen(new WaitCommand(0.04)).andThen(this::stop);
+        Command result = run(this::feedIn).until(this::hasGamePiece).andThen(new WaitCommand(0.02)).andThen(this::stop);
 
-        Command result = run(this::feedIn).until(this::hasGamePiece).andThen(this::stop);
+        //Command result = run(this::feedIn).until(this::hasGamePiece).andThen(this::stop);
 
         return result;
     } 

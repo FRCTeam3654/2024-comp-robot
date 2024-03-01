@@ -210,6 +210,10 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
           //RobotContainer.ledLeft.setAll(Color.kBlue);
 
         }
+        else{
+          RobotContainer.led.setAll(Color.kFuchsia);
+
+        }
 
 
         // Get the tag pose from field layout - consider that the layout will be null if it failed to load

@@ -34,8 +34,8 @@ public class ChaseNoteCommand extends Command {
   //      new Translation3d(Units.inchesToMeters(12.375), Units.inchesToMeters(0), Units.inchesToMeters(4.25)),
   //      new Rotation3d(0, 0, 0)); 
   public static final Transform3d ROBOT_TO_CAMERA = new Transform3d(
-        new Translation3d(Units.inchesToMeters(-6), Units.inchesToMeters(6), Units.inchesToMeters(14)),
-        new Rotation3d(0, 0, Units.degreesToRadians(3))); 
+        new Translation3d(Units.inchesToMeters(-6), Units.inchesToMeters(0), Units.inchesToMeters(22)),
+        new Rotation3d(0, Units.degreesToRadians(-10), Units.degreesToRadians(0))); 
 
 
   private static final TrapezoidProfile.Constraints X_CONSTRAINTS = new TrapezoidProfile.Constraints(1.5, 2);//(3, 2);
@@ -203,7 +203,7 @@ public class ChaseNoteCommand extends Command {
             }
 
             // range is not very accurate due to the inaccuracy of measured pitch, but good enough to start
-       //     System.out.println("Distance = "+rangeNote+",  to travel distance = "+range);
+            System.out.println("Distance = "+rangeNote+",  to travel distance = "+range);
             SmartDashboard.putNumber("Distance", rangeNote);
 
             // should use cameraPose2d  instad robotPose2d

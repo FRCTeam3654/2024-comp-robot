@@ -74,6 +74,7 @@ public class Wrist extends SubsystemBase {
     m_pidWristController.setSmartMotionAllowedClosedLoopError(0.2, 0);  
 
     holdRotations = getSensorReading();
+    resetEncoders();
 
   }
 

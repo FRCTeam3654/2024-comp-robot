@@ -63,8 +63,8 @@ public class SpeakerShooter extends SubsystemBase {
     shooterRightFXConfig.Slot0.kP = 0.05; //0.0254;
     shooterRightFXConfig.Slot0.kI = 0;
     shooterRightFXConfig.Slot0.kD = 0;
-    shooterRightFXConfig.Slot0.kS = 0.395;
-    shooterRightFXConfig.Slot0.kV = 0.122;
+    shooterRightFXConfig.Slot0.kS = 0.15;
+    shooterRightFXConfig.Slot0.kV = 1.5;
     shooterRightFXConfig.Slot0.kA = 0.0;
     shooterRightFXConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     shooterLeftFXConfig.CurrentLimits.StatorCurrentLimit = 50;

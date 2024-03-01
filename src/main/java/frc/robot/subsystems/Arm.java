@@ -89,6 +89,7 @@ public class Arm extends SubsystemBase {
     m_pidArmController.setSmartMotionAllowedClosedLoopError(0.2, 0);  
 
     armZeroSensor = new DigitalInput(0) ; // verify the port
+    resetEncoders();
 
   }
 
