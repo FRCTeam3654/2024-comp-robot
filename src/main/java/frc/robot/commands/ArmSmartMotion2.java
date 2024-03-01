@@ -65,6 +65,9 @@ public class ArmSmartMotion2 extends Command {
         targetPos = SmartDashboard.getNumber("DropNoteAmpCommandArmPositionMode3",49);
 
         RobotContainer.arm.goToPositionBySmartMotion(targetPos); //change value depending on how much we want it to move
+        // single line:  m_pidArmController.setReference(postition, CANSparkMax.ControlType.kSmartMotion);
+        // https://github.com/REVrobotics/SPARK-MAX-Examples/blob/master/Java/Smart%20Motion%20Example/src/main/java/frc/robot/Robot.java
+        
         System.out.println("ARM To AMP "+targetPos);
         isSmartMotionInProgress = true;
       }
