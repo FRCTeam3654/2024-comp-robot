@@ -26,16 +26,20 @@ import frc.robot.subsystems.SwerveSubsystem;
 
 public class ChaseNoteCommand extends Command {
    
-  //public static final Transform3d CAMERA_TO_ROBOT =
-  //      new Transform3d(new Translation3d(-0.3425, 0.0, -0.233), new Rotation3d());
-
-  //public static final Transform3d ROBOT_TO_CAMERA = CAMERA_TO_ROBOT.inverse();
-  //public static final Transform3d ROBOT_TO_CAMERA = new Transform3d(
-  //      new Translation3d(Units.inchesToMeters(12.375), Units.inchesToMeters(0), Units.inchesToMeters(4.25)),
-  //      new Rotation3d(0, 0, 0)); 
+  
   public static final Transform3d ROBOT_TO_CAMERA = new Transform3d(
         new Translation3d(Units.inchesToMeters(-6), Units.inchesToMeters(0), Units.inchesToMeters(22)),
-        new Rotation3d(0, Units.degreesToRadians(-10), Units.degreesToRadians(0))); 
+        new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(0))); 
+
+
+  final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(22);// same as the camera height in above ROBOT_TO_CAMERA
+  final double TARGET_HEIGHT_METERS = Units.feetToMeters(0);
+  final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(-12); // camera facing down, about 12 degree from vertical line
+
+  final double GOAL_ROBOT_TO_NOTE_DISTANCE_METERS = Units.inchesToMeters(17);
+  final double MINIMIUM_CAMERA_TO_NOTE_DISTANCE = Units.inchesToMeters(17); //17; varies by each robot/camera setup
+
+
 
 
   private static final TrapezoidProfile.Constraints X_CONSTRAINTS = new TrapezoidProfile.Constraints(1.5, 2);//(3, 2);
@@ -58,13 +62,7 @@ public class ChaseNoteCommand extends Command {
   private double distanceToGo = 0.0;
 
 
-  final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(14);//14
-  final double TARGET_HEIGHT_METERS = Units.feetToMeters(0);
-  final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(-12); // camera facing down, about 12 degree from vertical line
-
-  final double GOAL_ROBOT_TO_NOTE_DISTANCE_METERS = Units.inchesToMeters(14);
-  final double MINIMIUM_CAMERA_TO_NOTE_DISTANCE = Units.inchesToMeters(14); //17; varies by each robot/camera setup
-
+  
   
   public ChaseNoteCommand(
         PhotonCamera photonLifeCam, 
