@@ -73,6 +73,18 @@ public class ArmSmartMotion extends Command {
       isSmartMotionInProgress = true;
     }
 
+    else if(mode == 3){ //amp position to shoot
+      armTimer = Timer.getFPGATimestamp();
+   
+      targetPos = 49;
+
+      RobotContainer.arm.goToPositionBySmartMotion(targetPos); //change value depending on how much we want it to move
+      System.out.println("should amp be moving to amp "+targetPos);
+      isSmartMotionInProgress = true;
+      
+
+    }
+
     else{
       //currentPos = RobotContainer.arm.getSensorReading();
       //RobotContainer.arm.goToPositionBySmartMotion(currentPos);
@@ -114,7 +126,7 @@ public class ArmSmartMotion extends Command {
         percentError = 10 * Math.abs(targetPos - sensorDistance); // could be 20
       }
 
-      if (Math.abs(percentError) < 1){
+      if (Math.abs(percentError) < 3){
         isSmartMotionInProgress = false;
         return true;
       }

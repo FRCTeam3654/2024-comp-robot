@@ -162,6 +162,10 @@ public class IntakeRollers extends SubsystemBase {
         }
     }
 
+    public double getNoteSensorReading() {
+        return  intakeNoteSensor.getAverageValue(); 
+    }
+    
     public boolean hasGamePiece(){
         SmartDashboard.putNumber("intakeSensor.getVoltage()", intakeNoteSensor.getVoltage());
         SmartDashboard.putNumber("intakeSensor.getAverageValue()", intakeNoteSensor.getAverageValue());

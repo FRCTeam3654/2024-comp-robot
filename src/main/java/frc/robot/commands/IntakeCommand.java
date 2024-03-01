@@ -13,8 +13,9 @@ import edu.wpi.first.wpilibj.Timer;
 public class IntakeCommand extends Command {
   /** Creates a new IntakeCommand. */ //test edit
   //private boolean isNote = false;
-  public static int intakeMode = 0;
+  public  int intakeMode = 0;
   double intakeTimer;
+  private double intakeTimeout = 30;
   public static boolean stopIntakeMotor = false;
 
 
@@ -27,57 +28,63 @@ public class IntakeCommand extends Command {
     this.intakeMode = intakemode;
   }
 
-  public static synchronized void changeMode(int new_mode){
-    intakeMode = new_mode;
+   public IntakeCommand(int intakemode, int time_out) {
+    // Use addRequirements() here to declare subsystem dependencies.
+    //addRequirements(RobotContainer.intakeWheels);
+    this.intakeMode = intakemode;
+    this.intakeTimeout = time_out;
   }
+
+  //public static synchronized void changeMode(int new_mode){
+  //  intakeMode = new_mode;
+  //}
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
+    intakeTimer = Timer.getFPGATimestamp();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    /*
-    if(RobotContainer.intakeWheels.noteSensor() > 1800){
-      RobotContainer.intakeWheels.intakeSpin(0);
-      WristSmartMotion wristSmartMotion = new WristSmartMotion(1);
-      wristSmartMotion.schedule();
-      WristSmartMotion.isSmartMotionInProgress = true;
-
-
-    }
-    else{
+    
+    
       if (intakeMode == 0){
-        RobotContainer.intakeWheels.intakeSpin(0.2);
+        // intake
+        RobotContainer.intakeRollers.feedIn(-0.5,-0.5); // lower, upper
       }
       else if (intakeMode == 1){
-        RobotContainer.intakeWheels.intakeSpin(-0.2);
+        // spit out
+        intakeTimeout = 4;
+        RobotContainer.intakeRollers.feedIn(0.5,0.5);
       }
       else if (intakeMode == 2){
-        RobotContainer.intakeWheels.intakeSpin(0);
+        // shoot to amp
+        intakeTimeout = 4;
+        RobotContainer.intakeRollers.feedIn(-0.55, 0.3);
       }
       else{
-        RobotContainer.intakeWheels.intakeSpin(0);
+        intakeTimeout = 4;
+        RobotContainer.intakeRollers.feedIn(0,0);
       }
     }
-    */
-  }
+  
+  
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    //RobotContainer.intakeWheels.intakeSpin(0);
+    RobotContainer.intakeRollers.feedIn(0,0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    //if (RobotContainer.intakeWheels.noteSensor() > 1800){ //distance sensor value needs to be tuned
-      //return true;
-    //}
+    
+    if ( (intakeMode == 2 && !RobotContainer.intakeRollers.hasGamePiece())  || (intakeTimer + intakeTimeout) < Timer.getFPGATimestamp()){ //distance sensor value needs to be tuned
+      return true;
+    }
     return false;
   }
 }
