@@ -200,15 +200,19 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         fiducialId = target.getFiducialId();
 
         // Color:  Speaker -> Green; Amp --> Blue;  Note --> Red;   Source --> Yellow  
-        if( fiducialId == 2 ) {
+        if( fiducialId == 4 || fiducialId == 7 ) {
           RobotContainer.led.setAll(Color.kGreen); 
           //RobotContainer.ledLeft.setAll(Color.kGreen); 
 
         }
-        else if( fiducialId == 1 ) {
+        else if( fiducialId == 5  || fiducialId == 6) {
           RobotContainer.led.setAll(Color.kBlue);
           //RobotContainer.ledLeft.setAll(Color.kBlue);
 
+        }
+        else if( fiducialId == 1  || fiducialId == 9) {
+          RobotContainer.led.setAll(Color.kYellow);
+          //RobotContainer.ledLeft.setAll(Color.kBlue);
         }
         else{
           RobotContainer.led.setAll(Color.kFuchsia);

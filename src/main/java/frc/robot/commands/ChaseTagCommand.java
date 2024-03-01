@@ -30,23 +30,39 @@ public class ChaseTagCommand extends Command {
 
   public static final Transform3d ROBOT_TO_CAMERA_BACK = new Transform3d(
         new Translation3d(Units.inchesToMeters(-11.5), Units.inchesToMeters(0), Units.inchesToMeters(20)),
-        new Rotation3d(0, Units.degreesToRadians(-30), 0)); 
+        new Rotation3d(0, Units.degreesToRadians(-30), Units.degreesToRadians(180))); 
 
   private static final TrapezoidProfile.Constraints X_CONSTRAINTS = new TrapezoidProfile.Constraints(1.5, 2);//(3, 2);
   private static final TrapezoidProfile.Constraints Y_CONSTRAINTS = new TrapezoidProfile.Constraints(1.5, 2);//(3, 2);
   private static final TrapezoidProfile.Constraints OMEGA_CONSTRAINTS =   new TrapezoidProfile.Constraints(2, 2);//(8, 8);
   
-  //private static final int TAG_TO_CHASE = 2;
-  //private static final int TAG_TO_CHASE = 1;
 
-  private static final Transform3d TAG_TO_GOAL = 
+  // speaker's TAG_TO_GOAL
+  //private static final Transform3d TAG_TO_GOAL = 
+  //    new Transform3d(
+  //        new Translation3d(1.3, 0.0, 0.0),
+  //        new Rotation3d(0.0, 0.0, Math.PI));
+
+  // drive backward,use back camera to align to speaker
+  private static final Transform3d TAG_TO_GOAL_SPEAKER = 
       new Transform3d(
           new Translation3d(1.3, 0.0, 0.0),
-          new Rotation3d(0.0, 0.0, Math.PI));
+          new Rotation3d(0.0, 0.0, 0));
+
+  // AMP's TAG_TO_GOAL
+  private static final Transform3d TAG_TO_GOAL_AMP = 
+      new Transform3d(
+          new Translation3d(Units.inchesToMeters(16), 0.0, 0.0),
+          new Rotation3d(0.0, 0.0, 0));
+  
+
+  private Transform3d which_tag_to_goal;
 
   private final PhotonCamera photonCamera;
   private final SwerveSubsystem drivetrainSubsystem;
   private final Supplier<Pose2d> poseProvider; // tell me where my robot is
+
+
 
   private final ProfiledPIDController xController = new ProfiledPIDController(2, 0, 0, X_CONSTRAINTS); //(3, 0, 0, X_CONSTRAINTS);
   private final ProfiledPIDController yController = new ProfiledPIDController(2, 0, 0, Y_CONSTRAINTS); //(3, 0, 0, Y_CONSTRAINTS);
@@ -124,9 +140,20 @@ public class ChaseTagCommand extends Command {
         //}
         /////////////////////////////////////////////////////////////////////////////////////
 
+
+
+        if(target.getFiducialId() == 4 || target.getFiducialId() == 7 ) {
+            // speaker
+             which_tag_to_goal = TAG_TO_GOAL_SPEAKER;
+        }
+        else if(target.getFiducialId() == 5 || target.getFiducialId() == 6 ) {
+            // speaker
+             which_tag_to_goal = TAG_TO_GOAL_AMP;
+        }
+
         
         // Transform the tag's pose to set our goal
-        var goalPose = targetPose.transformBy(TAG_TO_GOAL).toPose2d();
+        var goalPose = targetPose.transformBy(which_tag_to_goal).toPose2d();
 
         // Drive
         xController.setGoal(goalPose.getX());
@@ -157,6 +184,9 @@ public class ChaseTagCommand extends Command {
         omegaSpeed = 0;
         System.out.println("omegaController at Goal");
       }
+
+      // change LED color if the robot is at goal?
+      
 
       drivetrainSubsystem.drive(
         ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, omegaSpeed, robotPose2d.getRotation())

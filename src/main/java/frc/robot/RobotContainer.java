@@ -115,8 +115,9 @@ public class RobotContainer {
 
             poseEstimator = new PoseEstimatorSubsystem(photonFrontOVCamera,  photonBackOVCamera, swerve);
             
-            //  photonCamera may have race condition
-            chaseTagCommand =  new ChaseTagCommand(photonFrontOVCamera, swerve, poseEstimator::getCurrentPose);
+            //  photonCamera :  AMP and Speark uses the back camera
+            //chaseTagCommand =  new ChaseTagCommand(photonFrontOVCamera, swerve, poseEstimator::getCurrentPose);
+            chaseTagCommand =  new ChaseTagCommand(photonBackOVCamera, swerve, poseEstimator::getCurrentPose);
 
             chaseNoteCommand =  new ChaseNoteCommand(photonLifeCam, swerve, poseEstimator::getCurrentPose);
 
