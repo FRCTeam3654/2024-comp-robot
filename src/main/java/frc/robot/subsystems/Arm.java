@@ -61,7 +61,7 @@ public class Arm extends SubsystemBase {
 
     // 
 
-    kArmP = 0.001; //0.3; //shoulderP = 0.026;
+    kArmP = 0.01; //0.3; //shoulderP = 0.026;
     kArmI = 0;
     kArmD = 1;//0; 
     kArmIz = 0; 

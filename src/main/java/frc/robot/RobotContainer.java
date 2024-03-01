@@ -103,7 +103,7 @@ public class RobotContainer {
         //ledLeft = new LEDSubsystemLeft();
         oi = new OI();
          
-        
+        /* 
         try {
             System.out.println("Ready to sleep for 5 seconds ...");
             Thread.sleep(5000); // try this
@@ -126,6 +126,7 @@ public class RobotContainer {
         catch(Exception e) {
             System.out.println("error "+e);
         }
+        */
 
         NamedCommands.registerCommand("WristSmartMotion(0)", new WristSmartMotion(0));
         NamedCommands.registerCommand("AutoIntakeCommand", new AutoIntakeCommand());
@@ -188,7 +189,7 @@ public class RobotContainer {
 
         SmartDashboard.putNumber("DropNoteAmpCommandWristPosition",-9.5);// as default, can be modified in Shuffleboard
         SmartDashboard.putNumber("DropNoteAmpCommandArmPositionMode3",49);
-        oi.ampButton.onTrue(new DropNoteAmpCommand());
+        oi.ampButton.onTrue(new DropNoteAmpSeqCommand());
 
        
         //oi.intakeUpButton.onTrue(new InstantCommand(intakeRollers::stop));

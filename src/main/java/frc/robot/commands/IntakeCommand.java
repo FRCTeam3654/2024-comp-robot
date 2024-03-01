@@ -19,14 +19,17 @@ public class IntakeCommand extends Command {
   private double intakeTimeout = 30;
   public static boolean stopIntakeMotor = false;
   private double lowerRollerPercentPower = -0.5;
-  private double upperRollerPercentPower = 0.3;
+  private double upperRollerPercentPower = 0.1;
 
   public IntakeCommand(){
     //addRequirements(RobotContainer.intakeWheels);
+    addRequirements(RobotContainer.intakeRollers);
   }
   public IntakeCommand(int intakemode) {
     // Use addRequirements() here to declare subsystem dependencies.
     //addRequirements(RobotContainer.intakeWheels);
+    addRequirements(RobotContainer.intakeRollers);
+
     this.intakeMode = intakemode;
     if( intakeMode == 2) {
       SmartDashboard.putNumber("lowerRollerPower",lowerRollerPercentPower);
@@ -37,6 +40,8 @@ public class IntakeCommand extends Command {
    public IntakeCommand(int intakemode, int time_out) {
     // Use addRequirements() here to declare subsystem dependencies.
     //addRequirements(RobotContainer.intakeWheels);
+    addRequirements(RobotContainer.intakeRollers);
+
     this.intakeMode = intakemode;
     this.intakeTimeout = time_out;
   }
@@ -68,9 +73,9 @@ public class IntakeCommand extends Command {
       else if (intakeMode == 2){
         // shoot to amp
         intakeTimeout = 4;
-        lowerRollerPercentPower = SmartDashboard.getNumber("lowerRollerPower",-0.5);
-        lowerRollerPercentPower = SmartDashboard.getNumber("upperRollerPower",0.3);
-        RobotContainer.intakeRollers.feedIn(lowerRollerPercentPower, lowerRollerPercentPower);
+        lowerRollerPercentPower = SmartDashboard.getNumber("lowerRollerPower",-0.8);
+        upperRollerPercentPower = SmartDashboard.getNumber("upperRollerPower",-0.05);
+        RobotContainer.intakeRollers.feedIn(lowerRollerPercentPower, upperRollerPercentPower);
       }
       else{
         intakeTimeout = 4;

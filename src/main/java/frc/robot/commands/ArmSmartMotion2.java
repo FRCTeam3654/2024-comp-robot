@@ -44,7 +44,7 @@ public class ArmSmartMotion2 extends Command {
       if(mode == 0){ //storage position
         targetPos = 0;
         RobotContainer.arm.goToPositionBySmartMotion(targetPos);
-        System.out.println("ARM To storage");
+        //System.out.println("ARM To storage");
         isSmartMotionInProgress = true;
       }
       else if(mode == 1){ //amp position 
@@ -64,11 +64,13 @@ public class ArmSmartMotion2 extends Command {
         //targetPos = 49;
         targetPos = SmartDashboard.getNumber("DropNoteAmpCommandArmPositionMode3",49);
 
+        //RobotContainer.arm.goToPosition(targetPos);
+
         RobotContainer.arm.goToPositionBySmartMotion(targetPos); //change value depending on how much we want it to move
         // single line:  m_pidArmController.setReference(postition, CANSparkMax.ControlType.kSmartMotion);
         // https://github.com/REVrobotics/SPARK-MAX-Examples/blob/master/Java/Smart%20Motion%20Example/src/main/java/frc/robot/Robot.java
         
-        System.out.println("ARM To AMP "+targetPos);
+        //System.out.println("ARM To AMP "+targetPos);
         isSmartMotionInProgress = true;
       }
       
@@ -78,7 +80,7 @@ public class ArmSmartMotion2 extends Command {
   @Override
   public void end(boolean interrupted) {
     isSmartMotionInProgress = false;
-    mode = 0;
+    //mode = 0;
   }
 
   // Returns true when the command should end.
@@ -90,6 +92,7 @@ public class ArmSmartMotion2 extends Command {
       return true;
     }
     else {
+      /* 
       double sensorDistance = Math.abs(RobotContainer.arm.getSensorReading());
       double percentError = 100;
       if( Math.abs(targetPos) > 0.01 )  {
@@ -103,6 +106,7 @@ public class ArmSmartMotion2 extends Command {
         isSmartMotionInProgress = false;
         return true;
       }
+      */
         
     return false;
   }
