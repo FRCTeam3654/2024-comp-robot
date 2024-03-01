@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.commands.WristSmartMotion;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class IntakeCommand extends Command {
@@ -17,7 +18,8 @@ public class IntakeCommand extends Command {
   double intakeTimer;
   private double intakeTimeout = 30;
   public static boolean stopIntakeMotor = false;
-
+  private double lowerRollerPercentPower = -0.5;
+  private double upperRollerPercentPower = 0.3;
 
   public IntakeCommand(){
     //addRequirements(RobotContainer.intakeWheels);
@@ -26,6 +28,10 @@ public class IntakeCommand extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     //addRequirements(RobotContainer.intakeWheels);
     this.intakeMode = intakemode;
+    if( intakeMode == 2) {
+      SmartDashboard.putNumber("lowerRollerPower",lowerRollerPercentPower);
+      SmartDashboard.putNumber("upperRollerPower", upperRollerPercentPower);
+    }
   }
 
    public IntakeCommand(int intakemode, int time_out) {
@@ -62,7 +68,9 @@ public class IntakeCommand extends Command {
       else if (intakeMode == 2){
         // shoot to amp
         intakeTimeout = 4;
-        RobotContainer.intakeRollers.feedIn(-0.55, 0.3);
+        lowerRollerPercentPower = SmartDashboard.getNumber("lowerRollerPower",-0.5);
+        lowerRollerPercentPower = SmartDashboard.getNumber("upperRollerPower",0.3);
+        RobotContainer.intakeRollers.feedIn(lowerRollerPercentPower, lowerRollerPercentPower);
       }
       else{
         intakeTimeout = 4;
