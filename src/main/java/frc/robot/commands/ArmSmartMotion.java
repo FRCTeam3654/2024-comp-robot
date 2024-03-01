@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.RobotMap;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ArmSmartMotion extends Command {
   /** Creates a new ArmSmartMotion. */
@@ -76,7 +77,8 @@ public class ArmSmartMotion extends Command {
     else if(mode == 3){ //amp position to shoot
       armTimer = Timer.getFPGATimestamp();
    
-      targetPos = 49;
+      //targetPos = 49;
+      targetPos = SmartDashboard.getNumber("DropNoteAmpCommandArmPositionMode3",49);
 
       RobotContainer.arm.goToPositionBySmartMotion(targetPos); //change value depending on how much we want it to move
       System.out.println("should amp be moving to amp "+targetPos);

@@ -184,6 +184,9 @@ public class RobotContainer {
         //oi.intakeUpButton.onTrue(new StoreCommand());
         oi.climbPosButton.onTrue(new ClimbPositionCommand());
         oi.climbUpButton.whileTrue(new ClimbUpCommand());
+
+        SmartDashboard.putNumber("DropNoteAmpCommandWristPosition",-9.5);// as default, can be modified in Shuffleboard
+        SmartDashboard.putNumber("DropNoteAmpCommandArmPositionMode3",49);
         oi.ampButton.onTrue(new DropNoteAmpCommand());
 
        

@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -23,7 +24,8 @@ public class DropNoteAmpSeqCommand extends SequentialCommandGroup {
       
         new ParallelCommandGroup(
           new InstantCommand(() -> 
-                RobotContainer.wrist.goToPositionBySmartMotion(-9.5)).withTimeout(7)
+               // RobotContainer.wrist.goToPositionBySmartMotion(-9.5)).withTimeout(7)
+               RobotContainer.wrist.goToPositionBySmartMotion(SmartDashboard.getNumber("DropNoteAmpCommandWristPosition",-9.5))).withTimeout(7)
           ,
           new  SequentialCommandGroup (
                 new WaitCommand(1),
