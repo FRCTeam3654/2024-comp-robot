@@ -23,14 +23,14 @@ public class DropNoteAmpSeqCommand extends SequentialCommandGroup {
       
         new ParallelCommandGroup(
           new InstantCommand(() -> 
-                RobotContainer.wrist.goToPositionBySmartMotion(-9.5)).withTimeout(4)
+                RobotContainer.wrist.goToPositionBySmartMotion(-9.5)).withTimeout(7)
           ,
           new  SequentialCommandGroup (
                 new WaitCommand(1),
                 new ArmSmartMotion(3),
                 new IntakeCommand(2)
           )
-        )
+        ).until(() -> !RobotContainer.intakeRollers.hasGamePiece())
 
       );
   }
