@@ -18,28 +18,25 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
-//import frc.robot.subsystems.DrivetrainSubsystem;
+
 import frc.robot.subsystems.SwerveSubsystem;
 
 public class ChaseTagCommand extends Command {
    
-  //public static final Transform3d CAMERA_TO_ROBOT =
-  //      new Transform3d(new Translation3d(-0.3425, 0.0, -0.233), new Rotation3d());
-
-  //public static final Transform3d ROBOT_TO_CAMERA = CAMERA_TO_ROBOT.inverse();
+  // front AprilTag Camera
   public static final Transform3d ROBOT_TO_CAMERA = new Transform3d(
         new Translation3d(Units.inchesToMeters(-7), Units.inchesToMeters(3.5), Units.inchesToMeters(21)),
-        new Rotation3d(0, 0, 0)); 
+        new Rotation3d(0, Units.degreesToRadians(30), 0)); 
 
   public static final Transform3d ROBOT_TO_CAMERA_BACK = new Transform3d(
-        new Translation3d(Units.inchesToMeters(12.375), Units.inchesToMeters(0), Units.inchesToMeters(4.25)),
-        new Rotation3d(0, 0, 0)); 
+        new Translation3d(Units.inchesToMeters(-11.5), Units.inchesToMeters(0), Units.inchesToMeters(20)),
+        new Rotation3d(0, Units.degreesToRadians(-30), 0)); 
 
   private static final TrapezoidProfile.Constraints X_CONSTRAINTS = new TrapezoidProfile.Constraints(1.5, 2);//(3, 2);
   private static final TrapezoidProfile.Constraints Y_CONSTRAINTS = new TrapezoidProfile.Constraints(1.5, 2);//(3, 2);
   private static final TrapezoidProfile.Constraints OMEGA_CONSTRAINTS =   new TrapezoidProfile.Constraints(2, 2);//(8, 8);
   
-  private static final int TAG_TO_CHASE = 2;
+  //private static final int TAG_TO_CHASE = 2;
   //private static final int TAG_TO_CHASE = 1;
 
   private static final Transform3d TAG_TO_GOAL = 
@@ -121,10 +118,10 @@ public class ChaseTagCommand extends Command {
         
         /////////////////////////////////////////////////////////////////////////////////////
         // logic is enhanced here: not just only see the target tag,  enhanced to : if see other tag not target tag, use that data to move to the target data 
-        if(target.getFiducialId() != TAG_TO_CHASE) {
+        //if(target.getFiducialId() != TAG_TO_CHASE) {
             // targetPose is Tag 1, not TAG_TO_CHASE 4, so need transform from tag1 to tag4 pose
            // targetPose = targetPose.transformBy(PoseEstimatorSubsystem.tag1Totag4);
-        }
+        //}
         /////////////////////////////////////////////////////////////////////////////////////
 
         
@@ -175,51 +172,7 @@ public class ChaseTagCommand extends Command {
 
 
   public static void main(String[] args) {
-    
-    //System.out.println("Hello Photonvision!");
-    /* 
-    int TAG_TO_CHASE2 = 4;
-    PhotonTrackedTarget lastTarget2 = null;
-    var robotPose = 
-        new Pose3d(
-            0.0,
-            0.0,
-            0.0, 
-            new Rotation3d(0.0, 0.0, 0.0));
-    
-
-
-    PhotonCamera photonCamera2 = new PhotonCamera("Arducam_OV9281_USB_Camera");
-    var photonRes = photonCamera2.getLatestResult();
-
-    if (photonRes.hasTargets()) {
-      // Find the tag we want to chase
-      var targetOpt = photonRes.getTargets().stream()
-          .filter(t -> t.getFiducialId() == TAG_TO_CHASE2)
-          .filter(t -> t.getPoseAmbiguity() <= .2 && t.getPoseAmbiguity() != -1)
-          .findFirst();
-      if (targetOpt.isPresent()) {
-
-        System.out.println("found target .. ");
-        var target = targetOpt.get();
-        // This is new target data, so recalculate the goal
-        lastTarget2 = target;
-        
-        // Transform the robot's pose to find the camera's pose
-        var cameraPose = robotPose.transformBy(ROBOT_TO_CAMERA);
-
-        // Trasnform the camera's pose to the target's pose
-        var camToTarget = target.getBestCameraToTarget();
-        var targetPose = cameraPose.transformBy(camToTarget);
-        
-        // Transform the tag's pose to set our goal
-        var goalPose = targetPose.transformBy(TAG_TO_GOAL).toPose2d();
-
-        // Drive
-       
-      }
-    }
-    */
+  
   }
 
 }
