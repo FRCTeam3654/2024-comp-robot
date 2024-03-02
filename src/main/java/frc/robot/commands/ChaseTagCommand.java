@@ -131,7 +131,7 @@ public class ChaseTagCommand extends Command {
         var camToTarget = target.getBestCameraToTarget();
         var targetPose = cameraPose.transformBy(camToTarget);
 
-        
+        //System.out.println("Target = "+targetPose.toString());
         /////////////////////////////////////////////////////////////////////////////////////
         // logic is enhanced here: not just only see the target tag,  enhanced to : if see other tag not target tag, use that data to move to the target data 
         //if(target.getFiducialId() != TAG_TO_CHASE) {
@@ -154,6 +154,8 @@ public class ChaseTagCommand extends Command {
         
         // Transform the tag's pose to set our goal
         var goalPose = targetPose.transformBy(which_tag_to_goal).toPose2d();
+
+       // System.out.println("Goal = "+ goalPose.toString());
 
         // Drive
         xController.setGoal(goalPose.getX());
