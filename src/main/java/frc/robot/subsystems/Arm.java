@@ -61,11 +61,11 @@ public class Arm extends SubsystemBase {
 
     // 
 
-    kArmP = 0.01; //0.3; //shoulderP = 0.026;
+    kArmP = 0.03; //0.3; //shoulderP = 0.026;
     kArmI = 0;
     kArmD = 1;//0; 
     kArmIz = 0; 
-    kArmFF = 0.000156;//  0.000015; //0.000156
+    kArmFF = 0.00024;//  0.000015; //0.000156
     kArmMinOutput = -1;
     kArmMaxOutput = 1; 
     maxRPM = 5700; //5700
@@ -83,8 +83,8 @@ public class Arm extends SubsystemBase {
     kArmMaxOutput = 0.6; 
     m_pidArmController.setOutputRange(kArmMinOutput, kArmMaxOutput); 
 
-    m_pidArmController.setSmartMotionMaxVelocity(1500, 0); //maxVel in rpm; will need to adjust
-    m_pidArmController.setSmartMotionMaxAccel(2500,0);
+    m_pidArmController.setSmartMotionMaxVelocity(2000, 0); //maxVel in rpm; will need to adjust
+    m_pidArmController.setSmartMotionMaxAccel(3000,0);
     m_pidArmController.setSmartMotionMinOutputVelocity(0, 0);
     m_pidArmController.setSmartMotionAllowedClosedLoopError(0.2, 0);  
 

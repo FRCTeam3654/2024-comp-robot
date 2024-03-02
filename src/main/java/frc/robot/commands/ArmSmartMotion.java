@@ -20,7 +20,7 @@ public class ArmSmartMotion extends Command {
   private boolean isSmartMotionButtonPressed = false;
   private double currentPos;
   private double targetPos;
-  private int mode = 0;
+  private int mode;
 
   public ArmSmartMotion() {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -81,7 +81,7 @@ public class ArmSmartMotion extends Command {
       targetPos = SmartDashboard.getNumber("DropNoteAmpCommandArmPositionMode3",49);
 
       RobotContainer.arm.goToPositionBySmartMotion(targetPos); //change value depending on how much we want it to move
-      System.out.println("should amp be moving to amp "+targetPos);
+      //System.out.println("should amp be moving to amp "+targetPos);
       isSmartMotionInProgress = true;
       
 
@@ -107,7 +107,7 @@ public class ArmSmartMotion extends Command {
     isSmartMotionButtonPressed = false;
     //isDownPOVPressed = false;
     //isUpPOVPressed = false;
-    mode = 0;
+    
   }
 
   // Returns true when the command should end.

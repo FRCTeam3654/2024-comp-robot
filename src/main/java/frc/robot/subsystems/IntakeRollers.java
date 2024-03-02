@@ -152,11 +152,11 @@ public class IntakeRollers extends SubsystemBase {
         target2 = -0.03;
 
         double currentSensorReading = intakeNoteSensor.getAverageValue();
-        if( (currentSensorReading - prevSensorReading) < 0 && currentSensorReading < 2450){
+        if( (currentSensorReading - prevSensorReading) < 0 && currentSensorReading < 2550){
             target1 = 0.03;
             target2 = 0.03;
         }
-        else if ((currentSensorReading - prevSensorReading) < 0 && currentSensorReading > 2450){
+        else if ((currentSensorReading - prevSensorReading) < 0 && currentSensorReading > 2550){
             target1 = 0;
             target2 = 0;
         }

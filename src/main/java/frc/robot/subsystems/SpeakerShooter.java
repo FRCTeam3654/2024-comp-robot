@@ -46,7 +46,7 @@ public class SpeakerShooter extends SubsystemBase {
     shooterLeftFXConfig.Slot0.kI = 0;
     shooterLeftFXConfig.Slot0.kD = 0;
     shooterLeftFXConfig.Slot0.kS = 0.15;//0.395;
-    shooterLeftFXConfig.Slot0.kV = 1.5;//0.122;
+    shooterLeftFXConfig.Slot0.kV = 0.12;//0.122;
     shooterLeftFXConfig.Slot0.kA = 0.0;
     shooterLeftFXConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     shooterLeftFXConfig.CurrentLimits.StatorCurrentLimit = 50;
@@ -64,7 +64,7 @@ public class SpeakerShooter extends SubsystemBase {
     shooterRightFXConfig.Slot0.kI = 0;
     shooterRightFXConfig.Slot0.kD = 0;
     shooterRightFXConfig.Slot0.kS = 0.15;
-    shooterRightFXConfig.Slot0.kV = 1.5;
+    shooterRightFXConfig.Slot0.kV = 0.12;
     shooterRightFXConfig.Slot0.kA = 0.0;
     shooterRightFXConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     shooterLeftFXConfig.CurrentLimits.StatorCurrentLimit = 50;
@@ -78,8 +78,12 @@ public class SpeakerShooter extends SubsystemBase {
     m_LeftVoltage.withSlot(0);
 
     
-    shooterTalonLeft.setControl(new VelocityDutyCycle(0)); //sets to velocity duty cycle
-    shooterTalonRight.setControl(new VelocityDutyCycle(0));
+    //shooterTalonLeft.setControl(new VelocityDutyCycle(0)); //sets to velocity duty cycle
+    //shooterTalonRight.setControl(new VelocityDutyCycle(0));
+
+    shooterTalonLeft.setControl(new VelocityVoltage(0));
+    shooterTalonRight.setControl(new VelocityVoltage(0));
+
 
     shooterTalonRight.setControl(new Follower(RobotMap.shooterTalonLeftID, true)); //sets right to follow and the true means will oppose the left's direction
     
@@ -117,6 +121,7 @@ public class SpeakerShooter extends SubsystemBase {
       m_LeftVoltage.withVelocity(goalSpeedRPS);
       shooterTalonLeft.setControl(m_LeftVoltage);
     }
+    
   }
 
 
@@ -135,8 +140,9 @@ public class SpeakerShooter extends SubsystemBase {
   
   public boolean isAtSpeed( double targetSpeed) {
      boolean isAt = false;
+     System.out.println("shooter at speed" + shooterTalonLeft.getVelocity().getValueAsDouble());
      if( Math.abs(targetSpeed) > 0.1 ) {
-          if( Math.abs( (targetSpeed - shooterTalonLeft.getVelocity().getValueAsDouble()) / targetSpeed) < 0.05) {
+          if( Math.abs( (targetSpeed - shooterTalonLeft.getVelocity().getValueAsDouble()) / targetSpeed) < 0.20) {
             // 2 percent error
             isAt = true;
           }

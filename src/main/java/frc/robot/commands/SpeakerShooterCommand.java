@@ -41,11 +41,12 @@ public class SpeakerShooterCommand extends Command {
   public void execute() {
     //RobotContainer.speakerShooter.shootSpeaker(shooterVelocity); // at about 95 (about 20k old value)
     //RobotContainer.speakerShooter.percentOutput(-0.9);
-    RobotContainer.speakerShooter.shootSpeaker(-10);
+    RobotContainer.speakerShooter.shootSpeaker(-20);
     System.out.println("shoot command");
-    if(RobotContainer.speakerShooter.isAtSpeed(-10)){
+    if(RobotContainer.speakerShooter.isAtSpeed(-20)){
       //RobotContainer.intakeWheels.intakeSpin(-0.2);
       RobotContainer.intakeRollers.feedOut();
+      System.out.println("should be feeding to shoot");
     }
   }
 

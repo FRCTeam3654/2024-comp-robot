@@ -18,7 +18,7 @@ public class ArmSmartMotion2 extends Command {
   private boolean isSmartMotionButtonPressed = false;
   private double currentPos;
   private double targetPos;
-  private int mode = 0;
+  private int mode;
 
   public ArmSmartMotion2() {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -91,8 +91,11 @@ public class ArmSmartMotion2 extends Command {
       isSmartMotionInProgress = false;
       return true;
     }
+    else if(mode != 3){
+      return true;
+    }
     else {
-      /* 
+      
       double sensorDistance = Math.abs(RobotContainer.arm.getSensorReading());
       double percentError = 100;
       if( Math.abs(targetPos) > 0.01 )  {
@@ -106,7 +109,7 @@ public class ArmSmartMotion2 extends Command {
         isSmartMotionInProgress = false;
         return true;
       }
-      */
+      
         
     return false;
   }
