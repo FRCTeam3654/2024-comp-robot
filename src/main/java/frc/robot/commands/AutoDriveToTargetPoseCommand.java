@@ -226,7 +226,7 @@ public class AutoDriveToTargetPoseCommand extends Command {
 
       // this drive method is Open Loop by  boolean isOpenLoop = true; // while teleswerve now use closed loop by default now
       drivetrainSubsystem.drive(
-        ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, omegaSpeed, robotPose2d.getRotation())
+        ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, omegaSpeed, robotPose2d.getRotation()), true
       );
     
     

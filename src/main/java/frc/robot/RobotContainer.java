@@ -8,15 +8,20 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.Utils.PathPlanner.PathPlannerHelper;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.autos.*;
+
+import javax.swing.GroupLayout.SequentialGroup;
+
 
 
 import org.photonvision.PhotonCamera;
@@ -136,6 +141,23 @@ public class RobotContainer {
         NamedCommands.registerCommand("StoreCommand", new StoreCommand(0.02));
         NamedCommands.registerCommand("SpeakerShooterCommand", new SpeakerShooterCommand());
 
+
+        /*
+         
+         NamedCommands.registerCommand("WristSmartMotion(0)", new WaitCommand(4));
+        //NamedCommands.registerCommand("WristSmartMotion(0)", new TestLEDCommand(Color.kGreen,5.0));
+        ///NamedCommands.registerCommand("AutoIntakeCommand", new TestLEDCommand(Color.kRed,5.0));
+        NamedCommands.registerCommand("AutoIntakeCommand", new AutoIntakeCommand());
+        NamedCommands.registerCommand("StoreCommand", new TestLEDCommand(Color.kBlue,5.0));
+        //NamedCommands.registerCommand("SpeakerShooterCommand", new TestLEDCommand(Color.kGold,5.0));
+        NamedCommands.registerCommand("SpeakerShooterCommand", new SpeakerShooterCommand());
+        NamedCommands.registerCommand("ResetLEDCommand", new TestLEDCommand(Color.kPink));
+
+         
+         */
+
+
+
         swerve.setDefaultCommand(
             new TeleopSwerve(
                 swerve, 
@@ -191,6 +213,9 @@ public class RobotContainer {
         oi.turnRight180Button.onTrue(chaseTagCommand);
         */
 
+       // oi.turnLeft90Button.onTrue(TestSupperStructureAuto());
+
+
         oi.turnLeft180Button.whileTrue(chaseNoteCommand);
         oi.turnRight180Button.whileTrue(chaseTagCommand);
        // oi.intakeDownButton.onTrue(new GrabDownCommand());
@@ -234,7 +259,13 @@ public class RobotContainer {
         //return new PathPlannerAuto("5Piece");
         //return new PathPlannerAuto("4PieceLong");
 
-        return Speaker2NoteAuto();
+        //return Speaker2NoteAuto();
+
+        //return Speaker2NoteAutoWithoutPathPlanner();
+
+        return BlueTwoPieceCenterToLeftAuto();
+
+
         //return autoChooser.getSelected();
     }
 
@@ -248,6 +279,57 @@ public class RobotContainer {
         
         return new PathPlannerAuto(autoName);
     }
+
+
+    public Command TestSupperStructureAuto(){
+        String autoName = "TestSuperstructureAuto";
+        Pose2d pose =  PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
+
+        swerve.swerveOdometry.resetPosition(swerve.getYaw(), swerve.getModulePositions(), 
+        pose);
+        
+        return new PathPlannerAuto(autoName);
+    }
+
+    public Command BlueTwoPieceCenterToLeftAuto(){
+        String autoName = "BlueTwoPieceCenterToLeftAuto";
+        Pose2d pose =  PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
+
+        swerve.swerveOdometry.resetPosition(swerve.getYaw(), swerve.getModulePositions(), 
+        pose);
+        
+        return new PathPlannerAuto(autoName);
+    }
+
+
+
+    // working but not back to the exact origin
+    public Command Speaker2NoteAutoWithoutPathPlanner(){
+        // use our homegrown AutoDriveToTargetPoseCommand with proper timeout when the location/pose is known and not far away
+
+        // Blue 2 Piece Center to Center Auto
+        Pose2d robotPose2d = new Pose2d(1.44,5.55,  Rotation2d.fromDegrees(0+ swerve.getYaw().getDegrees())   );
+        
+        swerve.swerveOdometry.resetPosition(swerve.getYaw(), swerve.getModulePositions(), 
+        robotPose2d);
+       
+        //
+        //Pose2d endPose2dCenter = new Pose2d(2.58,5.55,  Rotation2d.fromDegrees(0+ swerve.getYaw().getDegrees())   );
+        //Pose2d endPose2dRight = new Pose2d(2.58,4.1,  Rotation2d.fromDegrees(-51.7+ swerve.getYaw().getDegrees())   );
+        Pose2d endPose2dLeft = new Pose2d(2.58,7.0,  Rotation2d.fromDegrees(51.7+ swerve.getYaw().getDegrees())   );
+
+        SequentialCommandGroup roundtripCmd = new  SequentialCommandGroup(
+                new AutoDriveToTargetPoseCommand(endPose2dLeft ,swerve, swerve::getPose, 2.0),
+                new TestLEDCommand(Color.kBlue,2.0),
+                new AutoDriveToTargetPoseCommand(robotPose2d,swerve, swerve::getPose, 2.0),
+                new TestLEDCommand(Color.kGold,2.0)
+        );
+
+       return roundtripCmd;
+       // return new AutoDriveToTargetPoseCommand(endPose2dLeft ,swerve, swerve::getPose, 2.0);
+    }
+
+
 
 
     public Command testAutoDriveToPose(){

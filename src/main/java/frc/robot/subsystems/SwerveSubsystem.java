@@ -156,14 +156,19 @@ public class SwerveSubsystem extends SubsystemBase {
 
     // overload the drive() to use Field oriented chasis speed
   // https://github.com/STMARobotics/frc-7028-2023/blob/main/src/main/java/frc/robot/subsystems/DrivetrainSubsystem.java
-  public void drive(ChassisSpeeds chassisSpeeds) {
+  
+  //public void drive(ChassisSpeeds chassisSpeeds) {
+  //}
+  
+  public void drive(ChassisSpeeds chassisSpeeds, boolean isOpenLoop) {
     SwerveModuleState[] swerveModuleStates =
     Constants.Swerve.swerveKinematics.toSwerveModuleStates(chassisSpeeds);
 
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
 
     for(SwerveModule mod : mSwerveMods){
-        mod.setDesiredState(swerveModuleStates[mod.moduleNumber], RobotMap.isOpenLoop);
+        //mod.setDesiredState(swerveModuleStates[mod.moduleNumber], RobotMap.isOpenLoop);
+        mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
     }
 
 }

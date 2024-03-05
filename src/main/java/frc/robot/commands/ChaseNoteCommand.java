@@ -318,7 +318,7 @@ public class ChaseNoteCommand extends Command {
 
       //lastGoalPose2d  vs robotPose2d.getRotation ?
       drivetrainSubsystem.drive(
-        ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, omegaSpeed,  robotPose2d.getRotation())
+        ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, omegaSpeed,  robotPose2d.getRotation()), true
       );
     }
     
