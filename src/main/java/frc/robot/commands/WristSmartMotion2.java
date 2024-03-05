@@ -77,8 +77,10 @@ public class WristSmartMotion2 extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    
     isSmartMotionInProgress = false;
-    mode = 1;
+    //   DO NOT SET MODE HERE , OTHERWISE COMMAND NEVER FINISH
+    //mode = 1;  
   }
 
   // Returns true when the command should end.
@@ -100,7 +102,7 @@ public class WristSmartMotion2 extends Command {
           percentError = 10 * Math.abs(targetPos - sensorDistance); // could be 20
         }
 
-        if (Math.abs(percentError) < 3){
+        if (Math.abs(percentError) < 10){
           isSmartMotionInProgress = false;
           return true;
         }

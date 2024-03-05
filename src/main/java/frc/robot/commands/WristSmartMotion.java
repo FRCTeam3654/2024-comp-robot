@@ -138,7 +138,7 @@ public class WristSmartMotion extends Command {
           percentError = 10 * Math.abs(targetPos - sensorDistance); // could be 20
         }
 
-        if (Math.abs(percentError) < 3){
+        if (Math.abs(percentError) < 10){
           isSmartMotionInProgress = false;
           return true;
         }
