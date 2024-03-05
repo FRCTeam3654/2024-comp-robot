@@ -1,5 +1,8 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -72,7 +75,7 @@ public class RobotContainer {
 
    
 
-    private  PoseEstimatorSubsystem poseEstimator = null;
+    public static  PoseEstimatorSubsystem poseEstimator = null;
 
     private ChaseTagCommand chaseTagCommand =  null;
 
@@ -107,20 +110,20 @@ public class RobotContainer {
         try {
             System.out.println("Ready to sleep for 5 seconds ...");
             Thread.sleep(5000); // try this
-            photonFrontOVCamera = new PhotonCamera("Arducam_OV9281_USB_1");//JW's first camera
+            //photonFrontOVCamera = new PhotonCamera("Arducam_OV9281_USB_1");//JW's first camera
             photonBackOVCamera = new PhotonCamera("Arducam_OV9281_USB_Camera");//AK's second camera
+            //photonBackOVCamera = new PhotonCamera("Arducam_OV2311_USB_Camera");//JW's second different kind of camera
 
             //photonLifeCam = new PhotonCamera("USB_Camera");
             photonLifeCam = new PhotonCamera("Microsoft_LifeCam_HD-3000");
 
             poseEstimator = new PoseEstimatorSubsystem(photonFrontOVCamera,  photonBackOVCamera, swerve);
             
-            //  photonCamera :  AMP and Speark uses the back camera
-            //chaseTagCommand =  new ChaseTagCommand(photonFrontOVCamera, swerve, poseEstimator::getCurrentPose);
+            //  photonCamera may have race condition
             chaseTagCommand =  new ChaseTagCommand(photonBackOVCamera, swerve, poseEstimator::getCurrentPose);
 
             chaseNoteCommand =  new ChaseNoteCommand(photonLifeCam, swerve, poseEstimator::getCurrentPose);
-
+            
          
         }
         catch(Exception e) {
@@ -178,7 +181,13 @@ public class RobotContainer {
 
         //oi.turnLeft180Button.onTrue(new TurnToAngleCommand(s_Swerve, 180, 3));
 
-       // oi.turnLeft180Button.whileTrue(chaseTagCommand);
+        /* 
+        oi.turnLeft90Button.onTrue(new AutoDropNoteAmpSeqCommand(photonBackOVCamera, swerve, poseEstimator::getCurrentPose));
+        oi.turnRight90Button.onTrue(testAutoDriveToPose());
+
+        oi.turnLeft180Button.onTrue(chaseNoteCommand);
+        oi.turnRight180Button.onTrue(chaseTagCommand);
+        */
 
         oi.turnLeft180Button.whileTrue(chaseNoteCommand);
         oi.turnRight180Button.whileTrue(chaseTagCommand);
@@ -221,8 +230,41 @@ public class RobotContainer {
         // return new PathPlannerAuto("3Piece");
         //return new PathPlannerAuto("4Piece");
         //return new PathPlannerAuto("5Piece");
-        return new PathPlannerAuto("4PieceLong");
+        //return new PathPlannerAuto("4PieceLong");
 
+        return Speaker2NoteAuto();
         //return autoChooser.getSelected();
     }
+
+
+    public Command Speaker2NoteAuto(){
+        String autoName = "TwoPieceAuto";
+        Pose2d pose =  PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
+
+        swerve.swerveOdometry.resetPosition(swerve.getYaw(), swerve.getModulePositions(), 
+        pose);
+        
+        return new PathPlannerAuto(autoName);
+    }
+
+
+    public Command testAutoDriveToPose(){
+       
+        
+        Pose2d initialRobotPos2d = poseEstimator.getCurrentPose();
+        swerve.swerveOdometry.resetPosition(swerve.getYaw(), swerve.getModulePositions(), 
+        initialRobotPos2d);
+
+        //Pose2d targetPose2d = new Pose2d(1,1,swerve.getYaw());
+        Pose2d targetPose2d = new Pose2d(1,0,  Rotation2d.fromDegrees(0+ swerve.getYaw().getDegrees())   );
+        Transform2d robotToGoal = new Transform2d(0.5,0.5, initialRobotPos2d.getRotation()) ; // has issue with only y change, not moving
+
+        System.out.println("current pose = "+initialRobotPos2d);
+        //System.out.println("target pose = "+targetPose2d);
+        
+        return new AutoDriveToTargetPoseCommand(robotToGoal ,swerve, swerve::getPose);
+        //return new AutoDriveToTargetPoseCommand(targetPose2d,swerve, swerve::getPose); // working well
+        //return new AutoDriveToTargetPoseCommand(targetPose2d,swerve,poseEstimator::getCurrentPose);
+    }
+
 }

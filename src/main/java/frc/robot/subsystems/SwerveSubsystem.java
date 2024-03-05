@@ -52,8 +52,9 @@ import frc.robot.RobotMap;
 
 
 public class SwerveSubsystem extends SubsystemBase {
-    //public SwerveDrivePoseEstimator poseEstimation;
+    
     public SwerveDriveOdometry swerveOdometry;
+    //public SwerveDrivePoseEstimator poseEstimator;
     public SwerveModule[] mSwerveMods;
     //public TalonSRX talonSRX;
     //public PigeonIMU gyro;
@@ -119,6 +120,16 @@ public class SwerveSubsystem extends SubsystemBase {
         resetModulesToAbsolute();
 
         swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw(), getModulePositions());
+
+        /* 
+        poseEstimator =  new SwerveDrivePoseEstimator(
+        Constants.Swerve.swerveKinematics,
+        getYaw(),
+        getModulePositions(),
+        new Pose2d(),
+        frc.robot.Constants.Vision.stateStdDevs,
+        frc.robot.Constants.Vision.visionMeasurementStdDevs);
+        */
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
@@ -172,12 +183,12 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public Pose2d getPose() {
-        //return poseEstimation.getEstimatedPosition();
+        //return poseEstimator.getEstimatedPosition();
         return swerveOdometry.getPoseMeters();
     }
 
     public void resetOdometry(Pose2d pose) {
-        //poseEstimation.resetPosition(getYaw(), getModulePositions(), pose);
+        //poseEstimator.resetPosition(getYaw(), getModulePositions(), pose);
         swerveOdometry.resetPosition(getYaw(), getModulePositions(), pose);
     }
 
@@ -249,8 +260,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        //poseEstimation.update(getYaw(), getModulePositions());
+        //poseEstimator.update(getYaw(), getModulePositions());
         swerveOdometry.update(getYaw(), getModulePositions());  
+         
 
         
        
@@ -270,6 +282,7 @@ public class SwerveSubsystem extends SubsystemBase {
         SmartDashboard.putNumberArray("DesiredModuleStates", getAdvantageDesiredModuleStates());
 
         field2d.setRobotPose(swerveOdometry.getPoseMeters());
+        //field2d.setRobotPose(poseEstimator.getEstimatedPosition());
     }
 
     public void stopModules() {
@@ -389,6 +402,7 @@ public class SwerveSubsystem extends SubsystemBase {
         }
         
         swerveOdometry.update(simYaw, poses);
+        //poseEstimator.update(simYaw, poses);
 
         field2d.setRobotPose(getPose());
     }

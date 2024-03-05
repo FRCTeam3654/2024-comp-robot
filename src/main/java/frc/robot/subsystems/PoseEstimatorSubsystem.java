@@ -1,14 +1,19 @@
 package frc.robot.subsystems;
 
-import  static frc.robot.commands.ChaseTagCommand.ROBOT_TO_CAMERA;
+import  static frc.robot.commands.ChaseTagCommand.ROBOT_TO_CAMERA_FRONT;
+import  static frc.robot.commands.ChaseTagCommand.ROBOT_TO_CAMERA_BACK;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
+import org.photonvision.EstimatedRobotPose;
 
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -58,7 +63,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
   //public static Transform3d tag4Totag2 = targetPoses.get(2).minus(targetPoses.get(4));
   //public static Transform3d tag2Totag4 = tag4Totag2.inverse();
 
-  private final AprilTagFieldLayout aprilTagFieldLayout;
+  public final AprilTagFieldLayout aprilTagFieldLayout;
   
   // Kalman Filter Configuration. These can be "tuned-to-taste" based on how much
   // you trust your various sensors. Smaller numbers will cause the filter to
@@ -70,21 +75,29 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
    * Standard deviations of model states. Increase these numbers to trust your model's state estimates less. This
    * matrix is in the form [x, y, theta]ᵀ, with units in meters and radians, then meters.
    */
-  private static final Vector<N3> stateStdDevs = VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5));
+  public static final Vector<N3> stateStdDevs = frc.robot.Constants.Vision.stateStdDevs;//VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5));
   
   /**
    * Standard deviations of the vision measurements. Increase these numbers to trust global measurements from vision
    * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and radians.
    */
-  private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
+  public static final Vector<N3> visionMeasurementStdDevs = frc.robot.Constants.Vision.visionMeasurementStdDevs;//VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
 
-  private final SwerveDrivePoseEstimator poseEstimator;
+  public final SwerveDrivePoseEstimator poseEstimator;
 
   private final Field2d field2d = new Field2d();
 
   private double previousPipelineTimestamp = 0;
 
   private int noCameraCycleCnt = 0;
+
+
+  private  PhotonPoseEstimator m_photonPoseEstimatorFront = null ;
+  private  PhotonPoseEstimator m_photonPoseEstimatorBack = null;
+
+
+
+
 
   public PoseEstimatorSubsystem(PhotonCamera photonFrontOVCamera, PhotonCamera photonBackOVCamera, SwerveSubsystem drivetrainSubsystem) {
     this.photonFrontOVCamera = photonFrontOVCamera;
@@ -110,6 +123,20 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     }
     this.aprilTagFieldLayout = layout;
    
+
+     //m_photonPoseEstimatorFront = new PhotonPoseEstimator(aprilTagFieldLayout,
+     //               PoseStrategy.CLOSEST_TO_REFERENCE_POSE, photonFrontOVCamera, ROBOT_TO_CAMERA_FRONT);
+
+     m_photonPoseEstimatorBack = new PhotonPoseEstimator(aprilTagFieldLayout,
+                    PoseStrategy.CLOSEST_TO_REFERENCE_POSE, photonBackOVCamera, ROBOT_TO_CAMERA_BACK);
+
+
+     m_photonPoseEstimatorBack = new PhotonPoseEstimator(aprilTagFieldLayout,
+                    PoseStrategy.CLOSEST_TO_REFERENCE_POSE, photonBackOVCamera, ROBOT_TO_CAMERA_BACK);
+
+
+     //photonFrontOVCamera.setDriverMode(false);
+     photonBackOVCamera.setDriverMode(false);
 
     ShuffleboardTab tab = Shuffleboard.getTab("Vision");
 
@@ -139,9 +166,12 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     double frontCameraPoseAmbiguity = -1.0;
     double backCameraPoseAmbiguity = -1.0;
     Pose3d targetPose;
+    boolean useFrontCamera = true;
+    Transform3d whichROBOT_TO_CAMERA = ROBOT_TO_CAMERA_BACK;
     //int whichCameraToUse = 0; // 0 -- None ;  1 -- Front Camera ;  2 -- Back Camera
 
-    if(photonFrontOVCamera != null ) {
+    //if(photonFrontOVCamera != null ) {
+    if(photonFrontOVCamera != null && photonFrontOVCamera.isConnected() ) {
       pipelineResult = photonFrontOVCamera.getLatestResult();
       resultTimestamp = pipelineResult.getTimestampSeconds();
       if (resultTimestamp != previousPipelineTimestamp && pipelineResult.hasTargets()) {
@@ -153,6 +183,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             // maybe need distance as another parameter besides PoseAmbiguity
             if( !isAboutEqual(frontCameraPoseAmbiguity, -1.0) ) {
                 photonCamera = photonFrontOVCamera;
+                useFrontCamera = true;
+                whichROBOT_TO_CAMERA = ROBOT_TO_CAMERA_FRONT;
             }
           }
           
@@ -160,7 +192,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     }
 
     if(photonBackOVCamera != null ) {
-        pipelineResult = photonFrontOVCamera.getLatestResult();
+        pipelineResult = photonBackOVCamera.getLatestResult();
         resultTimestamp = pipelineResult.getTimestampSeconds();
         if (resultTimestamp != previousPipelineTimestamp && pipelineResult.hasTargets()) { 
             target = pipelineResult.getBestTarget();
@@ -170,9 +202,13 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
               if( !isAboutEqual(backCameraPoseAmbiguity, -1.0) ) {
                   if ( isAboutEqual(frontCameraPoseAmbiguity, -1.0) ) {
                     photonCamera = photonBackOVCamera;
+                    useFrontCamera = false;
+                    whichROBOT_TO_CAMERA = ROBOT_TO_CAMERA_BACK;
                   }
                   else if (backCameraPoseAmbiguity < frontCameraPoseAmbiguity)   {
                      photonCamera = photonBackOVCamera;
+                     useFrontCamera = false;
+                     whichROBOT_TO_CAMERA = ROBOT_TO_CAMERA_BACK;
                   } 
               }
             }
@@ -181,12 +217,13 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
 
     if(photonCamera == null ) {
+        poseEstimator.update(drivetrainSubsystem.getYaw(), drivetrainSubsystem.getModulePositions());
+
         noCameraCycleCnt++;
         if(noCameraCycleCnt > 3) {
           //RobotContainer.led.setAll(Color.kBlack);
           RobotContainer.led.setAll(Color.kFuchsia);
           //RobotContainer.ledLeft.setAll(Color.kLemonChiffon);
-
         }
     } 
     else if(photonCamera != null ) {
@@ -199,45 +236,52 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         target = pipelineResult.getBestTarget();
         fiducialId = target.getFiducialId();
 
-        // Color:  Speaker -> Green; Amp --> Blue;  Note --> Red;   Source --> Yellow  
+        // Color:  Speaker -> Green; Amp --> Blue;  Note --> Red;   Source --> Yellow; Stage --> 
         if( fiducialId == 4 || fiducialId == 7 ) {
+          // speaker, possible other two:  3, 8
           RobotContainer.led.setAll(Color.kGreen); 
-          //RobotContainer.ledLeft.setAll(Color.kGreen); 
-
         }
         else if( fiducialId == 5  || fiducialId == 6) {
+          // AMP
           RobotContainer.led.setAll(Color.kBlue);
-          //RobotContainer.ledLeft.setAll(Color.kBlue);
-
         }
         else if( fiducialId == 1  || fiducialId == 9) {
+          // source, possible other two: 2, 10
           RobotContainer.led.setAll(Color.kYellow);
-          //RobotContainer.ledLeft.setAll(Color.kBlue);
+        }
+         else if( fiducialId >= 11) {
+          // stage
+          RobotContainer.led.setAll(Color.kYellow);
         }
         else{
           RobotContainer.led.setAll(Color.kFuchsia);
-
         }
 
 
+       
         // Get the tag pose from field layout - consider that the layout will be null if it failed to load
-        
-        //Optional<Pose3d> tagPose = aprilTagFieldLayout == null ? Optional.empty() : aprilTagFieldLayout.getTagPose(fiducialId);
-        
+         
         targetPose = this.aprilTagFieldLayout.getTagPose(fiducialId).get();
-        //targetPose = targetPoses.get(fiducialId); // for real, need use fieldlayout, and fiducialId 
-        
-      
+       
 
         //if (target.getPoseAmbiguity() <= .2 && fiducialId >= 0 && tagPose.isPresent()) {
           if (target.getPoseAmbiguity() <= .7 && fiducialId >= 0   && targetPose != null   ) {
-          //var targetPose = tagPose.get();
           Transform3d camToTarget = target.getBestCameraToTarget();
+
+          // here:  front camera is different from back camera:  ROBOT_TO_CAMERA constant is different
           Pose3d camPose = targetPose.transformBy(camToTarget.inverse());
+         
+          // check distance and 2d angle make sense -- test code
+          double distanceCamToAprilTag = calculateDifference(camPose, targetPose);
+          //System.out.println("in poseEstimator, distance btw cam and AprilTag = " + distanceCamToAprilTag);
 
 
-          var visionMeasurement = camPose.transformBy(ROBOT_TO_CAMERA.inverse());//(CAMERA_TO_ROBOT);
+          var visionMeasurement = camPose.transformBy(whichROBOT_TO_CAMERA.inverse());//(CAMERA_TO_ROBOT);
           poseEstimator.addVisionMeasurement(visionMeasurement.toPose2d(), resultTimestamp);
+
+          // possible different way -- let PhotonPoseEstimator handle the transform
+          //updateOdometry(poseEstimator,  useFrontCamera);
+
         }
       }
     }
@@ -286,4 +330,76 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
   public static boolean isAboutEqual(double a, double b) {
     return ( Math.abs(a - b) < 0.000001 );
   }
+
+
+   // get the pose for a tag. https://github.com/ligerbots/Crescendo2024/blob/main/src/main/java/frc/robot/subsystems/AprilTagVision.java
+    // will return null if the tag is not in the field map (eg -1)
+    public Optional<Pose2d> getTagPose(int tagId) {
+      // optional in case no target is found
+      Optional<Pose3d> tagPose = aprilTagFieldLayout.getTagPose(tagId);
+      if (tagPose.isEmpty()) {
+          return Optional.empty(); // returns an empty optional
+      }
+      return Optional.of(tagPose.get().toPose2d());
+  }
+
+  // Private routines for calculating the odometry info
+
+  public static double calculateDifference(Pose3d x, Pose3d y) {
+      return x.getTranslation().getDistance(y.getTranslation());
+  }
+
+  public static double calculateDifference(Pose2d x, Pose2d y) {
+    return x.getTranslation().getDistance(y.getTranslation());
+}
+
+  private Optional<EstimatedRobotPose> getEstimateForCamera(PhotonCamera cam, PhotonPoseEstimator poseEstimator, Pose2d robotPose) {
+    if (!cam.isConnected()) return Optional.empty();
+
+    try {
+        poseEstimator.setReferencePose(robotPose);
+        return poseEstimator.update();
+    } catch (Exception e) {
+        // bad! log this and keep going
+        DriverStation.reportError("Exception running PhotonPoseEstimator", e.getStackTrace());
+        return Optional.empty();
+    }
+  }
+
+  public void updateOdometry(SwerveDrivePoseEstimator odometry, boolean useFrontCamera) {
+        // Cannot do anything if there is no field layout
+        if (aprilTagFieldLayout == null)
+            return;
+
+        
+
+        // Warning: be careful about fetching values. If cameras are not connected, you get errors
+        // Example: cannot fetch timestamp without checking for the camera.
+        // Make sure to test!
+
+        Pose2d robotPose = odometry.getEstimatedPosition();
+        if( useFrontCamera == true) {
+            Optional<EstimatedRobotPose> frontEstimate = 
+                    getEstimateForCamera(photonFrontOVCamera, m_photonPoseEstimatorFront, robotPose);
+           
+            if (frontEstimate.isPresent()) {
+              Pose2d pose = frontEstimate.get().estimatedPose.toPose2d();
+              odometry.addVisionMeasurement(pose, photonFrontOVCamera.getLatestResult().getTimestampSeconds());
+            }                            
+            return;
+        }
+        else {
+            
+            Optional<EstimatedRobotPose> backEstimate = 
+                getEstimateForCamera(photonBackOVCamera, m_photonPoseEstimatorBack, robotPose);
+    
+            if (backEstimate.isPresent()) {
+                Pose2d pose = backEstimate.get().estimatedPose.toPose2d();
+                odometry.addVisionMeasurement(pose, photonBackOVCamera.getLatestResult().getTimestampSeconds());   
+            } 
+            return;
+        }
+    }
+
+    
 }

@@ -18,6 +18,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -106,14 +107,14 @@ public final class Constants {
         public static final double angleKFF = chosenModule.angleKD;
 
         /* Drive Motor PID Values */
-        public static final double driveKP = 0.1;// 0.2; // TODO: This must be tuned to specific robot
+        public static final double driveKP = 0.2;//0.1;// 0.2; // TODO: This must be tuned to specific robot
         public static final double driveKI = 0.0;
         public static final double driveKD = 0.0;
         public static final double driveKF = 0.0;
 
         /* Drive Motor Characterization Values From SYSID */
-        public static final double driveKS = 0.15; // TODO: This must be tuned to specific robot
-        public static final double driveKV = 2.7; //1.51
+        public static final double driveKS = 0.15;//0.15; // in practice bot, it is indeed 0.15 at 0.2 rps
+        public static final double driveKV = 0.1116;//0.1116;//1.51;//2.7; //1.51    unit rps vs applied voltage
         public static final double driveKA = 0;
 
         /* Swerve Profiling Values */
@@ -172,17 +173,17 @@ public final class Constants {
 
     public static final class AutoConstants { // TODO: The below constants are used in the example auto, and must be
                                               // tuned to specific robot
-        public static final double kMaxSpeedMetersPerSecond = 3.5;// 2; //3.5;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 6;//9; // // ours are like 4.5
-        public static final double kMaxAngularSpeedRadiansPerSecond = 6; //9; // ours are Math.PI
-        public static final double kMaxAngularSpeedRadiansPerSecondSquared = 6; //9; // ours are Math.PI
+        public static final double kMaxSpeedMetersPerSecond = 3;// 2; //3.5;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 3;// 4.5;//9; // // ours are like 4.5
+        public static final double kMaxAngularSpeedRadiansPerSecond = 3;//4.5; //9; // ours are Math.PI
+        public static final double kMaxAngularSpeedRadiansPerSecondSquared = 4.5; //9; // ours are Math.PI
 
-        public static final double kPXController = 0.8;
-        public static final double kPYController = 0.8;
+        public static final double kPXController =8;// 0.5;
+        public static final double kPYController = 8;//0.5;
         public static final double kPThetaController = 3.5;
         
         public static final PIDConstants rotation_PID = new PIDConstants(3, 0);
-        public static final PIDConstants XY_PID =  new PIDConstants(1.5, 0);  //new PIDConstants(3, 0); // ours are like 0.5 ??
+        public static final PIDConstants XY_PID =  new PIDConstants(5, 0);  //0.5,new PIDConstants(3, 0); // ours are like 0.5 ??
 
         public static final double driveBaseRadius = Math.sqrt(Math.pow((Constants.Swerve.wheelBase / 2), 2)
                 + Math.pow((Constants.Swerve.trackWidth / 2), 2));
@@ -196,9 +197,19 @@ public final class Constants {
         /* Constraint for the motion profilied robot angle controller */
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+
+
+
+        public static double autodriveXtoleranceInMeter = 0.02;
+        public static double autodriveYtoleranceInMeter = 0.02;
+        public static double autodriveOmegatoleranceInDegree = 2;
     }
 
     public static class Vision {
+        public static final Vector<N3> stateStdDevs = VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5));
+        public static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
+
+
         public static final String kRightCameraName = "Arducam_OV9281_USB_Camera";
         public static final String kLeftCameraName = "Arducam_OV9281_USB_1";
         // Cam mounted facing forward, half a meter forward of center, half a meter up

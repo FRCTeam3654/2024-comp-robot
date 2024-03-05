@@ -68,8 +68,8 @@ public class Wrist extends SubsystemBase {
     kWristMaxOutput = 0.3; 
     m_pidWristController.setOutputRange(kWristMinOutput, kWristMaxOutput); 
 
-    m_pidWristController.setSmartMotionMaxVelocity(2500, 0); //maxVel in rpm; will need to adjust
-    m_pidWristController.setSmartMotionMaxAccel(3500,0);
+    m_pidWristController.setSmartMotionMaxVelocity(3500, 0); //2500;maxVel in rpm; will need to adjust
+    m_pidWristController.setSmartMotionMaxAccel(4500,0);//3500
     m_pidWristController.setSmartMotionMinOutputVelocity(0, 0);
     m_pidWristController.setSmartMotionAllowedClosedLoopError(0.2, 0);  
 
