@@ -200,7 +200,9 @@ public class RobotContainer {
 
         SmartDashboard.putNumber("DropNoteAmpCommandWristPosition",-9.5);// as default, can be modified in Shuffleboard
         SmartDashboard.putNumber("DropNoteAmpCommandArmPositionMode3",49);
-        oi.ampButton.onTrue(new DropNoteAmpSeqCommand());
+        oi.ampArmButton.onTrue(new DropNoteAmpSeqCommand());
+
+        oi.ampButton.onTrue(new AmpShooterCommand());
 
        
         //oi.intakeUpButton.onTrue(new InstantCommand(intakeRollers::stop));

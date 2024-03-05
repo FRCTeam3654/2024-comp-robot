@@ -54,7 +54,7 @@ public class OI {
   public JoystickButton intakeDownButton;
   public JoystickButton intakeUpButton;
   public JoystickButton ampButton;
-  public JoystickButton trapButton;
+  public JoystickButton ampArmButton;
   public JoystickButton climbPosButton;
       //new JoystickButton(driver, XboxController.Button.kRightBumper.value);
  
@@ -97,7 +97,7 @@ public class OI {
   climbUpButton = new POVButton(operatorStick, 0);
   climbPosButton = new JoystickButton(operatorStick, RobotMap.climbPositionButtonNumber);
   ampButton = new JoystickButton(operatorStick, RobotMap.ampButtonNumber);
-  trapButton = new JoystickButton(operatorStick, RobotMap.trapButtonNumber);
+  ampArmButton = new JoystickButton(operatorStick, RobotMap.ampArmButtonNumber);
 
 
   

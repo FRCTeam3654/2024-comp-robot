@@ -18,13 +18,13 @@ import frc.robot.subsystems.SpeakerShooter;
 
 import edu.wpi.first.wpilibj.Timer;
 
-public class SpeakerShooterCommand extends Command {
+public class AmpShooterCommand extends Command {
   /** Creates a new SpeakerShooterCommand. */
   public double shooterTimer = 0;
   private double shooterVelocity = RobotMap.shooterVelocity;
   //for speaker: shooter speed should be -90
 
-  public SpeakerShooterCommand() {
+  public AmpShooterCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.speakerShooter);
     addRequirements(RobotContainer.intakeRollers);
@@ -41,9 +41,9 @@ public class SpeakerShooterCommand extends Command {
   public void execute() {
     //RobotContainer.speakerShooter.shootSpeaker(shooterVelocity); // at about 95 (about 20k old value)
     //RobotContainer.speakerShooter.percentOutput(-0.9);
-    RobotContainer.speakerShooter.shootSpeaker(-90);
+    RobotContainer.speakerShooter.shootSpeaker(-20);
     System.out.println("shoot command");
-    if(RobotContainer.speakerShooter.isAtSpeed(-90)){
+    if(RobotContainer.speakerShooter.isAtSpeed(-20)){
       //RobotContainer.intakeWheels.intakeSpin(-0.2);
       RobotContainer.intakeRollers.feedOut();
       System.out.println("should be feeding to shoot");
