@@ -142,7 +142,7 @@ public class SpeakerShooter extends SubsystemBase {
      boolean isAt = false;
      System.out.println("shooter at speed" + shooterTalonLeft.getVelocity().getValueAsDouble());
      if( Math.abs(targetSpeed) > 0.1 ) {
-          if( Math.abs( (targetSpeed - shooterTalonLeft.getVelocity().getValueAsDouble()) / targetSpeed) < 0.20) {
+          if( Math.abs( (targetSpeed - shooterTalonLeft.getVelocity().getValueAsDouble()) / targetSpeed) < 0.10) {
             // 2 percent error
             isAt = true;
           }
