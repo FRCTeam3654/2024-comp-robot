@@ -41,7 +41,7 @@ public class SpeakerShooterCommand extends Command {
   public void execute() {
     //RobotContainer.speakerShooter.shootSpeaker(shooterVelocity); // at about 95 (about 20k old value)
     //RobotContainer.speakerShooter.percentOutput(-0.9);
-    RobotContainer.speakerShooter.shootSpeaker(-90);
+    RobotContainer.speakerShooter.shootSpeaker(-95); // -90, increase a little, max is about 99
     System.out.println("shoot command");
     if(RobotContainer.speakerShooter.isAtSpeed(-90)){
       //RobotContainer.intakeWheels.intakeSpin(-0.2);
