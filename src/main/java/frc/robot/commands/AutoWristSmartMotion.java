@@ -9,7 +9,7 @@ import frc.robot.RobotContainer;
 import frc.robot.RobotMap;
 import edu.wpi.first.wpilibj.Timer;
 
-public class WristSmartMotion extends Command {
+public class AutoWristSmartMotion extends Command {
   /** Creates a new WristCommand. */
   public static int wristMoveNumber = 0;
   double wristTimer;
@@ -21,12 +21,12 @@ public class WristSmartMotion extends Command {
   private int mode = 0;
   private double targetPos;
 
-  public WristSmartMotion() {
+  public AutoWristSmartMotion() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.wrist);
   }
 
-  public WristSmartMotion(int mode){
+  public AutoWristSmartMotion(int mode){
     addRequirements(RobotContainer.wrist);
     this.mode = mode;
   }
@@ -122,7 +122,7 @@ public class WristSmartMotion extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if( (wristTimer + 2.5) < Timer.getFPGATimestamp()) {
+    if( (wristTimer + 1.5) < Timer.getFPGATimestamp()) {
       // after 3 second, stop command
       isSmartMotionInProgress = false;
       return true;

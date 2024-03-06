@@ -42,7 +42,7 @@ public class AutoIntakeCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (RobotContainer.intakeRollers.hasGamePiece() || intakeTimer + 1.5 < Timer.getFPGATimestamp()){ //distance sensor value needs to be tuned
+    if (RobotContainer.intakeRollers.hasGamePiece() || intakeTimer + 5 < Timer.getFPGATimestamp()){ //distance sensor value needs to be tuned
       return true;
     }
     return false;

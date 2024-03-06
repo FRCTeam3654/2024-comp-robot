@@ -26,11 +26,13 @@ public class ManualIntakeRollersCommand extends Command {
   @Override
   public void execute() {
     if (RobotContainer.oi.operatorStick.getLeftY() > 0.4){
-      RobotContainer.intakeRollers.feedIn(0.05, 0.05);
+      RobotContainer.intakeRollers.feedOut(0.1);
+
     }
 
     else if (RobotContainer.oi.operatorStick.getLeftY() < -0.4){
-      RobotContainer.intakeRollers.feedOut(-0.05);
+      RobotContainer.intakeRollers.feedIn(0.2, 0.2);
+
     }
 
     else{

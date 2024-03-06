@@ -136,10 +136,11 @@ public class RobotContainer {
         }
         
 
-        NamedCommands.registerCommand("WristSmartMotion(0)", new WristSmartMotion(0));
+        NamedCommands.registerCommand("AutoWristSmartMotion(0)", new AutoWristSmartMotion(0));
         NamedCommands.registerCommand("AutoIntakeCommand", new AutoIntakeCommand());
         NamedCommands.registerCommand("StoreCommand", new StoreCommand(0.02));
         NamedCommands.registerCommand("SpeakerShooterCommand", new SpeakerShooterCommand());
+        NamedCommands.registerCommand("AutoSpeakerShooterCommand", new AutoSpeakerShooterCommand());
 
 
         /*
@@ -231,7 +232,7 @@ public class RobotContainer {
 
        
         //oi.intakeUpButton.onTrue(new InstantCommand(intakeRollers::stop));
-        oi.intakeUpButton.onTrue(new StoreCommand(1.5));
+        oi.intakeUpButton.onTrue(new StoreCommand(0.5));
         oi.speakerShooterButton.onTrue(new SpeakerShooterCommand());
         //oi.intakeDownButton.onTrue(intakeRollers.intakeGamepieceCommand().andThen(new StoreCommand())).onFalse(new InstantCommand(intakeRollers::stop)); //may make the onFalse a store command
         //oi.intakeDownButton.onTrue(intakeRollers.intakeGamepieceCommand().andThen(new WristSmartMotion(0))).onFalse(new InstantCommand(intakeRollers::stop)); //may make the onFalse a store command
@@ -263,9 +264,11 @@ public class RobotContainer {
 
         //return Speaker2NoteAuto();
 
+        return TestSuperStructureAuto();
+
         //return Speaker2NoteAutoWithoutPathPlanner();
 
-        return BlueTwoPieceCenterToLeftAuto();
+        //return BlueTwoPieceCenterToLeftAuto();
 
 
         //return autoChooser.getSelected();
@@ -283,7 +286,7 @@ public class RobotContainer {
     }
 
 
-    public Command TestSupperStructureAuto(){
+    public Command TestSuperStructureAuto(){
         String autoName = "TestSuperstructureAuto";
         Pose2d pose =  PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
 

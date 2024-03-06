@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.38,
-      "y": 5.54
+      "x": 0.75,
+      "y": 6.68
     },
-    "rotation": -0.45999999999997954
+    "rotation": 60.22174635992909
   },
   "command": {
     "type": "sequential",
@@ -50,7 +50,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "TwoPiecePart1"
+                  "pathName": "SideToTopAuto"
                 }
               },
               {
@@ -75,7 +75,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "TwoPiecePart2"
+                  "pathName": "TopToShoot"
                 }
               }
             ]
