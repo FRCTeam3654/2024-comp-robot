@@ -281,6 +281,17 @@ public class RobotContainer {
     }
 
 
+    public Command RunPathPlannerAuto(String autoName){
+        //String autoName = "JustShootAuto";
+        Pose2d pose =  PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
+
+        swerve.swerveOdometry.resetPosition(swerve.getYaw(), swerve.getModulePositions(), 
+        pose);
+        
+        return new PathPlannerAuto(autoName);
+    }
+
+
     public Command Speaker2NoteAuto(){
         String autoName = "TwoPieceAuto";
         Pose2d pose =  PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
