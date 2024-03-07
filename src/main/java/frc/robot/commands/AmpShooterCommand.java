@@ -45,7 +45,7 @@ public class AmpShooterCommand extends Command {
     System.out.println("shoot command");
     if(RobotContainer.speakerShooter.isAtSpeed(-20)){
       //RobotContainer.intakeWheels.intakeSpin(-0.2);
-      RobotContainer.intakeRollers.feedOut();
+      RobotContainer.intakeRollers.feedOut(-0.5);
       System.out.println("should be feeding to shoot");
     }
   }

@@ -180,13 +180,19 @@ public class RobotContainer {
         // Configure the button bindings
         configureButtonBindings();
 
-       autoChooser.setDefaultOption("2 Piece Auto", new PathPlannerAuto("TwoPieceAuto"));
-       autoChooser.addOption("Test auto", new PathPlannerAuto("TestAuto"));
-       autoChooser.addOption("3 Piece Auto", new PathPlannerAuto("3Piece"));
-       autoChooser.addOption("3 Piece Stage Auto", new PathPlannerAuto("3PieceStage"));
-       autoChooser.addOption("4 Piece Auto", new PathPlannerAuto("4Piece"));
-       autoChooser.addOption("4.5 Piece Auto", new PathPlannerAuto("4PieceLong"));
-       autoChooser.addOption("5 Piece Auto", new PathPlannerAuto("5Piece"));
+       //autoChooser.setDefaultOption("2 Piece Auto", new PathPlannerAuto("TwoPieceAuto"));
+       //autoChooser.addOption("Test auto", new PathPlannerAuto("TestAuto"));
+       //autoChooser.addOption("3 Piece Auto", new PathPlannerAuto("3Piece"));
+       //autoChooser.addOption("3 Piece Stage Auto", new PathPlannerAuto("3PieceStage"));
+       //autoChooser.addOption("4 Piece Auto", new PathPlannerAuto("4Piece"));
+       //autoChooser.addOption("4.5 Piece Auto", new PathPlannerAuto("4PieceLong"));
+       //autoChooser.addOption("5 Piece Auto", new PathPlannerAuto("5Piece"));
+       autoChooser.setDefaultOption("Just Shoot Auto", new PathPlannerAuto("JustShootAuto"));
+       autoChooser.addOption("Center Two Piece Auto", new PathPlannerAuto("FrontToFrontAuto"));
+       autoChooser.addOption("Loading Side Two Piece Auto", new PathPlannerAuto("BottomTwoPieceAuto"));
+       autoChooser.addOption("Amp Side Two Piece Auto", new PathPlannerAuto("TopTwoPieceAuto"));
+       autoChooser.addOption("Amp Side Shoot and Leave Auto", new PathPlannerAuto("ShootAndLeaveTopAuto"));
+       autoChooser.addOption("Loading Side Shoot and Leave Auto", new PathPlannerAuto("ShootAndMoveBottomAuto"));
        //autoChooser.addOption("2 Piece Auto", new PathPlannerAuto("TwoPieceAuto"));
         //add more with autoChooser.addOption
 
@@ -232,7 +238,7 @@ public class RobotContainer {
 
        
         //oi.intakeUpButton.onTrue(new InstantCommand(intakeRollers::stop));
-        oi.intakeUpButton.onTrue(new StoreCommand(0.5));
+        oi.intakeUpButton.onTrue(new StoreCommand(0.02));
         oi.speakerShooterButton.onTrue(new SpeakerShooterCommand());
         //oi.intakeDownButton.onTrue(intakeRollers.intakeGamepieceCommand().andThen(new StoreCommand())).onFalse(new InstantCommand(intakeRollers::stop)); //may make the onFalse a store command
         //oi.intakeDownButton.onTrue(intakeRollers.intakeGamepieceCommand().andThen(new WristSmartMotion(0))).onFalse(new InstantCommand(intakeRollers::stop)); //may make the onFalse a store command
@@ -264,14 +270,14 @@ public class RobotContainer {
 
         //return Speaker2NoteAuto();
 
-        return TestSuperStructureAuto();
+        //return TestSuperStructureAuto();
 
         //return Speaker2NoteAutoWithoutPathPlanner();
 
         //return BlueTwoPieceCenterToLeftAuto();
 
 
-        //return autoChooser.getSelected();
+        return autoChooser.getSelected();
     }
 
 
@@ -286,8 +292,8 @@ public class RobotContainer {
     }
 
 
-    public Command TestSuperStructureAuto(){
-        String autoName = "TestSuperstructureAuto";
+    public Command JustShootAuto(){
+        String autoName = "JustShootAuto";
         Pose2d pose =  PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
 
         swerve.swerveOdometry.resetPosition(swerve.getYaw(), swerve.getModulePositions(), 
@@ -296,6 +302,57 @@ public class RobotContainer {
         return new PathPlannerAuto(autoName);
     }
 
+    public Command FrontToFrontAuto(){
+        String autoName = "FrontToFrontAuto";
+        Pose2d pose =  PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
+
+        swerve.swerveOdometry.resetPosition(swerve.getYaw(), swerve.getModulePositions(), 
+        pose);
+        
+        return new PathPlannerAuto(autoName);
+    }
+
+    public Command BottomTwoPieceAuto(){
+        String autoName = "BottomTwoPieceAuto";
+        Pose2d pose =  PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
+
+        swerve.swerveOdometry.resetPosition(swerve.getYaw(), swerve.getModulePositions(), 
+        pose);
+        
+        return new PathPlannerAuto(autoName);
+    }
+
+    public Command TopTwoPieceAuto(){
+        String autoName = "TopTwoPieceAuto";
+        Pose2d pose =  PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
+
+        swerve.swerveOdometry.resetPosition(swerve.getYaw(), swerve.getModulePositions(), 
+        pose);
+        
+        return new PathPlannerAuto(autoName);
+    }
+
+    public Command ShootAndLeaveTopAuto(){
+        String autoName = "ShootAndLeaveTopAuto";
+        Pose2d pose =  PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
+
+        swerve.swerveOdometry.resetPosition(swerve.getYaw(), swerve.getModulePositions(), 
+        pose);
+        
+        return new PathPlannerAuto(autoName);
+    }
+
+    public Command ShootAndMoveBottomAuto(){
+        String autoName = "ShootAndMoveBottomAuto";
+        Pose2d pose =  PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
+
+        swerve.swerveOdometry.resetPosition(swerve.getYaw(), swerve.getModulePositions(), 
+        pose);
+        
+        return new PathPlannerAuto(autoName);
+    }
+
+    
     public Command BlueTwoPieceCenterToLeftAuto(){
         String autoName = "BlueTwoPieceCenterToLeftAuto";
         Pose2d pose =  PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
@@ -305,6 +362,7 @@ public class RobotContainer {
         
         return new PathPlannerAuto(autoName);
     }
+
 
 
 

@@ -1,0 +1,31 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.7812469471092803,
+      "y": 6.670053340106681
+    },
+    "rotation": 60.06848815949215
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoSpeakerShooterCommand"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ShootAndLeaveTop"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

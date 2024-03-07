@@ -57,13 +57,13 @@ public class ChaseTagCommand extends Command {
   // drive backward,use back camera to align to speaker
   private static final Transform3d TAG_TO_GOAL_SPEAKER = 
       new Transform3d(
-          new Translation3d(1.3, 0.0, 0.0),
+          new Translation3d(1.0, 0.0, 0.0),
           new Rotation3d(0.0, 0.0, 0));
 
   // AMP's TAG_TO_GOAL
   private static final Transform3d TAG_TO_GOAL_AMP = 
       new Transform3d(
-          new Translation3d(Units.inchesToMeters(26), 0.0, 0.0),
+          new Translation3d(Units.inchesToMeters(12), 0.0, 0.0),
           new Rotation3d(0.0, 0.0, 0));
   
 
