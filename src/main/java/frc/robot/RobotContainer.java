@@ -193,6 +193,9 @@ public class RobotContainer {
        autoChooser.addOption("Amp Side Two Piece Auto", new PathPlannerAuto("TopTwoPieceAuto"));
        autoChooser.addOption("Amp Side Shoot and Leave Auto", new PathPlannerAuto("ShootAndLeaveTopAuto"));
        autoChooser.addOption("Loading Side Shoot and Leave Auto", new PathPlannerAuto("ShootAndMoveBottomAuto"));
+       autoChooser.addOption("Amp Side 3 Piece Auto", new PathPlannerAuto("3PieceShortTopAuto"));
+       autoChooser.addOption("Load Side 3 Piece Auto", new PathPlannerAuto("3PieceShortLoadSideAuto"));
+       autoChooser.addOption("Load Side 2 Piece Long Auto", new PathPlannerAuto("LoadSideToFourthNoteTwoPieceAuto"));
        //autoChooser.addOption("2 Piece Auto", new PathPlannerAuto("TwoPieceAuto"));
         //add more with autoChooser.addOption
 
@@ -281,8 +284,38 @@ public class RobotContainer {
     }
 
 
-    public Command Speaker2NoteAuto(){
+    public Command LoadSideTwoPieceLongAuto(){
+        String autoName = "LoadSideToFourthNoteTwoPieceAuto";
+        Pose2d pose =  PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
+
+        swerve.swerveOdometry.resetPosition(swerve.getYaw(), swerve.getModulePositions(), 
+        pose);
+        
+        return new PathPlannerAuto(autoName);
+    }
+
+     public Command Speaker2NoteAuto(){
         String autoName = "TwoPieceAuto";
+        Pose2d pose =  PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
+
+        swerve.swerveOdometry.resetPosition(swerve.getYaw(), swerve.getModulePositions(), 
+        pose);
+        
+        return new PathPlannerAuto(autoName);
+    }
+
+    public Command AmpSideThreePieceAuto(){
+        String autoName = "AmpSideThreePieceAuto";
+        Pose2d pose =  PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
+
+        swerve.swerveOdometry.resetPosition(swerve.getYaw(), swerve.getModulePositions(), 
+        pose);
+        
+        return new PathPlannerAuto(autoName);
+    }
+
+     public Command LoadSideThreePieceAuto(){
+        String autoName = "LoadSideThreePieceAuto";
         Pose2d pose =  PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
 
         swerve.swerveOdometry.resetPosition(swerve.getYaw(), swerve.getModulePositions(), 

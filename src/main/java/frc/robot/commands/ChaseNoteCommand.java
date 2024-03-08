@@ -31,7 +31,7 @@ public class ChaseNoteCommand extends Command {
    
   
   public static final Transform3d ROBOT_TO_CAMERA = new Transform3d(
-        new Translation3d(Units.inchesToMeters(-6), Units.inchesToMeters(10), Units.inchesToMeters(22)),
+        new Translation3d(Units.inchesToMeters(-6), Units.inchesToMeters(7), Units.inchesToMeters(22)),
         new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(0))); 
 
 
