@@ -161,17 +161,21 @@ public class SwerveSubsystem extends SubsystemBase {
   //}
   
   public void drive(ChassisSpeeds chassisSpeeds, boolean isOpenLoop) {
+    drive( chassisSpeeds,  isOpenLoop, Constants.Swerve.maxSpeed);
+  }
+
+  public void drive(ChassisSpeeds chassisSpeeds, boolean isOpenLoop, double maxSpeed) {
     SwerveModuleState[] swerveModuleStates =
     Constants.Swerve.swerveKinematics.toSwerveModuleStates(chassisSpeeds);
 
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
+    //SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, maxSpeed);
 
     for(SwerveModule mod : mSwerveMods){
         //mod.setDesiredState(swerveModuleStates[mod.moduleNumber], RobotMap.isOpenLoop);
-        mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
+        mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop, maxSpeed);
     }
-
-}
+  }
 
 
     /* Used by SwerveControllerCommand in Auto */

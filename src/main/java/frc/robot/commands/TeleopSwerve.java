@@ -54,12 +54,6 @@ public class TeleopSwerve extends Command {
 
         boolean useOpenLoop = true;// false;  // test out the closed loop
 
-        if( RobotContainer.oi.turnRight180Button.getAsBoolean() == true )  {
-            // if it is chasing tag, use full power and drive using open loop
-            speedMultiplier  = 1;
-            useOpenLoop = true;
-        }
-
         /* Get Values, Deadband*/
         double translationVal = translationLimiter.calculate(speedMultiplier *  MathUtil.applyDeadband(translationSup.getAsDouble(), Constants.stickDeadband) );
         double strafeVal = strafeLimiter.calculate( speedMultiplier * MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband));

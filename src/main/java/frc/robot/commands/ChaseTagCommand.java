@@ -29,7 +29,10 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public class ChaseTagCommand extends Command {
-   
+  
+  public static final double CHASE_TAG_MAX_SPEED = 1.5; // swerve can have max speed 4 or higher, but is not good for chasing tag
+
+
   // front AprilTag Camera -- roll or pitch , which is 30 degree?
   // // pitch is the Y angle, and it is positive down https://github.com/ligerbots/Crescendo2024/blob/main/src/main/java/frc/robot/subsystems/AprilTagVision.java
 
@@ -309,7 +312,7 @@ public class ChaseTagCommand extends Command {
       }
 
       drivetrainSubsystem.drive(
-        ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, omegaSpeed, robotPose2d.getRotation()), true
+        ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, omegaSpeed, robotPose2d.getRotation()), true , CHASE_TAG_MAX_SPEED 
       );
     }
     

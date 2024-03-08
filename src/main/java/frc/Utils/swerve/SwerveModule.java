@@ -66,12 +66,22 @@ public class SwerveModule {
         lastAngle = getState().angle;
     }
 
+    
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop){
+        setDesiredState(desiredState, isOpenLoop, Constants.Swerve.maxSpeed);
+    }
+
+    public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop, double maxSpeed){
+ 
         /* This is a custom optimize function, since default WPILib optimize assumes continuous controller which CTRE and Rev onboard is not */
         desiredState = CTREModuleState.optimize(desiredState, getState().angle);
         setAngle(desiredState);
-        setSpeed(desiredState, isOpenLoop);
+        setSpeed(desiredState, isOpenLoop, maxSpeed);
         this.desiredState = desiredState;
+
+        // for calibrating kV, keep this line, comment out when it is not needed
+        //System.out.println(mDriveMotor.getVelocity().getValueAsDouble()+", "+mDriveMotor.getMotorVoltage()+", isOpenLoop = "+isOpenLoop);
+
     }
 
     public void scaledSetDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
@@ -84,13 +94,18 @@ public class SwerveModule {
     }
 
     private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop){
+        setSpeed( desiredState, isOpenLoop, Constants.Swerve.maxSpeed);
+    }
+    
+    private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop, double maxSpeed){
         if(isOpenLoop){
-            driveDutyCycle.Output = desiredState.speedMetersPerSecond / Constants.Swerve.maxSpeed;
+            driveDutyCycle.Output = desiredState.speedMetersPerSecond / maxSpeed;
             mDriveMotor.setControl(driveDutyCycle);
         }
         else {
             driveVelocity.Velocity = FalconConversions.MPSToTalon(desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio);
             driveVelocity.FeedForward = driveFeedForward.calculate(desiredState.speedMetersPerSecond);
+            //System.out.println("setSpeed = "+FalconConversions.MPSToTalon(desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio)+", desired speed = "+desiredState.speedMetersPerSecond);
             mDriveMotor.setControl(driveVelocity);
         }
         this.desiredState = desiredState;
