@@ -35,7 +35,7 @@ public class ChaseTagCommand extends Command {
 
   public static final Transform3d ROBOT_TO_CAMERA_FRONT = new Transform3d(
         new Translation3d(Units.inchesToMeters(-7), Units.inchesToMeters(3.5), Units.inchesToMeters(21)),
-        new Rotation3d(0, Units.degreesToRadians(-30), 0)); 
+        new Rotation3d(0, Units.degreesToRadians(0), 0)); 
 
   // back camera's pitch: is it -30 degree since it is looking up , ( not 150 since yaw turns 180 degree, pitch stays 30 degree looking up) : decouple pitch from yaw
   public static final Transform3d ROBOT_TO_CAMERA_BACK = new Transform3d(
@@ -63,13 +63,13 @@ public class ChaseTagCommand extends Command {
   // AMP's TAG_TO_GOAL
   private static final Transform3d TAG_TO_GOAL_AMP = 
       new Transform3d(
-          new Translation3d(Units.inchesToMeters(12), 0.0, 0.0),
+          new Translation3d(Units.inchesToMeters(18), 0.0, 0.0),
           new Rotation3d(0.0, 0.0, 0));
   
   // Stage's TAG_TO_GOAL
   private static final Transform3d TAG_TO_GOAL_STAGE = 
       new Transform3d(
-          new Translation3d(Units.inchesToMeters(30), 0.0, 0.0),
+          new Translation3d(Units.inchesToMeters(33), 0.0, 0.0),
           new Rotation3d(0.0, 0.0, Math.PI));
 
 
@@ -82,8 +82,13 @@ public class ChaseTagCommand extends Command {
 
 
   private final ProfiledPIDController xController = new ProfiledPIDController(0.75, 0, 0, X_CONSTRAINTS); //2,(3, 0, 0, X_CONSTRAINTS);
-  private final ProfiledPIDController yController = new ProfiledPIDController(0.75, 0, 0, Y_CONSTRAINTS); //2,(3, 0, 0, Y_CONSTRAINTS);
-  private final ProfiledPIDController omegaController = new ProfiledPIDController(0.35, 0, 0, OMEGA_CONSTRAINTS); //0.3;// 0.5,(2, 0, 0, OMEGA_CONSTRAINTS);
+  //private final ProfiledPIDController yController = new ProfiledPIDController(0.75, 0, 0, Y_CONSTRAINTS); //2,(3, 0, 0, Y_CONSTRAINTS);
+  //private final ProfiledPIDController omegaController = new ProfiledPIDController(0.35, 0, 0, OMEGA_CONSTRAINTS); //0.3;// 0.5,(2, 0, 0, OMEGA_CONSTRAINTS);
+  private final ProfiledPIDController yController = new ProfiledPIDController(1.0, 0, 0, Y_CONSTRAINTS); //2,(3, 0, 0, Y_CONSTRAINTS);
+  private final ProfiledPIDController omegaController = new ProfiledPIDController(0.55, 0, 0, OMEGA_CONSTRAINTS); //0.3;// 0.5,(2, 0, 0, OMEGA_CONSTRAINTS);
+
+
+
 
   private SlewRateLimiter xLimiter = new SlewRateLimiter(3.0);
   private SlewRateLimiter yLimiter = new SlewRateLimiter(3.0);
@@ -107,9 +112,9 @@ public class ChaseTagCommand extends Command {
     this.drivetrainSubsystem = drivetrainSubsystem;
     this.poseProvider = poseProvider;
 
-    xController.setTolerance(0.2);//0.2
-    yController.setTolerance(0.2);//0.2
-    omegaController.setTolerance(Units.degreesToRadians(5));//3
+    xController.setTolerance(0.02);//0.2
+    yController.setTolerance(0.02);//0.2
+    omegaController.setTolerance(Units.degreesToRadians(1));//3
     omegaController.enableContinuousInput(-Math.PI, Math.PI);
     
     addRequirements(drivetrainSubsystem);
@@ -285,7 +290,7 @@ public class ChaseTagCommand extends Command {
       xSpeed = xLimiter.calculate( MathUtil.applyDeadband(xSpeed, 0.01) );
       ySpeed = yLimiter.calculate(  MathUtil.applyDeadband(ySpeed, 0.01));
       //omegaSpeed = omegaLimiter.calculate(  omegaSpeed);
-      omegaSpeed =MathUtil.applyDeadband(omegaSpeed, 0.018);
+      omegaSpeed =MathUtil.applyDeadband(omegaSpeed, 0.008);
 
       System.out.println("x,y,omega = "+xSpeed+", " +ySpeed+", "+omegaSpeed);
       // once reach goal, should not applied more power

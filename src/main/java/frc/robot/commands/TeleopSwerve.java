@@ -52,6 +52,14 @@ public class TeleopSwerve extends Command {
     public void execute() {
         double speedMultiplier = slowSpeedSup.getAsBoolean() ? 0.95 : 0.6; //0.2, 0.5 //0.05, 0.2
 
+        boolean useOpenLoop = true;// false;  // test out the closed loop
+
+        if( RobotContainer.oi.turnRight180Button.getAsBoolean() == true )  {
+            // if it is chasing tag, use full power and drive using open loop
+            speedMultiplier  = 1;
+            useOpenLoop = true;
+        }
+
         /* Get Values, Deadband*/
         double translationVal = translationLimiter.calculate(speedMultiplier *  MathUtil.applyDeadband(translationSup.getAsDouble(), Constants.stickDeadband) );
         double strafeVal = strafeLimiter.calculate( speedMultiplier * MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband));
@@ -87,7 +95,7 @@ public class TeleopSwerve extends Command {
                 new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed), 
                 rotationVal * Constants.Swerve.maxAngularVelocity, 
                 isFieldRelative, 
-                true
+                useOpenLoop
                 
             );
 
