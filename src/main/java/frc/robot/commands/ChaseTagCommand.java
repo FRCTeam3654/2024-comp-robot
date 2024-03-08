@@ -66,6 +66,12 @@ public class ChaseTagCommand extends Command {
           new Translation3d(Units.inchesToMeters(12), 0.0, 0.0),
           new Rotation3d(0.0, 0.0, 0));
   
+  // Stage's TAG_TO_GOAL
+  private static final Transform3d TAG_TO_GOAL_STAGE = 
+      new Transform3d(
+          new Translation3d(Units.inchesToMeters(30), 0.0, 0.0),
+          new Rotation3d(0.0, 0.0, Math.PI));
+
 
   private Transform3d which_tag_to_goal;
 
@@ -210,34 +216,42 @@ public class ChaseTagCommand extends Command {
             // AMP
              which_tag_to_goal = TAG_TO_GOAL_AMP;
         }
-
-        
-        // Transform the tag's pose to set our goal
-        var goalPose = aprilTagPose3d.transformBy(which_tag_to_goal).toPose2d();
-
-        System.out.println("Goal = "+ goalPose.toString());
-
-        System.out.println("robotPose2d = "+robotPose2d.toString());
-
-        if( robotPose3dByVision != null) {
-            //System.out.println("robotPose3dByVision = "+robotPose3dByVision.toString());
-
-            // check distance and 2d angle make sense -- test code
-            double distanceCamToAprilTag = PoseEstimatorSubsystem.calculateDifference(robotPose3dByVision.toPose2d(), goalPose);
-            System.out.println("Distance btw robot and goal = "+distanceCamToAprilTag);
-            if(distanceCamToAprilTag > 0.5) {
-              isGoalReached = false;
-            }
+        else  if( fiducialId >= 11) {
+            // All stages
+            which_tag_to_goal = TAG_TO_GOAL_STAGE;
         }
+        else {
+             which_tag_to_goal = null;
+        }
+ 
+        if( which_tag_to_goal != null ) {
+            // Transform the tag's pose to set our goal
+            var goalPose = aprilTagPose3d.transformBy(which_tag_to_goal).toPose2d();
 
-        // Drive
-        xController.setGoal(goalPose.getX());
-        yController.setGoal(goalPose.getY());
-        omegaController.setGoal(goalPose.getRotation().getRadians());
+            System.out.println("Goal = "+ goalPose.toString());
+
+            System.out.println("robotPose2d = "+robotPose2d.toString());
+
+            if( robotPose3dByVision != null) {
+                //System.out.println("robotPose3dByVision = "+robotPose3dByVision.toString());
+
+                // check distance and 2d angle make sense -- test code
+                double distanceCamToAprilTag = PoseEstimatorSubsystem.calculateDifference(robotPose3dByVision.toPose2d(), goalPose);
+                System.out.println("Distance btw robot and goal = "+distanceCamToAprilTag);
+                if(distanceCamToAprilTag > 0.5) {
+                  isGoalReached = false;
+                }
+            }
+
+            // Drive
+            xController.setGoal(goalPose.getX());
+            yController.setGoal(goalPose.getY());
+            omegaController.setGoal(goalPose.getRotation().getRadians());
+        }
       }
     }
     
-    if (lastTarget == null) {
+    if (lastTarget == null || which_tag_to_goal == null) {
       // No target has been visible
       //drivetrainSubsystem.stop();
     } else {
