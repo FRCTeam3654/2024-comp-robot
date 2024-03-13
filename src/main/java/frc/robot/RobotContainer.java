@@ -84,7 +84,8 @@ public class RobotContainer {
 
     public static  PoseEstimatorSubsystem poseEstimator = null;
 
-    private ChaseTagCommand2 chaseTagCommand2 =  null;
+    //private ChaseTagCommand2 chaseTagCommand2 =  null;
+    private ChaseTagCommand3 chaseTagCommand3 =  null;
 
     //private ChaseNoteCommand chaseNoteCommand =  null;
 
@@ -128,7 +129,8 @@ public class RobotContainer {
             poseEstimator = new PoseEstimatorSubsystem(photonFrontOVCamera,  photonBackOVCamera, swerve);
             
             //  photonCamera may have race condition
-            chaseTagCommand2 =  new ChaseTagCommand2(photonBackOVCamera, swerve, poseEstimator::getCurrentPose);
+            //chaseTagCommand2 =  new ChaseTagCommand2(photonBackOVCamera, swerve, poseEstimator::getCurrentPose);
+            chaseTagCommand3 =  new ChaseTagCommand3(photonBackOVCamera, swerve);
 
             //chaseNoteCommand =  new ChaseNoteCommand(photonLifeCam, swerve, poseEstimator::getCurrentPose);
             
@@ -238,7 +240,8 @@ public class RobotContainer {
 
 
         //oi.turnLeft180Button.whileTrue(chaseNoteCommand);
-        oi.turnRight180Button.whileTrue(chaseTagCommand2);
+       // oi.turnRight180Button.whileTrue(chaseTagCommand2);
+        oi.turnRight180Button.whileTrue(chaseTagCommand3);
        // oi.intakeDownButton.onTrue(new GrabDownCommand());
         //oi.intakeUpButton.onTrue(new StoreCommand());
         oi.climbPosButton.onTrue(new ClimbPositionCommand());
