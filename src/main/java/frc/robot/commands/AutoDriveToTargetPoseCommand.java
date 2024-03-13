@@ -27,36 +27,22 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public class AutoDriveToTargetPoseCommand extends Command {
   
-  // should not change much, NEED match the max speed
-  private static final TrapezoidProfile.Constraints X_CONSTRAINTS = new TrapezoidProfile.Constraints(3, 3);//(1.5,2),(3, 2);
-  private static final TrapezoidProfile.Constraints Y_CONSTRAINTS = new TrapezoidProfile.Constraints(3, 3);//(1.5, 2),(3, 2);
-  private static final TrapezoidProfile.Constraints OMEGA_CONSTRAINTS =   new TrapezoidProfile.Constraints(3, 4);//(2,2),(8, 8);
-  
-
-
   private final SwerveSubsystem drivetrainSubsystem;
   private final Supplier<Pose2d> poseProvider; // tell me where my robot is
   private Pose2d targetPose2d = null;
   private Transform2d robotToTarget = null;
 
-
-  private final ProfiledPIDController xController = new ProfiledPIDController(0.75, 0, 0, X_CONSTRAINTS); //2,(3, 0, 0, X_CONSTRAINTS);
-  private final ProfiledPIDController yController = new ProfiledPIDController(0.75, 0, 0, Y_CONSTRAINTS); //2,(3, 0, 0, Y_CONSTRAINTS);
-  private final ProfiledPIDController omegaController = new ProfiledPIDController(1, 0, 0, OMEGA_CONSTRAINTS); //0.3;// 0.5,(2, 0, 0, OMEGA_CONSTRAINTS);
-
   private SlewRateLimiter xLimiter = new SlewRateLimiter(3.0);
   private SlewRateLimiter yLimiter = new SlewRateLimiter(3.0);
-  private SlewRateLimiter omegaLimiter = new SlewRateLimiter(1.0);
-
+ 
   public boolean isGoalReached  = false;
   private double driveTimer;
-  private double driveTimeout = 8;
-
-
+  private double driveTimeout = 4;
 
   
   public AutoDriveToTargetPoseCommand(
@@ -68,11 +54,6 @@ public class AutoDriveToTargetPoseCommand extends Command {
     this.drivetrainSubsystem = drivetrainSubsystem;
     this.poseProvider = poseProvider;
 
-    xController.setTolerance(AutoConstants.autodriveXtoleranceInMeter);//0.2
-    yController.setTolerance(AutoConstants.autodriveYtoleranceInMeter);//0.2
-    omegaController.setTolerance(Units.degreesToRadians(AutoConstants.autodriveOmegatoleranceInDegree));//3
-    omegaController.enableContinuousInput(-Math.PI, Math.PI);
-    
     addRequirements(drivetrainSubsystem);
   }
 
@@ -89,11 +70,6 @@ public class AutoDriveToTargetPoseCommand extends Command {
     this.poseProvider = poseProvider;
     this.driveTimeout = driveTimeout;
 
-    xController.setTolerance(AutoConstants.autodriveXtoleranceInMeter);//0.2
-    yController.setTolerance(AutoConstants.autodriveYtoleranceInMeter);//0.2
-    omegaController.setTolerance(Units.degreesToRadians(AutoConstants.autodriveOmegatoleranceInDegree));//3
-    omegaController.enableContinuousInput(-Math.PI, Math.PI);
-    
     addRequirements(drivetrainSubsystem);
   }
 
@@ -103,16 +79,11 @@ public class AutoDriveToTargetPoseCommand extends Command {
         Transform2d robotToTarget,
         SwerveSubsystem drivetrainSubsystem,
         Supplier<Pose2d> poseProvider) {
-          
+          RobotContainer.led.setAll(Color.kRed);      
     this.robotToTarget = robotToTarget;
     this.drivetrainSubsystem = drivetrainSubsystem;
     this.poseProvider = poseProvider;
 
-    xController.setTolerance(AutoConstants.autodriveXtoleranceInMeter);//0.2
-    yController.setTolerance(AutoConstants.autodriveYtoleranceInMeter);//0.2
-    omegaController.setTolerance(Units.degreesToRadians(AutoConstants.autodriveOmegatoleranceInDegree));//3
-    omegaController.enableContinuousInput(-Math.PI, Math.PI);
-    
     addRequirements(drivetrainSubsystem);
   }
 
@@ -122,15 +93,11 @@ public class AutoDriveToTargetPoseCommand extends Command {
         Supplier<Pose2d> poseProvider,
          double driveTimeout) {
           
+          RobotContainer.led.setAll(Color.kRed);      
     this.robotToTarget = robotToTarget;
     this.drivetrainSubsystem = drivetrainSubsystem;
     this.poseProvider = poseProvider;
     this.driveTimeout = driveTimeout;
-
-    xController.setTolerance(AutoConstants.autodriveXtoleranceInMeter);//0.2
-    yController.setTolerance(AutoConstants.autodriveYtoleranceInMeter);//0.2
-    omegaController.setTolerance(Units.degreesToRadians(AutoConstants.autodriveOmegatoleranceInDegree));//3
-    omegaController.enableContinuousInput(-Math.PI, Math.PI);
     
     addRequirements(drivetrainSubsystem);
   }
@@ -140,20 +107,22 @@ public class AutoDriveToTargetPoseCommand extends Command {
     
   
     var robotPose = poseProvider.get();
-    omegaController.reset(robotPose.getRotation().getRadians());
-    xController.reset(robotPose.getX());
-    yController.reset(robotPose.getY());
+   
     isGoalReached = false;
     driveTimer = Timer.getFPGATimestamp();
 
-    if( targetPose2d == null && robotToTarget != null) {
+    if(  robotToTarget != null) {
       // use the current robot pose and robot to target transform to get the target pose
       targetPose2d  = robotPose.transformBy(robotToTarget);
+      //targetPose2d  = robotPose.plus(robotToTarget);
       System.out.println("targetPoseViaTransform = "+targetPose2d.toString());
       SmartDashboard.putString("targetPose = ",targetPose2d .toString());
     }
 
     SmartDashboard.putString("initial robot pose = ", robotPose.toString());
+    System.out.println("robotPose = "+robotPose.toString());
+    System.out.println("targetPose = "+targetPose2d.toString());
+
   }
 
   @Override
@@ -163,71 +132,63 @@ public class AutoDriveToTargetPoseCommand extends Command {
           return;
         }
 
-        System.out.println("in it");
         var robotPose2d = poseProvider.get();
    
         System.out.println("Goal = "+ targetPose2d.toString());
-
         System.out.println("robotPose2d = "+robotPose2d.toString());
 
        
        // check distance and 2d angle make sense -- test code
-        double distanceCamToAprilTag = PoseEstimatorSubsystem.calculateDifference(robotPose2d, targetPose2d);
-        System.out.println("Distance btw robot and goal = "+distanceCamToAprilTag);
-       
+        double distanceRobotToAprilTag = PoseEstimatorSubsystem.calculateDifference(robotPose2d, targetPose2d);
+        double angleError = targetPose2d.getRotation().getDegrees() - robotPose2d.getRotation().getDegrees();
         
+     
 
         // Drive
-        xController.setGoal(targetPose2d.getX());
-        yController.setGoal(targetPose2d.getY());
-        omegaController.setGoal(targetPose2d.getRotation().getRadians());
-      
-      // Drive to the target
+       
+
+        double xSpeed = 1.3 * (targetPose2d.getX() - robotPose2d.getX());//0.5//1.0
+        double ySpeed = 1.3 * (targetPose2d.getY() - robotPose2d.getY());
+
+        if(Math.abs(xSpeed) >ChaseTagCommand2.CHASE_TAG_MAX_PID_OUTPUT) {
+          xSpeed = Math.signum(xSpeed) * ChaseTagCommand2.CHASE_TAG_MAX_PID_OUTPUT;
+        }
+
+        if(Math.abs(ySpeed) > ChaseTagCommand2.CHASE_TAG_MAX_PID_OUTPUT) {
+          ySpeed = Math.signum(ySpeed) * ChaseTagCommand2.CHASE_TAG_MAX_PID_OUTPUT;
+        }
+
+        // need check the pid's output sign
+        double omegaSpeed = 0.02 * angleError ;
      
-      var xSpeed = xController.calculate(robotPose2d.getX());
-      if (xController.atGoal()) {
-        xSpeed = 0;
-        System.out.println("xController at Goal");
-      }
-
-      var ySpeed = yController.calculate(robotPose2d.getY());
-      if (yController.atGoal()) {
-        ySpeed = 0;
-        System.out.println("yController at Goal");
-      }
-
-      var omegaSpeed = omegaController.calculate(robotPose2d.getRotation().getRadians());
-      if (omegaController.atGoal()) {
-        omegaSpeed = 0;
-        System.out.println("omegaController at Goal");
-      }
-
-      // change LED color if the robot is at goal?
-      
-      // Get Values, Deadband
     
-      xSpeed = xLimiter.calculate( MathUtil.applyDeadband(xSpeed, 0.008) );
-      ySpeed = yLimiter.calculate(  MathUtil.applyDeadband(ySpeed, 0.008));
-      omegaSpeed =MathUtil.applyDeadband(omegaSpeed, 0.005);
-
-      System.out.println("x,y,omega = "+xSpeed+", " +ySpeed+", "+omegaSpeed);
-      // once reach goal, should not applied more power
-      if( xController.atGoal() &&  Math.abs(xSpeed) < 0.001 && Math.abs(ySpeed) < 0.001 && Math.abs(omegaSpeed) < 0.005 ) {
-        isGoalReached = true;
-      }
+        // change LED color if the robot is at goal?
       
+        // Get Values, Deadband
+    
+    
+        xSpeed = xLimiter.calculate( MathUtil.applyDeadband(xSpeed, 0.01) );
+        ySpeed = yLimiter.calculate(  MathUtil.applyDeadband(ySpeed, 0.01));
+        omegaSpeed =MathUtil.applyDeadband(omegaSpeed, 0.01);
 
-      if( isGoalReached == true) {
-        // if goal reached before, don't apply new power
-        xSpeed = 0;
-        ySpeed = 0;
-        omegaSpeed = 0;
-      }
+        System.out.println("x,y,omega = "+xSpeed+", " +ySpeed+", "+omegaSpeed+" with distance = "+distanceRobotToAprilTag+", angle error = "+angleError);
+        // once reach goal, should not applied more power
+        // either the distnace < 1 inch and angle within 2 degree,  or  very little driving power (pid output)
+        if(  ( Math.abs(distanceRobotToAprilTag) < 0.03 &&  Math.abs(angleError) < 2  ) ||  ( Math.abs(xSpeed) < 0.013 && Math.abs(ySpeed) < 0.013 && Math.abs(omegaSpeed) < 0.01 ) ) {
+          isGoalReached = true;
+        }
 
-      // this drive method is Open Loop by  boolean isOpenLoop = true; // while teleswerve now use closed loop by default now
-      drivetrainSubsystem.drive(
-        ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, omegaSpeed, robotPose2d.getRotation()), true
-      );
+        if( isGoalReached == true) {
+          // if goal reached before, don't apply new power
+          xSpeed = 0;
+          ySpeed = 0;
+          omegaSpeed = 0;
+          System.out.println("Goal is reached with distance = "+distanceRobotToAprilTag+", angle error = "+angleError );
+        }
+        // this drive method is Open Loop by  boolean isOpenLoop = true; // while teleswerve now use closed loop by default now
+        drivetrainSubsystem.drive(
+          ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, omegaSpeed, robotPose2d.getRotation()), true
+        );
     
     
   }
@@ -235,6 +196,7 @@ public class AutoDriveToTargetPoseCommand extends Command {
   @Override
   public void end(boolean interrupted) {
       // stop the robot?
+      RobotContainer.led.setAll(Color.kGold); 
   }
 
   @Override
