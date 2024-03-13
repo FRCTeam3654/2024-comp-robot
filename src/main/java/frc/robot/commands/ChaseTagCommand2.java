@@ -194,8 +194,8 @@ public class ChaseTagCommand2 extends Command {
       // Drive to the target
     
 
-      double xSpeed = 1.3 * (goalPose.getX() - robotPose.getX()); //0.5
-      double ySpeed = 1.3 * (goalPose.getY() - robotPose.getY());
+      double xSpeed = 1.1 * (goalPose.getX() - robotPose.getX()); //0.5
+      double ySpeed = 1.1 * (goalPose.getY() - robotPose.getY());
 
       if(Math.abs(xSpeed) > CHASE_TAG_MAX_PID_OUTPUT) {
         xSpeed = Math.signum(xSpeed) * CHASE_TAG_MAX_PID_OUTPUT;

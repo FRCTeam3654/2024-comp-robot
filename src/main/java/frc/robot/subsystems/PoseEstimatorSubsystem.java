@@ -131,10 +131,6 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
                     PoseStrategy.CLOSEST_TO_REFERENCE_POSE, photonBackOVCamera, ROBOT_TO_CAMERA_BACK);
 
 
-     m_photonPoseEstimatorBack = new PhotonPoseEstimator(aprilTagFieldLayout,
-                    PoseStrategy.CLOSEST_TO_REFERENCE_POSE, photonBackOVCamera, ROBOT_TO_CAMERA_BACK);
-
-
      //photonFrontOVCamera.setDriverMode(false);
      photonBackOVCamera.setDriverMode(false);
 
