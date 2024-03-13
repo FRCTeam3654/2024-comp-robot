@@ -78,15 +78,15 @@ public class RobotContainer {
     
     private PhotonCamera photonFrontOVCamera =  null;
     private PhotonCamera photonBackOVCamera =  null;
-    private PhotonCamera photonLifeCam = null;
+    public static PhotonCamera photonLifeCam = null;
 
    
 
     public static  PoseEstimatorSubsystem poseEstimator = null;
 
-    private ChaseTagCommand chaseTagCommand =  null;
+    private ChaseTagCommand2 chaseTagCommand2 =  null;
 
-    private ChaseNoteCommand chaseNoteCommand =  null;
+    //private ChaseNoteCommand chaseNoteCommand =  null;
 
 
 
@@ -128,9 +128,9 @@ public class RobotContainer {
             poseEstimator = new PoseEstimatorSubsystem(photonFrontOVCamera,  photonBackOVCamera, swerve);
             
             //  photonCamera may have race condition
-            chaseTagCommand =  new ChaseTagCommand(photonBackOVCamera, swerve, poseEstimator::getCurrentPose);
+            chaseTagCommand2 =  new ChaseTagCommand2(photonBackOVCamera, swerve, poseEstimator::getCurrentPose);
 
-            chaseNoteCommand =  new ChaseNoteCommand(photonLifeCam, swerve, poseEstimator::getCurrentPose);
+            //chaseNoteCommand =  new ChaseNoteCommand(photonLifeCam, swerve, poseEstimator::getCurrentPose);
             
          
         }
@@ -144,6 +144,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("StoreCommand", new StoreCommand(0.02));
         NamedCommands.registerCommand("SpeakerShooterCommand", new SpeakerShooterCommand());
         NamedCommands.registerCommand("AutoSpeakerShooterCommand", new AutoSpeakerShooterCommand());
+
+        NamedCommands.registerCommand("DriveToNoteVisionTargetCommand", new DriveToNoteVisionTargetCommand(swerve , 0.8));
 
 
         /*
@@ -235,8 +237,8 @@ public class RobotContainer {
        // oi.turnLeft90Button.onTrue(TestSupperStructureAuto());
 
 
-        oi.turnLeft180Button.whileTrue(chaseNoteCommand);
-        oi.turnRight180Button.whileTrue(chaseTagCommand);
+        //oi.turnLeft180Button.whileTrue(chaseNoteCommand);
+        oi.turnRight180Button.whileTrue(chaseTagCommand2);
        // oi.intakeDownButton.onTrue(new GrabDownCommand());
         //oi.intakeUpButton.onTrue(new StoreCommand());
         oi.climbPosButton.onTrue(new ClimbPositionCommand());
