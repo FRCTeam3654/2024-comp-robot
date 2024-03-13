@@ -39,7 +39,7 @@ public class ChaseNoteCommand extends Command {
   final double TARGET_HEIGHT_METERS = Units.feetToMeters(0);
   final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(-12); // camera facing down, about 12 degree from vertical line
 
-  final double GOAL_ROBOT_TO_NOTE_DISTANCE_METERS = Units.inchesToMeters(10);
+  final double GOAL_ROBOT_TO_NOTE_DISTANCE_METERS = Units.inchesToMeters(8);
   //final double MINIMIUM_CAMERA_TO_NOTE_DISTANCE = Units.inchesToMeters(20); //17; varies by each robot/camera setup
 
 
@@ -318,7 +318,7 @@ public class ChaseNoteCommand extends Command {
 
       //lastGoalPose2d  vs robotPose2d.getRotation ?
       drivetrainSubsystem.drive(
-        ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, omegaSpeed,  robotPose2d.getRotation()), true
+        ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, omegaSpeed,  robotPose2d.getRotation()), true, 1.5
       );
     }
     

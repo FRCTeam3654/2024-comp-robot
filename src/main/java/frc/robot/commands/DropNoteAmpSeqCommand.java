@@ -29,7 +29,7 @@ public class DropNoteAmpSeqCommand extends SequentialCommandGroup {
           ,
           new  SequentialCommandGroup (
                 new WaitCommand(1),
-                new ArmSmartMotion2(3),
+                new ArmSmartMotion(3),
                 new IntakeCommand(2)
           )
         ).until(() -> !RobotContainer.intakeRollers.hasGamePiece() || RobotContainer.oi.intakeUpButton.getAsBoolean())

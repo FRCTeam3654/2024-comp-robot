@@ -63,12 +63,14 @@ public static int operatorControllerPort = 1;
 //DRIVE STICK
 public static int turboButtonNumber = 18;
 public static int driveStraightButtonNumber = 7; //want to be right trigger
-public static int turnLeft90ButtonNumber = 3; //blue x
-public static int turnRight90ButtonNumber = 2; //red b //might only do 1 180 button so i have an extra
+//public static int turnLeft90ButtonNumber = 3; //blue x
+//public static int turnRight90ButtonNumber = 2; //red b //might only do 1 180 button so i have an extra
 public static int turnLeft180ButtonNumber = 4; //yellow y
 public static int turnRight180ButtonNumber = 1; //green a
 public static int aprilButtonNumber = 5; //left bumper
 public static int noteSensorButtonNumber = 6; //right bumper
+public static int resetSwerveButtonNumber = 3;
+public static int hulkModeButtonNumber = 2;
 
 
 
@@ -81,6 +83,8 @@ public static int intakeUpButtonNumber = 2; //red b
 public static int ampArmButtonNumber = 6; //right bumper
 public static int climbPositionButtonNumber = 5; //left bumper //this button is for raising the arm to hook
 //public static int climbWinchButtonNumber = 18; //want to be right trigger //this is for moving the winch
+public static int afterAmpStoreButtonNumber = 8; //start button
+public static int climbUpButtonNumber = 7;
 
 
 

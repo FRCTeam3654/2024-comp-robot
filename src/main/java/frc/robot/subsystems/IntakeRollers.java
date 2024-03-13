@@ -191,10 +191,10 @@ public class IntakeRollers extends SubsystemBase {
         SmartDashboard.putNumber("intakeSensor.getVoltage()", intakeNoteSensor.getVoltage());
 
     }
-
+ 
     public Command intakeGamepieceCommand(){
         //Command result = run(this::feedIn);
-        Command result = run(this::feedIn).until(this::hasGamePiece).andThen(new WaitCommand(0.05)).andThen(this::stop);
+        Command result = run(this::feedIn).until(this::hasGamePiece).andThen(new WaitCommand(0.06)).andThen(this::stop);
 
         //Command result = run(this::feedIn).until(this::hasGamePiece).andThen(this::stop);
 

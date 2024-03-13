@@ -36,7 +36,7 @@ public class ClimbUpCommand extends Command {
   public void initialize() {
     // turn off electric magnet
     Robot.m_pdh.setSwitchableChannel(false);
-    inititalPosition = RobotContainer.climb.getSensorReading();
+    //inititalPosition = RobotContainer.climb.getSensorReading();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -49,7 +49,7 @@ public class ClimbUpCommand extends Command {
 
     // need stop pulling when robot is at the max height 
     //if( Math.abs(currentPosition - inititalPosition) < MIN_DISTANCE ) {
-        RobotContainer.climb.climbUp(-0.15);
+        RobotContainer.climb.climbUp(-0.25);
     //}
     /* 
     else {

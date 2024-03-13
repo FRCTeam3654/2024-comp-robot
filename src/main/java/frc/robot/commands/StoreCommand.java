@@ -22,7 +22,7 @@ public class StoreCommand extends ParallelCommandGroup {
       new InstantCommand(
         RobotContainer.intakeRollers::stop
       ),
-      new ArmSmartMotion(0),
+      new ArmSmartMotion2(0),
       new SequentialCommandGroup(
         new WaitCommand(waitSeconds),
         new WristSmartMotion(1)

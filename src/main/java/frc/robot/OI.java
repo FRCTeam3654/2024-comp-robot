@@ -49,6 +49,8 @@ public class OI {
   public JoystickButton turnLeft180Button;
   public JoystickButton turnRight180Button;
   public JoystickButton slowSpeed;
+  public JoystickButton resetSwerveButton;
+  public JoystickButton hulkButton;
 
   public JoystickButton speakerShooterButton;
   public JoystickButton intakeDownButton;
@@ -56,12 +58,15 @@ public class OI {
   public JoystickButton ampButton;
   public JoystickButton ampArmButton;
   public JoystickButton climbPosButton;
+  public JoystickButton afterAmpStoreButton;
+  
       //new JoystickButton(driver, XboxController.Button.kRightBumper.value);
  
 
   public JoystickButton limelightButton;
 
-  public POVButton climbUpButton;
+  //public POVButton climbUpButton;
+  public JoystickButton climbUpButton;
 
 
   public Trigger sensorTrigger;
@@ -79,13 +84,15 @@ public class OI {
     //Driver Stick
   turboButton = new JoystickButton(driverStick, RobotMap.turboButtonNumber);
   driveStraightButton = new JoystickButton(driverStick, RobotMap.driveStraightButtonNumber);
-  turnLeft90Button = new JoystickButton(driverStick, RobotMap.turnLeft90ButtonNumber);
-  turnRight90Button = new JoystickButton(driverStick, RobotMap.turnRight90ButtonNumber);
+  //turnLeft90Button = new JoystickButton(driverStick, RobotMap.turnLeft90ButtonNumber);
+  //turnRight90Button = new JoystickButton(driverStick, RobotMap.turnRight90ButtonNumber);
+  hulkButton = new JoystickButton(driverStick, RobotMap.hulkModeButtonNumber);
   turnLeft180Button = new JoystickButton(driverStick, RobotMap.turnLeft180ButtonNumber);
   turnRight180Button = new JoystickButton(driverStick, RobotMap.turnRight180ButtonNumber);
   zeroGyro = new JoystickButton(driverStick, XboxController.Button.kY.value);
   robotCentric = new JoystickButton(driverStick, XboxController.Button.kLeftBumper.value);
   slowSpeed = new JoystickButton(driverStick, XboxController.Button.kRightBumper.value);
+  resetSwerveButton = new JoystickButton(driverStick, RobotMap.resetSwerveButtonNumber);
    
 
 
@@ -94,10 +101,11 @@ public class OI {
   speakerShooterButton = new JoystickButton(operatorStick, RobotMap.speakerShooterButtonNumber);
   intakeDownButton = new JoystickButton(operatorStick, RobotMap.intakeDownButtonNumber);
   intakeUpButton = new JoystickButton(operatorStick, RobotMap.intakeUpButtonNumber);
-  climbUpButton = new POVButton(operatorStick, 0);
+  climbUpButton = new JoystickButton(operatorStick, RobotMap.climbUpButtonNumber);
   climbPosButton = new JoystickButton(operatorStick, RobotMap.climbPositionButtonNumber);
   ampButton = new JoystickButton(operatorStick, RobotMap.ampButtonNumber);
   ampArmButton = new JoystickButton(operatorStick, RobotMap.ampArmButtonNumber);
+  afterAmpStoreButton = new JoystickButton(operatorStick, RobotMap.afterAmpStoreButtonNumber);
 
 
   

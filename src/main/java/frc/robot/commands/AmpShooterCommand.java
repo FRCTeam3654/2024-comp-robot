@@ -41,9 +41,9 @@ public class AmpShooterCommand extends Command {
   public void execute() {
     //RobotContainer.speakerShooter.shootSpeaker(shooterVelocity); // at about 95 (about 20k old value)
     //RobotContainer.speakerShooter.percentOutput(-0.9);
-    RobotContainer.speakerShooter.shootSpeaker(-20);
+    RobotContainer.speakerShooter.shootSpeaker(-19.25);
     System.out.println("shoot command");
-    if(RobotContainer.speakerShooter.isAtSpeed(-20)){
+    if(RobotContainer.speakerShooter.isAtSpeed(-19.25)){
       //RobotContainer.intakeWheels.intakeSpin(-0.2);
       RobotContainer.intakeRollers.feedOut(-0.5);
       System.out.println("should be feeding to shoot");

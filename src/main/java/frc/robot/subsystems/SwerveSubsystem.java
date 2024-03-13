@@ -160,16 +160,21 @@ public class SwerveSubsystem extends SubsystemBase {
   //public void drive(ChassisSpeeds chassisSpeeds) {
   //}
   
-  public void drive(ChassisSpeeds chassisSpeeds, boolean isOpenLoop) {
+  public void drive(ChassisSpeeds chassisSpeeds, boolean isOpenLoop, double maxSpeed) {
     SwerveModuleState[] swerveModuleStates =
     Constants.Swerve.swerveKinematics.toSwerveModuleStates(chassisSpeeds);
 
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, maxSpeed);
 
     for(SwerveModule mod : mSwerveMods){
         //mod.setDesiredState(swerveModuleStates[mod.moduleNumber], RobotMap.isOpenLoop);
         mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
     }
+
+}
+
+public void drive(ChassisSpeeds chassisSpeeds, boolean isOpenLoop) {
+    drive(chassisSpeeds, isOpenLoop, Constants.Swerve.maxSpeed);
 
 }
 
@@ -259,6 +264,14 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public void stop() {
         drive(new Translation2d(0,0), 0, false, true);
+    }
+
+    public void configToX(){
+        mSwerveMods[0].setDesiredState(new SwerveModuleState(1, new Rotation2d(Math.toRadians(45))), true);
+        mSwerveMods[1].setDesiredState(new SwerveModuleState(1, new Rotation2d(Math.toRadians(315))), true);
+        mSwerveMods[2].setDesiredState(new SwerveModuleState(1, new Rotation2d(Math.toRadians(315))), true);
+        mSwerveMods[3].setDesiredState(new SwerveModuleState(1, new Rotation2d(Math.toRadians(45))), true);
+
     }
 
 

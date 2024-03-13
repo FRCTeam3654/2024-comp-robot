@@ -9,28 +9,28 @@ import frc.robot.RobotContainer;
 import edu.wpi.first.wpilibj.Timer;
 
 
-public class DropNoteAmpCommand extends Command {
+public class ArmAmpCommand extends Command {
   /** Creates a new DropNoteTrapCommand. */
   private double ampTimer = 0;
   private double ampTimeout = 30;
-  private double wristTargetPos = -16.6;
+  private double wristTargetPos = -9.5;
   private double armTargetPos = 49;
   private boolean isWristSmartMotionInProgress = false;
   private boolean isArmSmartMotionInProgress = false;
 
 
-  public DropNoteAmpCommand() {
+  public ArmAmpCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(RobotContainer.intakeRollers);
     addRequirements(RobotContainer.wrist);
     addRequirements(RobotContainer.arm);
+    addRequirements(RobotContainer.intakeRollers);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     ampTimer = Timer.getFPGATimestamp();
-    RobotContainer.wrist.goToPositionBySmartMotion(-9.5); //this should be the store pos bc the motors zero at start
+    RobotContainer.wrist.goToPositionBySmartMotion(wristTargetPos); //this should be the store pos bc the motors zero at start
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -39,17 +39,14 @@ public class DropNoteAmpCommand extends Command {
     //RobotContainer.intakeWheels.intakeMove(-0.2);
     //RobotContainer.intakeRollers.feedIn();
     if(isArmSmartMotionInProgress == false){
-      //if(RobotContainer.wrist.isAtPos (-6)){
-        if((ampTimer + 1) < Timer.getFPGATimestamp()){
-            System.out.println("should arm be going to amp");
+      if(RobotContainer.wrist.isAtPos(-7)){
             RobotContainer.arm.goToPositionBySmartMotion(armTargetPos);
-            //System.out.println("should I be going to amp");
             isArmSmartMotionInProgress = true;
           }
     }
     
-    if(RobotContainer.wrist.isAtPos(-9.5) && RobotContainer.arm.isAtPos(armTargetPos)){
-      RobotContainer.intakeRollers.feedIn(-0.55, -0.3);
+    if(RobotContainer.arm.isAtPos(armTargetPos) && RobotContainer.wrist.isAtPos(wristTargetPos)){
+      RobotContainer.intakeRollers.feedIn();
     }
   }
 
@@ -57,16 +54,21 @@ public class DropNoteAmpCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     //RobotContainer.intakeWheels.intakeMove(0);
-    RobotContainer.intakeRollers.stop();
     isArmSmartMotionInProgress = false;
+    //RobotContainer.intakeRollers.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (!RobotContainer.intakeRollers.hasGamePiece() || (ampTimer + ampTimeout) < Timer.getFPGATimestamp()){ //distance sensor value needs to be tuned
+    if ((ampTimer + ampTimeout) < Timer.getFPGATimestamp()){
       return true;
     }
+
+    else if (RobotContainer.oi.afterAmpStoreButton.getAsBoolean()){
+      return true;
+    }
+
     return false;
   }
 }

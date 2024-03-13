@@ -66,24 +66,29 @@ public class SwerveModule {
         lastAngle = getState().angle;
     }
 
-    public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop){
+    public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop, double maxSpeed){
         /* This is a custom optimize function, since default WPILib optimize assumes continuous controller which CTRE and Rev onboard is not */
         desiredState = CTREModuleState.optimize(desiredState, getState().angle);
         setAngle(desiredState);
-        setSpeed(desiredState, isOpenLoop);
+        setSpeed(desiredState, isOpenLoop, maxSpeed);
         this.desiredState = desiredState;
     }
 
-    public void scaledSetDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
+    public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop){
+        /* This is a custom optimize function, since default WPILib optimize assumes continuous controller which CTRE and Rev onboard is not */
+        setDesiredState(desiredState, isOpenLoop, Constants.Swerve.maxSpeed);
+    }
+
+    public void scaledSetDesiredState(SwerveModuleState desiredState, boolean isOpenLoop, double maxSpeed) {
                 /* This is a custom optimize function, since default WPILib optimize assumes continuous controller which CTRE and Rev onboard is not */
         desiredState = CTREModuleState.optimize(desiredState, getState().angle);
         desiredState.speedMetersPerSecond *= desiredState.angle.minus(getAngle()).getCos();
         setAngle(desiredState);
-        setSpeed(desiredState, isOpenLoop);
+        setSpeed(desiredState, isOpenLoop, maxSpeed);
         this.desiredState = desiredState;
     }
 
-    private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop){
+    private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop, double maxSpeed){
         if(isOpenLoop){
             driveDutyCycle.Output = desiredState.speedMetersPerSecond / Constants.Swerve.maxSpeed;
             mDriveMotor.setControl(driveDutyCycle);
@@ -94,6 +99,10 @@ public class SwerveModule {
             mDriveMotor.setControl(driveVelocity);
         }
         this.desiredState = desiredState;
+    }
+
+    private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop){
+       setSpeed(desiredState, isOpenLoop, Constants.Swerve.maxSpeed);
     }
     
 

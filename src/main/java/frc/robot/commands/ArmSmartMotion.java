@@ -81,7 +81,7 @@ public class ArmSmartMotion extends Command {
       targetPos = SmartDashboard.getNumber("DropNoteAmpCommandArmPositionMode3",49);
 
       RobotContainer.arm.goToPositionBySmartMotion(targetPos); //change value depending on how much we want it to move
-      //System.out.println("should amp be moving to amp "+targetPos);
+      System.out.println("should amp be moving to amp "+targetPos);
       isSmartMotionInProgress = true;
       
 
@@ -113,7 +113,7 @@ public class ArmSmartMotion extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if( (armTimer + 3) < Timer.getFPGATimestamp()) {
+    if( (armTimer + 4) < Timer.getFPGATimestamp()) {
       // after 3 second, stop command
       isSmartMotionInProgress = false;
       return true;

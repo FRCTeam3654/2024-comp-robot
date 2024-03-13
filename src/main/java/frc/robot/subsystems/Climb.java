@@ -65,11 +65,11 @@ public class Climb extends SubsystemBase {
 
 
 
-    kClimbP = 0.8;//0.3;  //6e-5 //make larger if it doesn't hold //0.1
+    kClimbP = 1;//0.3;  //6e-5 //make larger if it doesn't hold //0.1
     kClimbI = 0;
     kClimbD = 0.1;//0; 
     kClimbIz = 0; 
-    kClimbFF = 0.001;//  0.000015; //0.000156 // 0.1
+    kClimbFF = 0.0016;//  0.000015; //0.000156 // 0.1
     kClimbMinOutput = -1;
     kclimbMaxOutput = 1; 
     maxRPM = 5700; //5700

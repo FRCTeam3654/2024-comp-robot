@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -45,6 +46,7 @@ public class RobotContainer {
     public static Arm arm;
     public static LEDSubsystem led;
     public static LEDSubsystemLeft ledLeft;
+    //public static SwerveSubsystem swerveSubsystem;
   
     /* Controllers */
     //private final Joystick driver = new Joystick(0); // moved to OI for consistency
@@ -103,6 +105,7 @@ public class RobotContainer {
 
         speakerShooter = new SpeakerShooter();
         //intakeWheels = new IntakeWheels();
+        //swerveSubsystem = new SwerveSubsystem();
         arm = new Arm();
         climb = new Climb();
         intakeRollers = new IntakeRollers();
@@ -187,19 +190,25 @@ public class RobotContainer {
        //autoChooser.addOption("4 Piece Auto", new PathPlannerAuto("4Piece"));
        //autoChooser.addOption("4.5 Piece Auto", new PathPlannerAuto("4PieceLong"));
        //autoChooser.addOption("5 Piece Auto", new PathPlannerAuto("5Piece"));
-       autoChooser.setDefaultOption("Just Shoot Auto", new PathPlannerAuto("JustShootAuto"));
-       autoChooser.addOption("Center Two Piece Auto", new PathPlannerAuto("FrontToFrontAuto"));
-       autoChooser.addOption("Loading Side Two Piece Auto", new PathPlannerAuto("BottomTwoPieceAuto"));
-       autoChooser.addOption("Amp Side Two Piece Auto", new PathPlannerAuto("TopTwoPieceAuto"));
-       autoChooser.addOption("Amp Side Shoot and Leave Auto", new PathPlannerAuto("ShootAndLeaveTopAuto"));
-       autoChooser.addOption("Loading Side Shoot and Leave Auto", new PathPlannerAuto("ShootAndMoveBottomAuto"));
-       autoChooser.addOption("Amp Side 3 Piece Auto", new PathPlannerAuto("3PieceShortTopAuto"));
-       autoChooser.addOption("Load Side 3 Piece Auto", new PathPlannerAuto("3PieceShortLoadSideAuto"));
-       autoChooser.addOption("Load Side 2 Piece Long Auto", new PathPlannerAuto("LoadSideToFourthNoteTwoPieceAuto"));
+       autoChooser.setDefaultOption("Just Shoot Auto", new PathPlannerAuto("JustShootAuto"));//
+       autoChooser.addOption("Center Two Piece Auto", new PathPlannerAuto("FrontToFrontAuto"));//
+       autoChooser.addOption("Loading Side Two Piece Auto", new PathPlannerAuto("BottomTwoPieceAuto"));//
+       autoChooser.addOption("Amp Side Two Piece Auto", new PathPlannerAuto("TopTwoPieceAuto"));//
+       autoChooser.addOption("Amp Side Shoot and Leave Auto", new PathPlannerAuto("ShootAndLeaveTopAuto"));//
+       autoChooser.addOption("Loading Side Shoot and Leave Auto", new PathPlannerAuto("ShootAndMoveBottomAuto"));//
+       autoChooser.addOption("Center Start Amp Side 3 Piece Auto", new PathPlannerAuto("3PieceShortTopAuto"));//
+       autoChooser.addOption("Center Start Load Side 3 Piece Auto", new PathPlannerAuto("3PieceShortLoadSideAuto"));//
+       //autoChooser.addOption("Load Side 2 Piece Long Auto", new PathPlannerAuto("LoadSideToFourthNoteTwoPieceAuto"));
+       autoChooser.addOption("Just Shoot Loading Side Auto", new PathPlannerAuto("JustShootLoadingSideAuto"));//
+       autoChooser.addOption("Just Shoot Amp Side Auto", new PathPlannerAuto("JustShootAmpSideAuto"));//
+       autoChooser.addOption("Do Nothing Auto", new PathPlannerAuto("DoNothingAuto"));//
+       autoChooser.addOption("Load Side To Fourth Note Auto", new PathPlannerAuto("LoadSideToFourthNoteTwoPieceAuto"));//
        //autoChooser.addOption("2 Piece Auto", new PathPlannerAuto("TwoPieceAuto"));
         //add more with autoChooser.addOption
 
         SmartDashboard.putData("Auto Route", autoChooser);
+
+        CameraServer.startAutomaticCapture(0);
 
     }
 
@@ -233,9 +242,17 @@ public class RobotContainer {
         oi.climbPosButton.onTrue(new ClimbPositionCommand());
         oi.climbUpButton.whileTrue(new ClimbUpCommand());
 
+        oi.hulkButton.whileTrue(new InstantCommand(() -> swerve.configToX()));
+
+        oi.resetSwerveButton.onTrue(new InstantCommand(
+            () -> swerve.zeroGyro()
+        ));
+
         SmartDashboard.putNumber("DropNoteAmpCommandWristPosition",-9.5);// as default, can be modified in Shuffleboard
         SmartDashboard.putNumber("DropNoteAmpCommandArmPositionMode3",49);
-        oi.ampArmButton.onTrue(new DropNoteAmpSeqCommand());
+
+        oi.ampArmButton.onTrue(new ArmAmpCommand().andThen(new StoreCommand(2)));
+        //oi.afterAmpStoreButton.onTrue(new StoreCommand(1));
 
         oi.ampButton.onTrue(new AmpShooterCommand());
 
@@ -284,8 +301,18 @@ public class RobotContainer {
     }
 
 
-    public Command LoadSideTwoPieceLongAuto(){
+    public Command LoadSideToFourthNoteTwoPieceAuto(){
         String autoName = "LoadSideToFourthNoteTwoPieceAuto";
+        Pose2d pose =  PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
+
+        swerve.swerveOdometry.resetPosition(swerve.getYaw(), swerve.getModulePositions(), 
+        pose);
+        
+        return new PathPlannerAuto(autoName);
+    }
+
+    public Command DoNothingAuto(){
+        String autoName = "DoNothingAuto";
         Pose2d pose =  PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
 
         swerve.swerveOdometry.resetPosition(swerve.getYaw(), swerve.getModulePositions(), 
@@ -304,8 +331,8 @@ public class RobotContainer {
         return new PathPlannerAuto(autoName);
     }
 
-    public Command AmpSideThreePieceAuto(){
-        String autoName = "AmpSideThreePieceAuto";
+    public Command ThreePieceShortTopAuto(){
+        String autoName = "3PieceShortTopAuto";
         Pose2d pose =  PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
 
         swerve.swerveOdometry.resetPosition(swerve.getYaw(), swerve.getModulePositions(), 
@@ -314,8 +341,8 @@ public class RobotContainer {
         return new PathPlannerAuto(autoName);
     }
 
-     public Command LoadSideThreePieceAuto(){
-        String autoName = "LoadSideThreePieceAuto";
+     public Command ThreePieceShortLoadSideAuto(){
+        String autoName = "3PieceShortLoadSideAuto";
         Pose2d pose =  PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
 
         swerve.swerveOdometry.resetPosition(swerve.getYaw(), swerve.getModulePositions(), 
@@ -327,6 +354,26 @@ public class RobotContainer {
 
     public Command JustShootAuto(){
         String autoName = "JustShootAuto";
+        Pose2d pose =  PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
+
+        swerve.swerveOdometry.resetPosition(swerve.getYaw(), swerve.getModulePositions(), 
+        pose);
+        
+        return new PathPlannerAuto(autoName);
+    }
+
+    public Command JustShootLoadingSideAuto(){
+        String autoName = "JustShootLoadingSideAuto";
+        Pose2d pose =  PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
+
+        swerve.swerveOdometry.resetPosition(swerve.getYaw(), swerve.getModulePositions(), 
+        pose);
+        
+        return new PathPlannerAuto(autoName);
+    }
+    
+    public Command JustShootAmpSideAuto(){
+        String autoName = "JustShootAmpSideAuto";
         Pose2d pose =  PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
 
         swerve.swerveOdometry.resetPosition(swerve.getYaw(), swerve.getModulePositions(), 
