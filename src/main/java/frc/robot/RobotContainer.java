@@ -52,9 +52,9 @@ public class RobotContainer {
     //private final Joystick driver = new Joystick(0); // moved to OI for consistency
 
     /* Drive Controls */
-    private final int translationAxis = XboxController.Axis.kLeftY.value;
-    private final int strafeAxis = XboxController.Axis.kLeftX.value;
-    private final int rotationAxis = XboxController.Axis.kRightX.value;
+    public static final int translationAxis = XboxController.Axis.kLeftY.value;
+    public static final int strafeAxis = XboxController.Axis.kLeftX.value;
+    public static final int rotationAxis = XboxController.Axis.kRightX.value;
 
     PathPlannerHelper pathPlannerHelper = PathPlannerHelper.getInstace();
 
@@ -76,8 +76,8 @@ public class RobotContainer {
     //private final PoseEstimatorSubsystem poseEstimator = new PoseEstimatorSubsystem(photonCamera, s_Swerve);
     // private ChaseTagCommand chaseTagCommand =  new ChaseTagCommand(photonCamera, s_Swerve, poseEstimator::getCurrentPose);
     
-    private PhotonCamera photonFrontOVCamera =  null;
-    private PhotonCamera photonBackOVCamera =  null;
+    public static PhotonCamera photonFrontOVCamera =  null;
+    public static PhotonCamera photonBackOVCamera =  null;
     public static PhotonCamera photonLifeCam = null;
 
    

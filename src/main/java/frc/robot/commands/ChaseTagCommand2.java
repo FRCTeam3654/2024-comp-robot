@@ -22,6 +22,14 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 
 import frc.robot.subsystems.SwerveSubsystem;
 
+
+
+/*
+ *  Drive to the tag at BOTH a predefined distance AND angle via TAG_TO_GOAL_AMP etc. 
+ */
+
+
+
 public class ChaseTagCommand2 extends Command {
    
   // front AprilTag Camera -- roll or pitch , which is 30 degree?
@@ -64,8 +72,6 @@ public class ChaseTagCommand2 extends Command {
   private final SwerveSubsystem drivetrainSubsystem;
   private final Supplier<Pose2d> poseProvider; // tell me where my robot is
 
- 
-
   private SlewRateLimiter xLimiter = new SlewRateLimiter(3.0);
   private SlewRateLimiter yLimiter = new SlewRateLimiter(3.0);
   
@@ -74,7 +80,7 @@ public class ChaseTagCommand2 extends Command {
   private PhotonTrackedTarget lastTarget;
   private Pose3d robotPose3dByVision = null;
   private Pose2d  goalPose;
-  private double distanceCamToAprilTag;
+  private double distanceRobotToAprilTag;
 
   private double tagTimer ;
   private double tagTimeout = 20;
@@ -93,13 +99,8 @@ public class ChaseTagCommand2 extends Command {
 
   @Override
   public void initialize() {
-    
     lastTarget = null;
-    var robotPose = poseProvider.get();
-
-   
     isGoalReached = false;
-
     tagTimer = Timer.getFPGATimestamp();
   }
 
@@ -147,9 +148,7 @@ public class ChaseTagCommand2 extends Command {
           Pose3d camPose3d = aprilTagPose3d.transformBy(camToTarget.inverse());
           // check distance and 2d angle make sense
 
-          // which camera, front or back
           robotPose3dByVision = camPose3d.transformBy(ROBOT_TO_CAMERA_BACK.inverse());//(CAMERA_TO_ROBOT);
-
           robotPose = robotPose3dByVision; // trust the vision more here than poseEstimator 
         }
 
@@ -177,13 +176,12 @@ public class ChaseTagCommand2 extends Command {
             goalPose = aprilTagPose3d.transformBy(which_tag_to_goal).toPose2d();
 
             System.out.println("Goal = "+ goalPose.toString());
-
             System.out.println("robotPose2d = "+robotPose2d.toString());
 
             if( robotPose3dByVision != null) {
                 // check distance and 2d angle make sense -- test code
-                distanceCamToAprilTag = PoseEstimatorSubsystem.calculateDifference(robotPose3dByVision.toPose2d(), goalPose);
-                System.out.println("Distance btw robot and goal = "+distanceCamToAprilTag);    
+                distanceRobotToAprilTag = PoseEstimatorSubsystem.calculateDifference(robotPose3dByVision.toPose2d(), goalPose);
+                //System.out.println("Distance btw robot and goal = "+distanceRobotToAprilTag);    
             }  
         }
       }
@@ -196,8 +194,8 @@ public class ChaseTagCommand2 extends Command {
       // Drive to the target
     
 
-      double xSpeed = 0.5 * (goalPose.getX() - robotPose.getX());
-      double ySpeed = 0.5 * (goalPose.getY() - robotPose.getY());
+      double xSpeed = 1.3 * (goalPose.getX() - robotPose.getX()); //0.5
+      double ySpeed = 1.3 * (goalPose.getY() - robotPose.getY());
 
       if(Math.abs(xSpeed) > CHASE_TAG_MAX_PID_OUTPUT) {
         xSpeed = Math.signum(xSpeed) * CHASE_TAG_MAX_PID_OUTPUT;
@@ -209,19 +207,19 @@ public class ChaseTagCommand2 extends Command {
 
 
       
-
+      double angleError = (goalPose.getRotation().getDegrees() - robotPose2d.getRotation().getDegrees()) ;
       // need check the pid's output sign
-      var omegaSpeed = 0.02 * (goalPose.getRotation().getDegrees() - robotPose2d.getRotation().getDegrees()) ;
+      var omegaSpeed = 0.02 * angleError;
       
       xSpeed = xLimiter.calculate( MathUtil.applyDeadband(xSpeed, 0.01) );
       ySpeed = yLimiter.calculate(  MathUtil.applyDeadband(ySpeed, 0.01));
       //omegaSpeed = omegaLimiter.calculate(  omegaSpeed);
       omegaSpeed =MathUtil.applyDeadband(omegaSpeed, 0.008);
 
-      System.out.println("x,y,omega = "+xSpeed+", " +ySpeed+", "+omegaSpeed+" with distance = "+distanceCamToAprilTag+", angle error = "+(goalPose.getRotation().getDegrees() - robotPose2d.getRotation().getDegrees()));
+      System.out.println("x,y,omega = "+xSpeed+", " +ySpeed+", "+omegaSpeed+" with distance = "+distanceRobotToAprilTag+", angle error = "+angleError);
       // once reach goal, should not applied more power
-
-      if(   Math.abs(xSpeed) < 0.015 && Math.abs(ySpeed) < 0.015 && Math.abs(omegaSpeed) < 0.01 ) {
+      // either the distnace < 1 inch and angle within 2 degree,  or  very little driving power (pid output)
+      if(   ( Math.abs(distanceRobotToAprilTag) < 0.03 &&  Math.abs(angleError) < 2  ) ||  (Math.abs(xSpeed) < 0.015 && Math.abs(ySpeed) < 0.015 && Math.abs(omegaSpeed) < 0.01) ) {
          isGoalReached = true;
       }
 
@@ -230,7 +228,7 @@ public class ChaseTagCommand2 extends Command {
         xSpeed = 0;
         ySpeed = 0;
         omegaSpeed = 0;
-         System.out.println("Goal is reached with distance = "+distanceCamToAprilTag+", angle error = "+(goalPose.getRotation().getDegrees() - robotPose2d.getRotation().getDegrees()) );
+        System.out.println("Goal is reached with distance = "+distanceRobotToAprilTag+", angle error = "+angleError );
       }
 
       drivetrainSubsystem.drive(
