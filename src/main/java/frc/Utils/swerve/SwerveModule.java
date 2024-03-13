@@ -66,9 +66,6 @@ public class SwerveModule {
         lastAngle = getState().angle;
     }
 
-<<<<<<< HEAD
-    public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop, double maxSpeed){
-=======
     
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop){
         setDesiredState(desiredState, isOpenLoop, Constants.Swerve.maxSpeed);
@@ -76,7 +73,6 @@ public class SwerveModule {
 
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop, double maxSpeed){
  
->>>>>>> bc5fa5e9baf69305a7403a75efb1dd5f7b51479c
         /* This is a custom optimize function, since default WPILib optimize assumes continuous controller which CTRE and Rev onboard is not */
         desiredState = CTREModuleState.optimize(desiredState, getState().angle);
         setAngle(desiredState);
@@ -88,10 +84,7 @@ public class SwerveModule {
 
     }
 
-    public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop){
-        /* This is a custom optimize function, since default WPILib optimize assumes continuous controller which CTRE and Rev onboard is not */
-        setDesiredState(desiredState, isOpenLoop, Constants.Swerve.maxSpeed);
-    }
+
 
     public void scaledSetDesiredState(SwerveModuleState desiredState, boolean isOpenLoop, double maxSpeed) {
                 /* This is a custom optimize function, since default WPILib optimize assumes continuous controller which CTRE and Rev onboard is not */
@@ -102,13 +95,10 @@ public class SwerveModule {
         this.desiredState = desiredState;
     }
 
-<<<<<<< HEAD
-=======
     private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop){
         setSpeed( desiredState, isOpenLoop, Constants.Swerve.maxSpeed);
     }
     
->>>>>>> bc5fa5e9baf69305a7403a75efb1dd5f7b51479c
     private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop, double maxSpeed){
         if(isOpenLoop){
             driveDutyCycle.Output = desiredState.speedMetersPerSecond / maxSpeed;
@@ -123,9 +113,7 @@ public class SwerveModule {
         this.desiredState = desiredState;
     }
 
-    private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop){
-       setSpeed(desiredState, isOpenLoop, Constants.Swerve.maxSpeed);
-    }
+    
     
 
     private void setAngle(SwerveModuleState desiredState){
