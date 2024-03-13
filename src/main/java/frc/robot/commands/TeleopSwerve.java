@@ -59,6 +59,7 @@ public class TeleopSwerve extends Command {
         double strafeVal = strafeLimiter.calculate( speedMultiplier * MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband));
         double rotationVal = rotationLimiter.calculate(  speedMultiplier * MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband));
 
+        isFieldRelative = !robotCentricSup.getAsBoolean();
 
         double joystickX = 0.0;
 
@@ -77,11 +78,46 @@ public class TeleopSwerve extends Command {
                 isFieldRelative = false;
                 System.out.println("driveStraightAngle = "+driveStraightAngle+", vinniesError = "+vinniesError+", p ="+joystickX);
         }
+        else if (RobotContainer.oi.turnLeft180Button.getAsBoolean() == true) { 
+
+            if( RobotContainer.photonLifeCam != null) {
+                var results = RobotContainer.photonLifeCam.getLatestResult();
+            //if( RobotContainer.photonBackOVCamera != null) {  // temp code
+            //   var results = RobotContainer.photonBackOVCamera.getLatestResult();
+               if( results.hasTargets() ) {
+                    var result = results.getBestTarget();
+                    if( result != null) {
+                            driveStraightAngle = s_Swerve.getYawInDegree();
+                            // add the vision data
+                            driveStraightAngle = driveStraightAngle - result.getYaw();// add or minus need test out
+                            driveStraightFlag = true;
+                    }
+               }
+
+               // if the target is outside the vision, use the last value if driveStraight is still in progress
+               if(  driveStraightFlag == true) {
+                        double vinniesError = driveStraightAngle - s_Swerve.getYawInDegree();
+                        joystickX = vinniesError * 0.01;//0.025;//0.01
+                        if(Math.abs(joystickX) > 0.4) {
+                            joystickX = Math.signum(joystickX) * 0.4;
+                        }
+
+                        // in drive straight mode, ignore rotation and strafe
+                        rotationVal = joystickX;
+                        strafeVal = 0;
+                        if( translationVal > 0.13) {
+                            translationVal = 0.13; // fix the speed too?
+                        }
+                        isFieldRelative = false;
+                        System.out.println("Vision IP driveStraightAngle = "+driveStraightAngle+", vinniesError = "+vinniesError+", pid output ="+joystickX);
+                }
+            }
+        }
         else {
         driveStraightFlag = false;
         }
 
-        isFieldRelative = !robotCentricSup.getAsBoolean();
+
 
         /* Drive */
   
