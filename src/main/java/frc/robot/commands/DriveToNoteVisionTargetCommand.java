@@ -55,10 +55,10 @@ public class DriveToNoteVisionTargetCommand extends Command {
     double strafeVal = 0.0;
     double rotationVal = 0.0;
 
-    //if( RobotContainer.photonLifeCam != null) {
-    //    var results = RobotContainer.photonLifeCam.getLatestResult();
-    if( RobotContainer.photonBackOVCamera != null) {  // temp code
-      var results = RobotContainer.photonBackOVCamera.getLatestResult();
+    if( RobotContainer.photonLifeCam != null) {
+        var results = RobotContainer.photonLifeCam.getLatestResult();
+    //if( RobotContainer.photonBackOVCamera != null) {  // temp code
+    //  var results = RobotContainer.photonBackOVCamera.getLatestResult();
       if( results.hasTargets() ) {
            var result = results.getBestTarget();
            if( result != null) {
@@ -71,7 +71,7 @@ public class DriveToNoteVisionTargetCommand extends Command {
 
       // if the target is outside the vision, use the last value if driveStraight is still in progress
       if(  driveStraightFlag == true) {
-               double vinniesError = driveStraightAngle - s_Swerve.getYawInDegree();
+               double vinniesError =  driveStraightAngle  - s_Swerve.getYawInDegree() ; 
                joystickX = vinniesError * 0.012;// 0.025;//0.01
 
                // in drive straight mode, ignore rotation and strafe
