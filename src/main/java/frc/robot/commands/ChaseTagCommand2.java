@@ -31,35 +31,31 @@ public class ChaseTagCommand2 extends Command {
 
   public static final Transform3d ROBOT_TO_CAMERA_FRONT = new Transform3d(
         new Translation3d(Units.inchesToMeters(-7), Units.inchesToMeters(3.5), Units.inchesToMeters(21)),
-        new Rotation3d(0, Units.degreesToRadians(-30), 0)); 
+        new Rotation3d(0, Units.degreesToRadians(0), 0)); 
 
   // back camera's pitch: is it -30 degree since it is looking up , ( not 150 since yaw turns 180 degree, pitch stays 30 degree looking up) : decouple pitch from yaw
- 
   public static final Transform3d ROBOT_TO_CAMERA_BACK = new Transform3d(
-        new Translation3d(Units.inchesToMeters(-7), Units.inchesToMeters(7), Units.inchesToMeters(14.5)),
-
+        new Translation3d(Units.inchesToMeters(-11.5), Units.inchesToMeters(0), Units.inchesToMeters(20)),
         new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(180))); 
 
  
   // drive backward,use back camera to align to speaker
   private static final Transform3d TAG_TO_GOAL_SPEAKER = 
       new Transform3d(
-          new Translation3d(1.3, 0.0, 0.0),
+          new Translation3d(1.0, 0.0, 0.0),
           new Rotation3d(0.0, 0.0, 0));
 
   // AMP's TAG_TO_GOAL
   private static final Transform3d TAG_TO_GOAL_AMP = 
       new Transform3d(
-          new Translation3d(Units.inchesToMeters(30), 0.0, 0.0),
-          new Rotation3d(0.0, 0.0, Units.degreesToRadians(-10)));
+          new Translation3d(Units.inchesToMeters(18), 0.0, 0.0),
+          new Rotation3d(0.0, 0.0, 0));
   
-
   // Stage's TAG_TO_GOAL
   private static final Transform3d TAG_TO_GOAL_STAGE = 
       new Transform3d(
-          new Translation3d(Units.inchesToMeters(30), 0.0, 0.0),
+          new Translation3d(Units.inchesToMeters(33), 0.0, 0.0),
           new Rotation3d(0.0, 0.0, Math.PI));
-
 
           
   private Transform3d which_tag_to_goal;
@@ -225,7 +221,7 @@ public class ChaseTagCommand2 extends Command {
       System.out.println("x,y,omega = "+xSpeed+", " +ySpeed+", "+omegaSpeed+" with distance = "+distanceCamToAprilTag+", angle error = "+(goalPose.getRotation().getDegrees() - robotPose2d.getRotation().getDegrees()));
       // once reach goal, should not applied more power
 
-      if(   Math.abs(xSpeed) < 0.013 && Math.abs(ySpeed) < 0.013 && Math.abs(omegaSpeed) < 0.01 ) {
+      if(   Math.abs(xSpeed) < 0.015 && Math.abs(ySpeed) < 0.015 && Math.abs(omegaSpeed) < 0.01 ) {
          isGoalReached = true;
       }
 

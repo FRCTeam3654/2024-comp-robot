@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.util.Color;
 
 public class DriveToNoteVisionTargetCommand extends Command {
 
+  public static final double CHASE_NOTE_MAX_PID_OUTPUT = 0.4;
   private double driveTimer = 0;
   private double driveTimeout = 2;
   private SwerveSubsystem s_Swerve;    
@@ -73,6 +74,9 @@ public class DriveToNoteVisionTargetCommand extends Command {
       if(  driveStraightFlag == true) {
                double vinniesError =  driveStraightAngle  - s_Swerve.getYawInDegree() ; 
                joystickX = vinniesError * 0.012;// 0.025;//0.01
+               if(Math.abs(joystickX) > CHASE_NOTE_MAX_PID_OUTPUT) {
+                joystickX = Math.signum(joystickX) * CHASE_NOTE_MAX_PID_OUTPUT;
+               }
 
                // in drive straight mode, ignore rotation and strafe
                rotationVal = joystickX;
