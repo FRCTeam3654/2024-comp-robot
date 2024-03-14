@@ -110,6 +110,10 @@ public class ChaseTagClimbCommand extends Command {
 
   @Override
   public void execute() {
+    if( photonCamera == null) {
+      isGoalReached = true;
+      return;
+    }
 
     fiducialId = -1;
 
