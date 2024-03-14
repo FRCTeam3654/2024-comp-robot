@@ -69,6 +69,8 @@ public class SwerveSubsystem extends SubsystemBase {
     protected  StatusSignal<Double> imuYawSignal;
     protected  StatusSignal<Double> imuAccelZSignal;
 
+    private AnalogInput backDistanceIRSensor;
+    private AnalogInput frontDistanceIRSensor;
 
     private static SwerveSubsystem instance;
 
@@ -102,12 +104,17 @@ public class SwerveSubsystem extends SubsystemBase {
         imuAccelZSignal = gyro.getAccelerationZ();
         System.out.println("**** swerve zeroGyro ***");
 
-        analogDistanceSensor1 = new AnalogInput(0);
-        analogDistanceSensor1.setAverageBits(40);
+        //analogDistanceSensor1 = new AnalogInput(0); //  I don't think there is a sensor in port 0
+       //analogDistanceSensor1.setAverageBits(40);
 
         SmartDashboard.putData("field", field2d);
 
-        //vision = Vision.getInstance();
+        backDistanceIRSensor = new AnalogInput(RobotMap.analogDistanceSensorPort3);
+        backDistanceIRSensor.setAverageBits(12);
+
+        frontDistanceIRSensor = new AnalogInput(RobotMap.analogDistanceSensorPort2);
+        frontDistanceIRSensor.setAverageBits(12);
+
 
         mSwerveMods = new SwerveModule[] {
                 new SwerveModule(0, Mod0.constants),
@@ -271,6 +278,13 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
 
+    public double getBackDistanceIRSensorReading() {
+        return  backDistanceIRSensor.getAverageValue(); 
+    }
+
+    public double getFrontDistanceIRSensorReading() {
+        return  frontDistanceIRSensor.getAverageValue(); 
+    }
 
     @Override
     public void periodic() {
@@ -283,8 +297,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
         StatusSignal.waitForAll(0, imuRollSignal, imuPitchSignal, imuYawSignal, imuAccelZSignal);
 
-        double cmDistanceSensor1 = analogDistanceSensor1.getAverageValue();
-        SmartDashboard.putNumber("Analog Distance Sensor 1 raw", cmDistanceSensor1);
+       // double cmDistanceSensor1 = analogDistanceSensor1.getAverageValue();
+       // SmartDashboard.putNumber("Analog Distance Sensor 1 raw", cmDistanceSensor1);
 
         for (SwerveModule mod : mSwerveMods) {
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());

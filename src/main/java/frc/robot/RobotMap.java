@@ -91,6 +91,8 @@ public static int climbUpButtonNumber = 7;
 //TALONS/TALON ID NUMBERS!
 
 public static int analogDistanceSensorPort1 = 1; 
+public static int analogDistanceSensorPort2 = 2; 
+public static int analogDistanceSensorPort3 = 3; 
 public static int digitalDistanceSensorPort2 = 0; 
 public static int digitalDistanceSensorPort3 = 3; 
 //public static int digitalDistanceSensorPort4 = 3; 

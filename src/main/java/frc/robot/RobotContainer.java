@@ -85,7 +85,10 @@ public class RobotContainer {
     public static  PoseEstimatorSubsystem poseEstimator = null;
 
     //private ChaseTagCommand2 chaseTagCommand2 =  null;
-    private ChaseTagCommand3 chaseTagCommand3 =  null;
+    //private ChaseTagCommand3 chaseTagCommand3 =  null;
+    private ChaseTagCommand4 chaseTagCommand4 =  null;
+
+    private ChaseTagClimbCommand chaseTagClimbCommand =  null;
 
     //private ChaseNoteCommand chaseNoteCommand =  null;
 
@@ -120,9 +123,10 @@ public class RobotContainer {
             System.out.println("Ready to sleep for 5 seconds ...");
             Thread.sleep(5000); // try this
             //photonFrontOVCamera = new PhotonCamera("Arducam_OV9281_USB_1");//JW's first camera
-            photonBackOVCamera = new PhotonCamera("Arducam_OV9281_USB_Camera");//AK's second camera
-            //photonBackOVCamera = new PhotonCamera("Arducam_OV2311_USB_Camera");//JW's second different kind of camera
+            photonFrontOVCamera = new PhotonCamera("Arducam_OV2311_USB_Camera");//JW's second different kind of camera
 
+            photonBackOVCamera = new PhotonCamera("Arducam_OV9281_USB_Camera");//AK's second camera
+            
             //photonLifeCam = new PhotonCamera("USB_Camera");
             photonLifeCam = new PhotonCamera("Microsoft_LifeCam_HD-3000");
 
@@ -130,7 +134,11 @@ public class RobotContainer {
             
             //  photonCamera may have race condition
             //chaseTagCommand2 =  new ChaseTagCommand2(photonBackOVCamera, swerve, poseEstimator::getCurrentPose);
-            chaseTagCommand3 =  new ChaseTagCommand3(photonBackOVCamera, swerve);
+            //chaseTagCommand3 =  new ChaseTagCommand3(photonBackOVCamera, swerve);
+            chaseTagCommand4 =  new ChaseTagCommand4(photonBackOVCamera, swerve, poseEstimator::getCurrentPose);
+
+            chaseTagClimbCommand =  new ChaseTagClimbCommand(photonFrontOVCamera, swerve, poseEstimator::getCurrentPose);
+
 
             //chaseNoteCommand =  new ChaseNoteCommand(photonLifeCam, swerve, poseEstimator::getCurrentPose);
             
@@ -241,7 +249,8 @@ public class RobotContainer {
 
         //oi.turnLeft180Button.whileTrue(chaseNoteCommand);
        // oi.turnRight180Button.whileTrue(chaseTagCommand2);
-        oi.turnRight180Button.whileTrue(chaseTagCommand3);
+       // oi.turnRight180Button.whileTrue(chaseTagCommand3);
+        oi.turnRight180Button.whileTrue(chaseTagCommand4);
        // oi.intakeDownButton.onTrue(new GrabDownCommand());
         //oi.intakeUpButton.onTrue(new StoreCommand());
         oi.climbPosButton.onTrue(new ClimbPositionCommand());
