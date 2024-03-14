@@ -78,6 +78,7 @@ public class ChaseTagCommand4 extends Command {
   private Pose3d robotPose3dByVision = null;
   private Pose2d  goalPose;
   private double distanceRobotToAprilTag;
+  private int fiducialId = -1;
 
   private double tagTimer ;
   private double tagTimeout = 20;
@@ -103,7 +104,9 @@ public class ChaseTagCommand4 extends Command {
 
   @Override
   public void execute() {
-    
+
+    fiducialId = -1;
+
     var robotPose2d = poseProvider.get();
     // robot is in 2 dimensional (X,Y)
     var robotPose = 
@@ -130,7 +133,7 @@ public class ChaseTagCommand4 extends Command {
         // This is new target data, so recalculate the goal
         lastTarget = target;
         
-        int fiducialId = target.getFiducialId();
+        fiducialId = target.getFiducialId();
 
         Pose3d aprilTagPose3d = RobotContainer.poseEstimator.aprilTagFieldLayout.getTagPose(fiducialId).get();
        // System.out.println("aprilTagPose3d = "+aprilTagPose3d.toString());
@@ -230,6 +233,14 @@ public class ChaseTagCommand4 extends Command {
       if( ( backDistanceIRSensorReading > 2000 && Math.abs(distanceRobotToAprilTag) < 0.1 && Math.abs(angleError) < 2   )  || ( Math.abs(goalPose.getX() - robotPose.getX()) < 0.04 && Math.abs(goalPose.getY() - robotPose.getY()) < 0.04 &&  Math.abs(angleError) < 2  ) || ( Math.abs(distanceRobotToAprilTag) < 0.04 &&  Math.abs(angleError) < 2  ) ||  (Math.abs(xSpeed) < 0.015 && Math.abs(ySpeed) < 0.015 && Math.abs(omegaSpeed) < 0.01) ) {
          isGoalReached = true;
       }
+
+      // for STAGE, need enforce hard stop to prevent the robot drive past the chain (damage the arm)
+      if( fiducialId >= 11) {
+          if(  backDistanceIRSensorReading > 1000 ) {  // need adjust the value based on reading from chain
+             isGoalReached = true; 
+          }
+      } 
+
 
       if( isGoalReached == true) {
         // if goal reached before, don't apply new power
