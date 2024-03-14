@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import frc.robot.RobotContainer;
@@ -211,8 +212,9 @@ public class ChaseTagClimbCommand extends Command {
       double angleError = (goalPose.getRotation().getDegrees() - robotPose2d.getRotation().getDegrees()) ;
       distanceRobotToAprilTag = PoseEstimatorSubsystem.calculateDifference(robotPose2d, goalPose);
 
-      double backDistanceIRSensorReading = drivetrainSubsystem.getBackDistanceIRSensorReading();
-     
+      double frontDistanceIRSensorReading = drivetrainSubsystem.getFrontDistanceIRSensorReading();
+      SmartDashboard.putNumber("frontDistanceIRSensorReading",frontDistanceIRSensorReading);
+
       // need check the pid's output sign
       var omegaSpeed = 0.02 * angleError;
       
@@ -235,7 +237,7 @@ public class ChaseTagClimbCommand extends Command {
 
       // for STAGE, need enforce hard stop to prevent the robot drive past the chain (damage the arm)
       if( fiducialId >= 11) {
-          if(  backDistanceIRSensorReading > 1000 ) {  // need adjust the value based on reading from chain
+          if(  frontDistanceIRSensorReading > 1000 ) {  // need adjust the value based on reading from chain
              isGoalReached = true; 
           }
       } 
@@ -246,7 +248,7 @@ public class ChaseTagClimbCommand extends Command {
         xSpeed = 0;
         ySpeed = 0;
         omegaSpeed = 0;
-        System.out.println("Goal is reached with distance = "+distanceRobotToAprilTag+", angle error = "+angleError );
+        System.out.println("Goal is reached with vision distance = "+distanceRobotToAprilTag+", angle error = "+angleError+", IR Sensor = "+frontDistanceIRSensorReading );
       }
 
       drivetrainSubsystem.drive(
