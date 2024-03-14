@@ -69,6 +69,7 @@ public class SwerveSubsystem extends SubsystemBase {
     protected  StatusSignal<Double> imuYawSignal;
     protected  StatusSignal<Double> imuAccelZSignal;
 
+    private AnalogInput backDistanceIRSensor;
 
     private static SwerveSubsystem instance;
 
@@ -107,7 +108,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
         SmartDashboard.putData("field", field2d);
 
-        //vision = Vision.getInstance();
+        backDistanceIRSensor = new AnalogInput(RobotMap.analogDistanceSensorPort3);
+        backDistanceIRSensor.setAverageBits(12);
 
         mSwerveMods = new SwerveModule[] {
                 new SwerveModule(0, Mod0.constants),
@@ -271,6 +273,9 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
 
+    public double getBackDistanceIRSensorReading() {
+        return  backDistanceIRSensor.getAverageValue(); 
+    }
 
     @Override
     public void periodic() {
