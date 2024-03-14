@@ -50,7 +50,7 @@ public class Wrist extends SubsystemBase {
     kWristI = 0;
     kWristD = 0;//0; 
     kWristIz = 0; 
-    kWristFF = 0.000156;//  0.000015; //0.000156
+    kWristFF = 0.00018;//  0.000015; //0.000156
     kWristMinOutput = -1;
     kWristMaxOutput = 1; 
     maxRPM = 5700; //5700
@@ -64,12 +64,12 @@ public class Wrist extends SubsystemBase {
 
     wristMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
-    kWristMinOutput = -0.3;
-    kWristMaxOutput = 0.3; 
+    kWristMinOutput = -0.7;
+    kWristMaxOutput = 0.7; 
     m_pidWristController.setOutputRange(kWristMinOutput, kWristMaxOutput); 
 
-    m_pidWristController.setSmartMotionMaxVelocity(3500, 0); //2500;maxVel in rpm; will need to adjust
-    m_pidWristController.setSmartMotionMaxAccel(4500,0);//3500
+    m_pidWristController.setSmartMotionMaxVelocity(5500, 0); //2500;maxVel in rpm; will need to adjust
+    m_pidWristController.setSmartMotionMaxAccel(6000,0);//3500
     m_pidWristController.setSmartMotionMinOutputVelocity(0, 0);
     m_pidWristController.setSmartMotionAllowedClosedLoopError(0.2, 0);  
 
