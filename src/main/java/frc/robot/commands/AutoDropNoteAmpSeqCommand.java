@@ -38,7 +38,7 @@ public class AutoDropNoteAmpSeqCommand extends SequentialCommandGroup {
 
         //Pose2d targetPose2d = new Pose2d(1,1,swerve.getYaw());
         //Pose2d targetPose2d = new Pose2d(1,0,  Rotation2d.fromDegrees(0+ drivetrainSubsystem.getYaw().getDegrees())   );
-        Transform2d robotToGoal = new Transform2d(-0.5,-0.5, initialRobotPos2d.getRotation()) ; // has issue with only y change, not moving
+        Transform2d robotToGoal = new Transform2d(-0.5,0, new Rotation2d(0.0)) ; // has issue with only y change, not moving
 
         System.out.println("current pose = "+initialRobotPos2d);
         //System.out.println("target pose = "+targetPose2d);
