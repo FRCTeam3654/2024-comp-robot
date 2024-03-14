@@ -163,10 +163,10 @@ public class ChaseTagCommand4 extends Command {
             // AMP
             which_tag_to_goal = TAG_TO_GOAL_AMP;
         }
-        else  if( fiducialId >= 11) {
+        //else  if( fiducialId >= 11) {
             // All stages
-            which_tag_to_goal = TAG_TO_GOAL_STAGE;
-        }
+        //    which_tag_to_goal = TAG_TO_GOAL_STAGE;
+        //}
         else {
             which_tag_to_goal = null;
         }
@@ -233,14 +233,6 @@ public class ChaseTagCommand4 extends Command {
       if( ( backDistanceIRSensorReading > 2000 && Math.abs(distanceRobotToAprilTag) < 0.1 && Math.abs(angleError) < 2   )  || ( Math.abs(goalPose.getX() - robotPose.getX()) < 0.04 && Math.abs(goalPose.getY() - robotPose.getY()) < 0.04 &&  Math.abs(angleError) < 2  ) || ( Math.abs(distanceRobotToAprilTag) < 0.04 &&  Math.abs(angleError) < 2  ) ||  (Math.abs(xSpeed) < 0.015 && Math.abs(ySpeed) < 0.015 && Math.abs(omegaSpeed) < 0.01) ) {
          isGoalReached = true;
       }
-
-      // for STAGE, need enforce hard stop to prevent the robot drive past the chain (damage the arm)
-      if( fiducialId >= 11) {
-          if(  backDistanceIRSensorReading > 1000 ) {  // need adjust the value based on reading from chain
-             isGoalReached = true; 
-          }
-      } 
-
 
       if( isGoalReached == true) {
         // if goal reached before, don't apply new power
