@@ -2,15 +2,27 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7812469471092803,
-      "y": 4.390789550809871
+      "x": 0.5641742052714891,
+      "y": 2.950215900431802
     },
-    "rotation": -43.72696997994325
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MiddleOfLoadSideToShoot"
+          }
+        },
         {
           "type": "parallel",
           "data": {
@@ -50,7 +62,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "BottomTwoPiece"
+                  "pathName": "LoadSideToFourthDown"
                 }
               },
               {
@@ -75,22 +87,10 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "TwoPieceBottomPart2"
+                  "pathName": "FourthNoteToShootLoad"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "SpeakerShooterCommand"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ResetLEDCommand"
           }
         }
       ]

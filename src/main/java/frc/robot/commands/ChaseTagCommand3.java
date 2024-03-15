@@ -126,7 +126,7 @@ public class ChaseTagCommand3 extends Command {
                   
                     driveStraightAngle = drivetrainSubsystem.getYawInDegree();
                     // add the vision data
-                    driveStraightAngle = driveStraightAngle - result.getYaw();// add or minus need test out
+                    driveStraightAngle = driveStraightAngle - result.getYaw()+4;// add or minus need test out
                     driveStraightFlag = true;
 
                     fiducialId = result.getFiducialId();
