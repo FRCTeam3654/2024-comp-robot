@@ -32,7 +32,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 
 
 
-public class ChaseTagCommand3 extends Command {
+public class ChaseTagCommand5 extends Command {
    
   // front AprilTag Camera -- roll or pitch , which is 30 degree?
   
@@ -47,6 +47,7 @@ public class ChaseTagCommand3 extends Command {
 
   private final PhotonCamera photonCamera;
   private final SwerveSubsystem drivetrainSubsystem;
+  private Supplier<Pose2d> poseProvider;
  
   private SlewRateLimiter translationLimiter = new SlewRateLimiter(3.0);
   private SlewRateLimiter strafeLimiter = new SlewRateLimiter(3.0);
@@ -86,12 +87,14 @@ public class ChaseTagCommand3 extends Command {
   private boolean useOpenLoop = true;
   private boolean isFieldRelative;
 
-  public ChaseTagCommand3(
+  public ChaseTagCommand5(
         PhotonCamera photonCamera, 
-        SwerveSubsystem drivetrainSubsystem) 
+        SwerveSubsystem drivetrainSubsystem,
+        Supplier<Pose2d> poseProvider) 
   {    
     this.photonCamera = photonCamera;
     this.drivetrainSubsystem = drivetrainSubsystem;
+    this.poseProvider = poseProvider;
     addRequirements(drivetrainSubsystem);
   }
 
@@ -127,7 +130,7 @@ public class ChaseTagCommand3 extends Command {
                     hasTarget = true;
                     driveStraightAngle = drivetrainSubsystem.getYawInDegree();
                     // add the vision data
-                    driveStraightAngle = driveStraightAngle - result.getYaw() + 4;// add or minus need test out, +4 is the value observed in comp bot to center the robot at AMP
+                    driveStraightAngle = driveStraightAngle - result.getYaw();// add or minus need test out
                     driveStraightFlag = true;
 
                     fiducialId = result.getFiducialId();
@@ -174,6 +177,8 @@ public class ChaseTagCommand3 extends Command {
                     joystickX = Math.signum(joystickX) * 0.4;
                 }
 
+ 
+
                 // in drive straight mode, ignore rotation and strafe from joystick, 
                 // calculate the rotation by vision's angle, strafe by the distance from center
                 double xSpeed = 0;
@@ -191,12 +196,11 @@ public class ChaseTagCommand3 extends Command {
                 rotationVal = joystickX;
                 //strafeVal = 0;
                 strafeVal = xSpeed;
-
-                if( translationVal > 0.4) {
-                    translationVal = 0.4; // fix the speed too?
+                if( translationVal > 0.13) {
+                    translationVal = 0.13; // fix the speed too?
                 }
                 isFieldRelative = false;
-                System.out.println("Vision IP3 driveStraightAngle = "+driveStraightAngle+", vinniesError = "+vinniesError+", pid output ="+joystickX+", vision dist = "+distanceRobotToAprilTag);
+                System.out.println("Vision IP5 driveStraightAngle = "+driveStraightAngle+", vinniesError = "+vinniesError+", pid output ="+joystickX+", vision dist = "+distanceRobotToAprilTag);
         }
     }
 
