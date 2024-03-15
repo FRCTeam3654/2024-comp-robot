@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -37,7 +38,7 @@ public class ChaseTagCommand5 extends Command {
   // front AprilTag Camera -- roll or pitch , which is 30 degree?
   
   public static final double CHASE_TAG_MAX_SPEED = 1.5; // swerve can have max speed 4 or higher, but is not good for chasing tag
-  public static final double CHASE_TAG_MAX_PID_OUTPUT = 0.4;
+  public static final double CHASE_TAG_MAX_PID_OUTPUT = 0.25;
 
   public static final Transform3d ROBOT_TO_CAMERA_BACK = new Transform3d(
     new Translation3d(Units.inchesToMeters(-11.5), Units.inchesToMeters(0), Units.inchesToMeters(20)),
@@ -77,6 +78,9 @@ public class ChaseTagCommand5 extends Command {
   private Pose3d robotPose3dByVision = null;
   private Pose2d goalPose;
   private double distanceRobotToAprilTag;
+  Pose3d aprilTagPose3d = null;
+  double  lastGyroYaw = 0.0;
+  double vinniesError = 0.0;
   private Transform3d which_tag_to_goal;
 
   private double tagTimer ;
@@ -107,8 +111,10 @@ public class ChaseTagCommand5 extends Command {
 
   @Override
   public void execute() {
+
+    var robotPose2d = poseProvider.get();
     
-    Pose3d aprilTagPose3d = null;
+    //Pose3d aprilTagPose3d = null;
     int fiducialId = -1;
     double joystickX = 0.0;
     double rotationVal = -RobotContainer.oi.driverStick.getRawAxis(RobotContainer.rotationAxis);
@@ -120,6 +126,11 @@ public class ChaseTagCommand5 extends Command {
 
     boolean hasTarget = false;
 
+    // if the IR distance sensor value < certain value, and angle error < 2 degree, stop
+    double backDistanceIRSensorReading = drivetrainSubsystem.getBackDistanceIRSensorReading();
+    SmartDashboard.putNumber("back Distance Sensor 3 raw", backDistanceIRSensorReading);
+
+
     if( photonCamera != null) {
        var results = photonCamera.getLatestResult();
     //if( RobotContainer.photonBackOVCamera != null) {  // temp code
@@ -129,8 +140,9 @@ public class ChaseTagCommand5 extends Command {
             if( result != null) {
                     hasTarget = true;
                     driveStraightAngle = drivetrainSubsystem.getYawInDegree();
+                    lastGyroYaw = driveStraightAngle;
                     // add the vision data
-                    driveStraightAngle = driveStraightAngle - result.getYaw();// add or minus need test out
+                    driveStraightAngle = driveStraightAngle - result.getYaw()  ;// add or minus need test out
                     driveStraightFlag = true;
 
                     fiducialId = result.getFiducialId();
@@ -159,7 +171,7 @@ public class ChaseTagCommand5 extends Command {
                           which_tag_to_goal = null;
                       }
 
-                      goalPose = aprilTagPose3d.transformBy(which_tag_to_goal).toPose2d();
+                      goalPose = aprilTagPose3d.toPose2d();// aprilTagPose3d.transformBy(which_tag_to_goal).toPose2d();
                       if( robotPose3dByVision != null) {
                         // check distance and 2d angle make sense -- test code
                         distanceRobotToAprilTag = PoseEstimatorSubsystem.calculateDifference(robotPose3dByVision.toPose2d(), goalPose);
@@ -169,25 +181,44 @@ public class ChaseTagCommand5 extends Command {
             }
       }
 
+
+      
+
       // if the target is outside the vision, use the last value if driveStraight is still in progress
       if(  driveStraightFlag == true) {
-                double vinniesError = driveStraightAngle - drivetrainSubsystem.getYawInDegree();
-                joystickX = vinniesError * 0.01;//0.025;//0.01
-                if(Math.abs(joystickX) > 0.4) {
-                    joystickX = Math.signum(joystickX) * 0.4;
+                
+                if( hasTarget == true) {
+                   vinniesError= driveStraightAngle - drivetrainSubsystem.getYawInDegree();
+                  joystickX = vinniesError * 0.025;//0.025;//0.01
+                  if(Math.abs(joystickX) > 0.4) {
+                      joystickX = Math.signum(joystickX) * 0.4;
+                  }
+                } 
+                else {
+                  // use pose to correct angle
+                  
+                  //vinniesError = (goalPose.getRotation().getDegrees() - robotPose2d.getRotation().getDegrees());
+                  vinniesError = lastGyroYaw - drivetrainSubsystem.getYawInDegree();
+                  joystickX = vinniesError * 0.025;//0.025;//0.01
+                  if(Math.abs(joystickX) > 0.4) {
+                      joystickX = Math.signum(joystickX) * 0.4;
+                  }
+                  
+                  // re-calculate the distance by pose
+                  distanceRobotToAprilTag = PoseEstimatorSubsystem.calculateDifference(robotPose2d, goalPose);
                 }
 
- 
+                
 
                 // in drive straight mode, ignore rotation and strafe from joystick, 
                 // calculate the rotation by vision's angle, strafe by the distance from center
                 double xSpeed = 0;
-                if( hasTarget == true) {
+                if( backDistanceIRSensorReading < 150) {
                   // DO NOT STRAFLE IF NO TAG IS SEEN BY CAMERA
-                  xSpeed = 0.1 * (goalPose.getX() - robotPose3dByVision.getX());
+                  xSpeed = 0.15 * (goalPose.getX() - robotPose2d.getX());
 
-                  if(Math.abs(xSpeed) > CHASE_TAG_MAX_PID_OUTPUT) {
-                    xSpeed = Math.signum(xSpeed) * CHASE_TAG_MAX_PID_OUTPUT;
+                  if(Math.abs(xSpeed) > 0.2) {
+                    xSpeed = Math.signum(xSpeed) * 0.2;
                   }
                 }
 
@@ -196,12 +227,45 @@ public class ChaseTagCommand5 extends Command {
                 rotationVal = joystickX;
                 //strafeVal = 0;
                 strafeVal = xSpeed;
-                if( translationVal > 0.13) {
-                    translationVal = 0.13; // fix the speed too?
+
+                /* 
+                // limit the speed at last 30 cm
+                if( backDistanceIRSensorReading > 300) {
+                    if( translationVal < -0.25) {
+                        translationVal = -0.25; // fix the speed too?
+                    }
+                    if( translationVal > 0.25) {
+                        translationVal = 0.25; // fix the speed too?
+                    }
                 }
+                */
                 isFieldRelative = false;
-                System.out.println("Vision IP5 driveStraightAngle = "+driveStraightAngle+", vinniesError = "+vinniesError+", pid output ="+joystickX+", vision dist = "+distanceRobotToAprilTag);
+                System.out.println("Vision IP5 driveStraightAngle = "+driveStraightAngle+", vinniesError = "+vinniesError+", pid output ="+joystickX+", vision dist = "+distanceRobotToAprilTag+", pigeon Yaw = "+drivetrainSubsystem.getYawInDegree());
+            
+            
         }
+    }
+
+
+    
+    //double angleError = (goalPose.getRotation().getDegrees() - robotPose2d.getRotation().getDegrees());
+    
+
+    System.out.println("Goal Pose = "+ goalPose.toString());
+    System.out.println("robot Pose = "+robotPose2d.toString());
+    System.out.println("translationVal,strafeVal,rotationVal = "+translationVal+", " +strafeVal+", "+rotationVal+" with distance = "+distanceRobotToAprilTag+", angle error = "+vinniesError);
+    System.out.println("IR Sensor = "+backDistanceIRSensorReading+", pigeon Yaw = "+drivetrainSubsystem.getYawInDegree());
+
+    if( backDistanceIRSensorReading > 920 &&  vinniesError  < 2  ) {
+      isGoalReached = true;
+    }
+
+    if( isGoalReached == true) {
+      // if goal reached before, don't apply new power
+      translationVal = 0;
+      strafeVal = 0;
+      rotationVal = 0;
+      System.out.println("Goal is reached with distance = "+distanceRobotToAprilTag+", angle error = "+vinniesError );
     }
 
     /* Drive */
