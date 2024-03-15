@@ -61,7 +61,7 @@ public class ChaseTagCommand3 extends Command {
   // AMP's TAG_TO_GOAL
   private static final Transform3d TAG_TO_GOAL_AMP = 
       new Transform3d(
-          new Translation3d(Units.inchesToMeters(18), 0.0, 0.0),
+          new Translation3d(Units.inchesToMeters(10), 0.0, 0.0),
           new Rotation3d(0.0, 0.0, 0));
   
   // Stage's TAG_TO_GOAL
@@ -115,7 +115,6 @@ public class ChaseTagCommand3 extends Command {
     strafeVal = strafeLimiter.calculate(  MathUtil.applyDeadband(strafeVal, Constants.stickDeadband));
     rotationVal = rotationLimiter.calculate(   MathUtil.applyDeadband(rotationVal, Constants.stickDeadband));
 
-    boolean hasTarget = false;
 
     if( photonCamera != null) {
        var results = photonCamera.getLatestResult();
@@ -124,10 +123,10 @@ public class ChaseTagCommand3 extends Command {
       if( results.hasTargets() ) {
             var result = results.getBestTarget();
             if( result != null) {
-                    hasTarget = true;
+                  
                     driveStraightAngle = drivetrainSubsystem.getYawInDegree();
                     // add the vision data
-                    driveStraightAngle = driveStraightAngle - result.getYaw() + 4;// add or minus need test out, +4 is the value observed in comp bot to center the robot at AMP
+                    driveStraightAngle = driveStraightAngle - result.getYaw() + 4; // add or minus need test out
                     driveStraightFlag = true;
 
                     fiducialId = result.getFiducialId();
@@ -174,24 +173,9 @@ public class ChaseTagCommand3 extends Command {
                     joystickX = Math.signum(joystickX) * 0.4;
                 }
 
-                // in drive straight mode, ignore rotation and strafe from joystick, 
-                // calculate the rotation by vision's angle, strafe by the distance from center
-                double xSpeed = 0;
-                if( hasTarget == true) {
-                  // DO NOT STRAFLE IF NO TAG IS SEEN BY CAMERA
-                  xSpeed = 0.1 * (goalPose.getX() - robotPose3dByVision.getX());
-
-                  if(Math.abs(xSpeed) > CHASE_TAG_MAX_PID_OUTPUT) {
-                    xSpeed = Math.signum(xSpeed) * CHASE_TAG_MAX_PID_OUTPUT;
-                  }
-                }
-
-
-
+                // in drive straight mode, ignore rotation and strafe
                 rotationVal = joystickX;
-                //strafeVal = 0;
-                strafeVal = xSpeed;
-
+                strafeVal = 0;
                 if( translationVal > 0.4) {
                     translationVal = 0.4; // fix the speed too?
                 }
