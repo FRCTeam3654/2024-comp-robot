@@ -24,7 +24,7 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
@@ -56,13 +56,19 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "LoadSideToFourthDown"
+          }
+        },
+        {
           "type": "deadline",
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "LoadSideToFourthDown"
+                  "name": "DriveToNoteVisionTargetCommand"
                 }
               },
               {
@@ -91,6 +97,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoSpeakerShooterCommand"
           }
         }
       ]

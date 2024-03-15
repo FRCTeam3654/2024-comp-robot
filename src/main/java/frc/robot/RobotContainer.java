@@ -155,7 +155,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("SpeakerShooterCommand", new SpeakerShooterCommand());
         NamedCommands.registerCommand("AutoSpeakerShooterCommand", new AutoSpeakerShooterCommand());
 
-        NamedCommands.registerCommand("DriveToNoteVisionTargetCommand", new DriveToNoteVisionTargetCommand(swerve , 0.8));
+        NamedCommands.registerCommand("DriveToNoteVisionTargetCommand", new DriveToNoteVisionTargetCommand(swerve , 2));
 
 
         /*
@@ -215,6 +215,8 @@ public class RobotContainer {
        autoChooser.addOption("Just Shoot Amp Side Auto", new PathPlannerAuto("JustShootAmpSideAuto"));//
        autoChooser.addOption("Do Nothing Auto", new PathPlannerAuto("DoNothingAuto"));//
        autoChooser.addOption("Load Side To Fourth Note Auto", new PathPlannerAuto("LoadSideToFourthNoteTwoPieceAuto"));//
+        autoChooser.addOption("Load Side Far Start Fourth Note Two Piece", new PathPlannerAuto("SideToShootToFourthNoteAuto"));//
+
        //autoChooser.addOption("2 Piece Auto", new PathPlannerAuto("TwoPieceAuto"));
         //add more with autoChooser.addOption
 
@@ -327,6 +329,16 @@ public class RobotContainer {
 
     public Command DoNothingAuto(){
         String autoName = "DoNothingAuto";
+        Pose2d pose =  PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
+
+        swerve.swerveOdometry.resetPosition(swerve.getYaw(), swerve.getModulePositions(), 
+        pose);
+        
+        return new PathPlannerAuto(autoName);
+    }
+
+     public Command SideToShootToFourthNoteAuto(){
+        String autoName = "SideToShootToFourthNoteAuto";
         Pose2d pose =  PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
 
         swerve.swerveOdometry.resetPosition(swerve.getYaw(), swerve.getModulePositions(), 
