@@ -61,7 +61,7 @@ public class ChaseTagCommand3 extends Command {
   // AMP's TAG_TO_GOAL
   private static final Transform3d TAG_TO_GOAL_AMP = 
       new Transform3d(
-          new Translation3d(Units.inchesToMeters(18), 0.0, 0.0),
+          new Translation3d(Units.inchesToMeters(10), 0.0, 0.0),
           new Rotation3d(0.0, 0.0, 0));
   
   // Stage's TAG_TO_GOAL
@@ -126,7 +126,7 @@ public class ChaseTagCommand3 extends Command {
                   
                     driveStraightAngle = drivetrainSubsystem.getYawInDegree();
                     // add the vision data
-                    driveStraightAngle = driveStraightAngle - result.getYaw()+4;// add or minus need test out
+                    driveStraightAngle = driveStraightAngle - result.getYaw() + 4; // add or minus need test out
                     driveStraightFlag = true;
 
                     fiducialId = result.getFiducialId();
@@ -176,8 +176,8 @@ public class ChaseTagCommand3 extends Command {
                 // in drive straight mode, ignore rotation and strafe
                 rotationVal = joystickX;
                 strafeVal = 0;
-                if( translationVal > 0.13) {
-                    translationVal = 0.13; // fix the speed too?
+                if( translationVal > 0.4) {
+                    translationVal = 0.4; // fix the speed too?
                 }
                 isFieldRelative = false;
                 System.out.println("Vision IP3 driveStraightAngle = "+driveStraightAngle+", vinniesError = "+vinniesError+", pid output ="+joystickX+", vision dist = "+distanceRobotToAprilTag);
