@@ -7,6 +7,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -16,6 +17,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
@@ -33,228 +35,183 @@ public class ChaseTagClimbCommand extends Command {
    
   // front AprilTag Camera -- roll or pitch , which is 30 degree?
   
-  // the way the percent power is calculated by  pid output / CHASE_TAG_MAX_SPEED,  so bigger CHASE_TAG_MAX_SPEED actually is slower to move robot
-  public static final double CHASE_TAG_MAX_SPEED = 3.0;// 1.5; // swerve can have max speed 4 or higher, but is not good for chasing tag
+  public static final double CHASE_TAG_MAX_SPEED = 1.5; // swerve can have max speed 4 or higher, but is not good for chasing tag
   public static final double CHASE_TAG_MAX_PID_OUTPUT = 0.4;
 
-  public static final Transform3d ROBOT_TO_CAMERA_FRONT = new Transform3d(
-        new Translation3d(Units.inchesToMeters(-7), Units.inchesToMeters(3.5), Units.inchesToMeters(21)),
-        new Rotation3d(0, Units.degreesToRadians(0), 0)); 
-
-  // back camera's pitch: is it -30 degree since it is looking up , ( not 150 since yaw turns 180 degree, pitch stays 30 degree looking up) : decouple pitch from yaw
- 
   public static final Transform3d ROBOT_TO_CAMERA_BACK = new Transform3d(
-        new Translation3d(Units.inchesToMeters(-7), Units.inchesToMeters(7), Units.inchesToMeters(14.5)),
+    new Translation3d(Units.inchesToMeters(-11.5), Units.inchesToMeters(0), Units.inchesToMeters(20)),
+    new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(180))); 
 
-        new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(180))); 
 
+
+  private final PhotonCamera photonCamera;
+  private final SwerveSubsystem drivetrainSubsystem;
+  private Supplier<Pose2d> poseProvider;
  
+  private SlewRateLimiter translationLimiter = new SlewRateLimiter(3.0);
+  private SlewRateLimiter strafeLimiter = new SlewRateLimiter(3.0);
+    private SlewRateLimiter rotationLimiter = new SlewRateLimiter(3.0);
+
   // drive backward,use back camera to align to speaker
   private static final Transform3d TAG_TO_GOAL_SPEAKER = 
       new Transform3d(
-          new Translation3d(0.9, 0.0, 0.0),
+          new Translation3d(1.0, 0.0, 0.0),
           new Rotation3d(0.0, 0.0, 0));
 
   // AMP's TAG_TO_GOAL
   private static final Transform3d TAG_TO_GOAL_AMP = 
       new Transform3d(
-          new Translation3d(Units.inchesToMeters(16), 0.0, 0.0),
-          new Rotation3d(0.0, 0.0, Units.degreesToRadians(-10)));
+          new Translation3d(Units.inchesToMeters(18), 0.0, 0.0),
+          new Rotation3d(0.0, 0.0, 0));
   
-
   // Stage's TAG_TO_GOAL
   private static final Transform3d TAG_TO_GOAL_STAGE = 
       new Transform3d(
-          new Translation3d(Units.inchesToMeters(30), 0.0, 0.0),
+          new Translation3d(Units.inchesToMeters(33), 0.0, 0.0),
           new Rotation3d(0.0, 0.0, Math.PI));
-
-
-          
-  private Transform3d which_tag_to_goal;
-
-  private final PhotonCamera photonCamera;
-  private final SwerveSubsystem drivetrainSubsystem;
-  private final Supplier<Pose2d> poseProvider; // tell me where my robot is
-
-  private SlewRateLimiter xLimiter = new SlewRateLimiter(3.0);
-  private SlewRateLimiter yLimiter = new SlewRateLimiter(3.0);
   
   public boolean isGoalReached  = false;
 
-  private PhotonTrackedTarget lastTarget;
+
   private Pose3d robotPose3dByVision = null;
-  private Pose2d  goalPose;
+  private Pose2d goalPose;
   private double distanceRobotToAprilTag;
-  private int fiducialId = -1;
+  private Transform3d which_tag_to_goal;
 
   private double tagTimer ;
-  private double tagTimeout = 10;
+  private double tagTimeout = 20;
+
+  private boolean driveStraightFlag = false;
+  private double driveStraightAngle = 0;
+  private boolean useOpenLoop = true;
+  private boolean isFieldRelative;
 
   public ChaseTagClimbCommand(
         PhotonCamera photonCamera, 
         SwerveSubsystem drivetrainSubsystem,
-        Supplier<Pose2d> poseProvider) {
-          
+        Supplier<Pose2d> poseProvider) 
+  {    
     this.photonCamera = photonCamera;
     this.drivetrainSubsystem = drivetrainSubsystem;
     this.poseProvider = poseProvider;
- 
     addRequirements(drivetrainSubsystem);
   }
 
   @Override
   public void initialize() {
-    lastTarget = null;
+
     isGoalReached = false;
     tagTimer = Timer.getFPGATimestamp();
   }
 
   @Override
   public void execute() {
-    if( photonCamera == null) {
-      isGoalReached = true;
-      return;
-    }
-
-    fiducialId = -1;
-
-    var robotPose2d = poseProvider.get();
-    // robot is in 2 dimensional (X,Y)
-    var robotPose = 
-        new Pose3d(
-            robotPose2d.getX(),
-            robotPose2d.getY(),
-            0.0, 
-            new Rotation3d(0.0, 0.0, robotPose2d.getRotation().getRadians()));
     
-    var photonRes = photonCamera.getLatestResult();
-    if (photonRes.hasTargets()) {
-      // Find the tag we want to chase
-      var targetOpt = photonRes.getTargets().stream()
-          .filter(t -> !t.equals(lastTarget) && t.getPoseAmbiguity() <= .7 && t.getPoseAmbiguity() != -1)
-          .findFirst();
-      if (targetOpt.isPresent()) {
+    Pose3d aprilTagPose3d = null;
+    int fiducialId = -1;
+    double joystickX = 0.0;
+    double rotationVal = -RobotContainer.oi.driverStick.getRawAxis(RobotContainer.rotationAxis);
+    double strafeVal = -RobotContainer.oi.driverStick.getRawAxis(RobotContainer.strafeAxis);
+    double translationVal = -RobotContainer.oi.driverStick.getRawAxis(RobotContainer.translationAxis);
+    translationVal =  translationLimiter.calculate(  MathUtil.applyDeadband(translationVal, Constants.stickDeadband) );
+    strafeVal = strafeLimiter.calculate(  MathUtil.applyDeadband(strafeVal, Constants.stickDeadband));
+    rotationVal = rotationLimiter.calculate(   MathUtil.applyDeadband(rotationVal, Constants.stickDeadband));
 
+    boolean hasTarget = false;
 
-        var target = targetOpt.get();//PhotonTrackedTarget
-        if( photonRes.getBestTarget() != null) {
-          target = photonRes.getBestTarget();
-        }
+    if( photonCamera != null) {
+       var results = photonCamera.getLatestResult();
+    //if( RobotContainer.photonBackOVCamera != null) {  // temp code
+    //  var results = RobotContainer.photonBackOVCamera.getLatestResult();
+      if( results.hasTargets() ) {
+            var result = results.getBestTarget();
+            if( result != null) {
+                    hasTarget = true;
+                    driveStraightAngle = drivetrainSubsystem.getYawInDegree();
+                    // add the vision data
+                    driveStraightAngle = driveStraightAngle - result.getYaw();// add or minus need test out
+                    driveStraightFlag = true;
 
-        // This is new target data, so recalculate the goal
-        lastTarget = target;
-        
-        fiducialId = target.getFiducialId();
+                    fiducialId = result.getFiducialId();
 
-        Pose3d aprilTagPose3d = RobotContainer.poseEstimator.aprilTagFieldLayout.getTagPose(fiducialId).get();
-       // System.out.println("aprilTagPose3d = "+aprilTagPose3d.toString());
-        
-       
-        //////////////////////////////////////////////////////////////////////////////////
-        
-        if (target.getPoseAmbiguity() <= .7 && fiducialId >= 0   && aprilTagPose3d != null   ) {
-          Transform3d camToTarget = target.getBestCameraToTarget();
-          
+                    aprilTagPose3d = RobotContainer.poseEstimator.aprilTagFieldLayout.getTagPose(fiducialId).get();
 
-          Pose3d camPose3d = aprilTagPose3d.transformBy(camToTarget.inverse());
-          // check distance and 2d angle make sense
+                    // optional,  get distance to April Tag by vision,  we also can get the more accurate distance from IR Sensor
+                    if (result.getPoseAmbiguity() <= .7 && fiducialId >= 0   && aprilTagPose3d != null   ) {
+                      Transform3d camToTarget = result.getBestCameraToTarget();
+                      Pose3d camPose3d = aprilTagPose3d.transformBy(camToTarget.inverse());
+                      robotPose3dByVision = camPose3d.transformBy(ROBOT_TO_CAMERA_BACK.inverse());//(CAMERA_TO_ROBOT);
 
-          robotPose3dByVision = camPose3d.transformBy(ROBOT_TO_CAMERA_BACK.inverse());//(CAMERA_TO_ROBOT);
-          robotPose = robotPose3dByVision; // trust the vision more here than poseEstimator 
-        }
+                      if(fiducialId == 4 || fiducialId == 7 ) {
+                        // speaker
+                        which_tag_to_goal = TAG_TO_GOAL_SPEAKER;
+                      }
+                      else if(fiducialId == 5 || fiducialId == 6 ) {
+                          // AMP
+                          which_tag_to_goal = TAG_TO_GOAL_AMP;
+                      }
+                      else  if( fiducialId >= 11) {
+                          // All stages
+                          which_tag_to_goal = TAG_TO_GOAL_STAGE;
+                      }
+                      else {
+                          which_tag_to_goal = null;
+                      }
 
-        ///////////////////////////////////////////////////////////////////////////////////
-
-
-        if(fiducialId == 4 || fiducialId == 7 ) {
-            // speaker
-            which_tag_to_goal = TAG_TO_GOAL_SPEAKER;
-        }
-        else if(fiducialId == 5 || fiducialId == 6 ) {
-            // AMP
-            which_tag_to_goal = TAG_TO_GOAL_AMP;
-        }
-        else  if( fiducialId >= 11) {
-            // All stages
-            which_tag_to_goal = TAG_TO_GOAL_STAGE;
-        }
-        else {
-            which_tag_to_goal = null;
-        }
-
-        if( which_tag_to_goal != null ) {
-            // Transform the tag's pose to set our goal
-            goalPose = aprilTagPose3d.transformBy(which_tag_to_goal).toPose2d();
-        }
+                      goalPose = aprilTagPose3d.transformBy(which_tag_to_goal).toPose2d();
+                      if( robotPose3dByVision != null) {
+                        // check distance and 2d angle make sense -- test code
+                        distanceRobotToAprilTag = PoseEstimatorSubsystem.calculateDifference(robotPose3dByVision.toPose2d(), goalPose);
+                        //System.out.println("Distance btw robot and goal = "+distanceRobotToAprilTag);    
+                      } 
+                    }
+            }
       }
+
+      // if the target is outside the vision, use the last value if driveStraight is still in progress
+      if(  driveStraightFlag == true) {
+                double vinniesError = driveStraightAngle - drivetrainSubsystem.getYawInDegree();
+                joystickX = vinniesError * 0.01;//0.025;//0.01
+                if(Math.abs(joystickX) > 0.4) {
+                    joystickX = Math.signum(joystickX) * 0.4;
+                }
+
+ 
+
+                // in drive straight mode, ignore rotation and strafe from joystick, 
+                // calculate the rotation by vision's angle, strafe by the distance from center
+                double xSpeed = 0;
+                if( hasTarget == true) {
+                  // DO NOT STRAFLE IF NO TAG IS SEEN BY CAMERA
+                  xSpeed = 0.1 * (goalPose.getX() - robotPose3dByVision.getX());
+
+                  if(Math.abs(xSpeed) > CHASE_TAG_MAX_PID_OUTPUT) {
+                    xSpeed = Math.signum(xSpeed) * CHASE_TAG_MAX_PID_OUTPUT;
+                  }
+                }
+
+
+
+                rotationVal = joystickX;
+                //strafeVal = 0;
+                strafeVal = xSpeed;
+                if( translationVal > 0.13) {
+                    translationVal = 0.13; // fix the speed too?
+                }
+                isFieldRelative = false;
+                System.out.println("Vision IP5 driveStraightAngle = "+driveStraightAngle+", vinniesError = "+vinniesError+", pid output ="+joystickX+", vision dist = "+distanceRobotToAprilTag);
+        }
     }
+
+    /* Drive */
   
-    if (lastTarget == null || which_tag_to_goal == null) {
-      // No target has been visible
-      //drivetrainSubsystem.stop();
-    } else {
-      // Drive to the target
-    
-
-      double xSpeed = 1.5 * (goalPose.getX() - robotPose.getX()); //0.5
-      double ySpeed = 1.2 * (goalPose.getY() - robotPose.getY());
-
-      if(Math.abs(xSpeed) > CHASE_TAG_MAX_PID_OUTPUT) {
-        xSpeed = Math.signum(xSpeed) * CHASE_TAG_MAX_PID_OUTPUT;
-      }
-
-      if(Math.abs(ySpeed) > CHASE_TAG_MAX_PID_OUTPUT) {
-        ySpeed = Math.signum(ySpeed) * CHASE_TAG_MAX_PID_OUTPUT;
-      }
-
-
-      
-      double angleError = (goalPose.getRotation().getDegrees() - robotPose2d.getRotation().getDegrees()) ;
-      distanceRobotToAprilTag = PoseEstimatorSubsystem.calculateDifference(robotPose2d, goalPose);
-
-      double frontDistanceIRSensorReading = drivetrainSubsystem.getFrontDistanceIRSensorReading();
-      SmartDashboard.putNumber("frontDistanceIRSensorReading",frontDistanceIRSensorReading);
-
-      // need check the pid's output sign
-      var omegaSpeed = 0.02 * angleError;
-      
-      xSpeed = xLimiter.calculate( MathUtil.applyDeadband(xSpeed, 0.01) );
-      ySpeed = yLimiter.calculate(  MathUtil.applyDeadband(ySpeed, 0.01));
-      //omegaSpeed = omegaLimiter.calculate(  omegaSpeed);
-      omegaSpeed =MathUtil.applyDeadband(omegaSpeed, 0.008);
-
-
-
-      System.out.println("Goal Pose = "+ goalPose.toString());
-      System.out.println("robot Pose = "+robotPose2d.toString());
-      System.out.println("x,y,omega = "+xSpeed+", " +ySpeed+", "+omegaSpeed+" with distance = "+distanceRobotToAprilTag+", angle error = "+angleError);
-      // once reach goal, should not applied more power
-      // either the distnace < 1 inch and angle within 2 degree,  or  very little driving power (pid output)
-      // ADD IR DISTANCE SENSOR's value here to get the exact distance
-      if(  ( Math.abs(goalPose.getX() - robotPose.getX()) < 0.04 && Math.abs(goalPose.getY() - robotPose.getY()) < 0.04 &&  Math.abs(angleError) < 2  ) || ( Math.abs(distanceRobotToAprilTag) < 0.04 &&  Math.abs(angleError) < 2  ) ||  (Math.abs(xSpeed) < 0.015 && Math.abs(ySpeed) < 0.015 && Math.abs(omegaSpeed) < 0.01) ) {
-         isGoalReached = true;
-      }
-
-      // for STAGE, need enforce hard stop to prevent the robot drive past the chain (damage the arm)
-      if( fiducialId >= 11) {
-          if(  frontDistanceIRSensorReading > 1000 ) {  // need adjust the value based on reading from chain
-             isGoalReached = true; 
-          }
-      } 
-
-
-      if( isGoalReached == true) {
-        // if goal reached before, don't apply new power
-        xSpeed = 0;
-        ySpeed = 0;
-        omegaSpeed = 0;
-        System.out.println("Goal is reached with vision distance = "+distanceRobotToAprilTag+", angle error = "+angleError+", IR Sensor = "+frontDistanceIRSensorReading );
-      }
-
-      drivetrainSubsystem.drive(
-        ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, omegaSpeed, robotPose2d.getRotation()), true, CHASE_TAG_MAX_SPEED
-      );
-    }
+    drivetrainSubsystem.drive(
+                new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed), 
+                rotationVal * Constants.Swerve.maxAngularVelocity, 
+                isFieldRelative, 
+                useOpenLoop
+                
+    );
     
   }
 
@@ -266,12 +223,11 @@ public class ChaseTagClimbCommand extends Command {
   public boolean isFinished(){
     if( (tagTimer + tagTimeout) < Timer.getFPGATimestamp()) {
       // after 20 second, stop command
-      
       return true;
     }
-    else {
-        return isGoalReached;
-    }
+
+    // may enhance to check the distance and angle to set isGoalReached = true
+    return false;
   }
 
 }
