@@ -80,6 +80,7 @@ public class ChaseTagCommand5 extends Command {
   private double distanceRobotToAprilTag;
   Pose3d aprilTagPose3d = null;
   double  lastGyroYaw = 0.0;
+  double  lastDriveStraightAngle = 0.0;
   double vinniesError = 0.0;
   private Transform3d which_tag_to_goal;
 
@@ -144,6 +145,7 @@ public class ChaseTagCommand5 extends Command {
                     // add the vision data
                     driveStraightAngle = driveStraightAngle - result.getYaw()  ;// add or minus need test out
                     driveStraightFlag = true;
+                    lastDriveStraightAngle =  driveStraightAngle;
 
                     fiducialId = result.getFiducialId();
 
@@ -198,7 +200,8 @@ public class ChaseTagCommand5 extends Command {
                   // use pose to correct angle
                   
                   //vinniesError = (goalPose.getRotation().getDegrees() - robotPose2d.getRotation().getDegrees());
-                  vinniesError = lastGyroYaw - drivetrainSubsystem.getYawInDegree();
+                  //vinniesError = lastGyroYaw - drivetrainSubsystem.getYawInDegree();
+                  vinniesError = lastDriveStraightAngle - drivetrainSubsystem.getYawInDegree();
                   joystickX = vinniesError * 0.025;//0.025;//0.01
                   if(Math.abs(joystickX) > 0.4) {
                       joystickX = Math.signum(joystickX) * 0.4;
@@ -213,7 +216,7 @@ public class ChaseTagCommand5 extends Command {
                 // in drive straight mode, ignore rotation and strafe from joystick, 
                 // calculate the rotation by vision's angle, strafe by the distance from center
                 double xSpeed = 0;
-                if( backDistanceIRSensorReading < 150) {
+                if( backDistanceIRSensorReading < 150 && hasTarget == true) {
                   // DO NOT STRAFLE IF NO TAG IS SEEN BY CAMERA
                   xSpeed = 0.15 * (goalPose.getX() - robotPose2d.getX());
 
