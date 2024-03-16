@@ -27,7 +27,7 @@ public class ChaseTagCommand4 extends Command {
   // front AprilTag Camera -- roll or pitch , which is 30 degree?
   
   // the way the percent power is calculated by  pid output / CHASE_TAG_MAX_SPEED,  so bigger CHASE_TAG_MAX_SPEED actually is slower to move robot
-  public static final double CHASE_TAG_MAX_SPEED = 3.0;// 1.5; // swerve can have max speed 4 or higher, but is not good for chasing tag
+  public static final double CHASE_TAG_MAX_SPEED = 1.5;// 1.5; // swerve can have max speed 4 or higher, but is not good for chasing tag
   public static final double CHASE_TAG_MAX_PID_OUTPUT = 0.4;
 
   public static final Transform3d ROBOT_TO_CAMERA_FRONT = new Transform3d(
@@ -51,8 +51,8 @@ public class ChaseTagCommand4 extends Command {
   // AMP's TAG_TO_GOAL
   private static final Transform3d TAG_TO_GOAL_AMP = 
       new Transform3d(
-          new Translation3d(Units.inchesToMeters(16), 0.0, 0.0),
-          new Rotation3d(0.0, 0.0, Units.degreesToRadians(-10)));
+          new Translation3d(Units.inchesToMeters(10), 0.0, 0.0),
+          new Rotation3d(0.0, 0.0, Units.degreesToRadians(0)));
   
 
   // Stage's TAG_TO_GOAL
