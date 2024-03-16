@@ -17,6 +17,7 @@ public class ArmAmpCommand extends Command {
   private double armTargetPos = 49;
   private boolean isWristSmartMotionInProgress = false;
   private boolean isArmSmartMotionInProgress = false;
+  private int ampButtonPress = 0;
 
 
   public ArmAmpCommand() {
@@ -31,6 +32,7 @@ public class ArmAmpCommand extends Command {
   public void initialize() {
     ampTimer = Timer.getFPGATimestamp();
     RobotContainer.wrist.goToPositionBySmartMotion(wristTargetPos); //this should be the store pos bc the motors zero at start
+    ampButtonPress = ampButtonPress + 1;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -66,6 +68,10 @@ public class ArmAmpCommand extends Command {
     }
 
     else if (RobotContainer.oi.afterAmpStoreButton.getAsBoolean()){
+      return true;
+    }
+
+    else if (ampButtonPress % 2 == 0){
       return true;
     }
 

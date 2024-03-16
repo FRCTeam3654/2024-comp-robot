@@ -81,8 +81,8 @@ public class DriveToNoteVisionTargetCommand extends Command {
                // in drive straight mode, ignore rotation and strafe
                rotationVal = joystickX;
                strafeVal = 0;
-               if( translationVal > 0.25) {
-                   translationVal = 0.25; // fix the speed too?
+               if( translationVal > 0.4) {
+                   translationVal = 0.4; // fix the speed too?
                }
                isFieldRelative = false;
                System.out.println("Vision IP driveStraightAngle = "+driveStraightAngle+", vinniesError = "+vinniesError+", pid output ="+joystickX);

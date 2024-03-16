@@ -77,10 +77,10 @@ public static int hulkModeButtonNumber = 2;
 
 //OPERATOR STICK
 public static int speakerShooterButtonNumber = 4; //yellow y
-public static int ampButtonNumber = 1; // green a
+public static int ampButtonNumber = 6; // green a
 public static int intakeDownButtonNumber = 3; // blue x
 public static int intakeUpButtonNumber = 2; //red b
-public static int ampArmButtonNumber = 6; //right bumper
+public static int ampArmButtonNumber = 1; //right bumper
 public static int climbPositionButtonNumber = 5; //left bumper //this button is for raising the arm to hook
 //public static int climbWinchButtonNumber = 18; //want to be right trigger //this is for moving the winch
 public static int afterAmpStoreButtonNumber = 8; //start button
