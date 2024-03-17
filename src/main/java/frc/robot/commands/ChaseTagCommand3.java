@@ -76,6 +76,10 @@ public class ChaseTagCommand3 extends Command {
   private Pose3d robotPose3dByVision = null;
   private Pose2d goalPose;
   private double distanceRobotToAprilTag;
+  Pose3d aprilTagPose3d = null;
+  double  lastGyroYaw = 0.0;
+  double  lastDriveStraightAngle = 0.0;
+  double vinniesError = 0.0;
   private Transform3d which_tag_to_goal;
 
   private double tagTimer ;
@@ -115,6 +119,7 @@ public class ChaseTagCommand3 extends Command {
     strafeVal = strafeLimiter.calculate(  MathUtil.applyDeadband(strafeVal, Constants.stickDeadband));
     rotationVal = rotationLimiter.calculate(   MathUtil.applyDeadband(rotationVal, Constants.stickDeadband));
 
+    boolean hasTarget = false;
 
     if( photonCamera != null) {
        var results = photonCamera.getLatestResult();
@@ -123,11 +128,13 @@ public class ChaseTagCommand3 extends Command {
       if( results.hasTargets() ) {
             var result = results.getBestTarget();
             if( result != null) {
-                  
+                    hasTarget = true;
                     driveStraightAngle = drivetrainSubsystem.getYawInDegree();
+                    lastGyroYaw = driveStraightAngle;
                     // add the vision data
                     driveStraightAngle = driveStraightAngle - result.getYaw() + 4; // add or minus need test out
                     driveStraightFlag = true;
+                    lastDriveStraightAngle =  driveStraightAngle;
 
                     fiducialId = result.getFiducialId();
 
@@ -167,6 +174,7 @@ public class ChaseTagCommand3 extends Command {
 
       // if the target is outside the vision, use the last value if driveStraight is still in progress
       if(  driveStraightFlag == true) {
+            /* 
                 double vinniesError = driveStraightAngle - drivetrainSubsystem.getYawInDegree();
                 joystickX = vinniesError * 0.01;//0.025;//0.01
                 if(Math.abs(joystickX) > 0.4) {
@@ -181,6 +189,50 @@ public class ChaseTagCommand3 extends Command {
                 }
                 isFieldRelative = false;
                 System.out.println("Vision IP3 driveStraightAngle = "+driveStraightAngle+", vinniesError = "+vinniesError+", pid output ="+joystickX+", vision dist = "+distanceRobotToAprilTag);
+            */
+
+          if( hasTarget == true) {
+              vinniesError= driveStraightAngle - drivetrainSubsystem.getYawInDegree()   ;
+              joystickX = vinniesError * 0.025;//0.025;//0.01
+              if(Math.abs(joystickX) > 0.4) {
+                  joystickX = Math.signum(joystickX) * 0.4;
+              }
+           } 
+           else {
+             // use pose to correct angle
+             
+             //vinniesError = (goalPose.getRotation().getDegrees() - robotPose2d.getRotation().getDegrees());
+             //vinniesError = lastGyroYaw - drivetrainSubsystem.getYawInDegree();
+             vinniesError = lastDriveStraightAngle - drivetrainSubsystem.getYawInDegree();
+             joystickX = vinniesError * 0.025;//0.025;//0.01
+             if(Math.abs(joystickX) > 0.4) {
+                 joystickX = Math.signum(joystickX) * 0.4;
+             }
+             
+             // re-calculate the distance by pose
+             //distanceRobotToAprilTag = PoseEstimatorSubsystem.calculateDifference(robotPose2d, goalPose);
+           }
+
+           
+
+           // in drive straight mode, ignore rotation and strafe from joystick, 
+           // calculate the rotation by vision's angle, strafe by the distance from center
+           double xSpeed = 0;
+
+           
+           //xSpeed = 0.35 * (goalPose.getX() - robotPose2d.getX() -0.15);//0.1
+           //if(Math.abs(xSpeed) > 0.25) {
+           //    xSpeed = Math.signum(xSpeed) * 0.25;
+           //}
+
+           rotationVal = joystickX;
+           //strafeVal = 0;
+           strafeVal = xSpeed;
+
+         
+           isFieldRelative = false;
+           System.out.println("Vision IP3 driveStraightAngle = "+driveStraightAngle+", vinniesError = "+vinniesError+", pid output ="+joystickX+", vision dist = "+distanceRobotToAprilTag+", pigeon Yaw = "+drivetrainSubsystem.getYawInDegree());
+
         }
     }
 
