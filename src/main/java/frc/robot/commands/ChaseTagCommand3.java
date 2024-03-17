@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -261,6 +262,7 @@ public class ChaseTagCommand3 extends Command {
       translationVal = 0;
       strafeVal = 0;
       rotationVal = 0;
+      PoseEstimatorSubsystem.setLEDColor(Color.kGold);
       System.out.println("Goal is reached with distance = "+distanceRobotToAprilTag+", angle error = "+vinniesError );
     }
 
@@ -288,9 +290,12 @@ public class ChaseTagCommand3 extends Command {
       // after 20 second, stop command
       return true;
     }
+    else {
+        return isGoalReached;
+    }
 
     // may enhance to check the distance and angle to set isGoalReached = true
-    return false;
+    //return false;
   }
 
 }

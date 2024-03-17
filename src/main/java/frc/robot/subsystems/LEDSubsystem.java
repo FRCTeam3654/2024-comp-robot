@@ -97,4 +97,13 @@ public class LEDSubsystem extends SubsystemBase {
    // m_led_left.setData(m_led_left_Buffer);
     m_led_right.setData(m_led_right_Buffer);
   }
+
+  public void setDefaultColor() {
+    setAll(Color.kFuchsia);
+    //setAll(Color.kLightGray);
+  }
+
+  public void setRainBowColor() {
+    rainbow();
+  }
 }

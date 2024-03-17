@@ -31,6 +31,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -95,7 +96,11 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
   private  PhotonPoseEstimator m_photonPoseEstimatorFront = null ;
   private  PhotonPoseEstimator m_photonPoseEstimatorBack = null;
 
-
+  // when newColor is null, use the default logic to set LED color
+  // When newColor is not null, that is the color that LED is set with 3 seconds timeout
+  public static  Color  newColor = null ; // can be updated by other system or command
+  private static double colorTimer = 0.0 ; // start with big number
+  private static double colorTimeout = 3;//seconds
 
 
 
@@ -211,6 +216,24 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         }
     }
 
+    // check the color
+    if( (colorTimer + colorTimeout) < Timer.getFPGATimestamp()) {
+        newColor = null;
+        if( photonCamera == null) {
+          // no AprilTag
+          RobotContainer.led.setAll(Color.kFuchsia);
+        }
+        colorTimer =  Timer.getFPGATimestamp();
+    }
+
+    if( newColor != null) {     
+            if( newColor.toString().equalsIgnoreCase("kLightSkyBlue") ) {
+                RobotContainer.led.setRainBowColor();
+            }
+            else {
+              RobotContainer.led.setAll(newColor);
+            }
+    }
 
     if(photonCamera == null ) {
         poseEstimator.update(drivetrainSubsystem.getYaw(), drivetrainSubsystem.getModulePositions());
@@ -232,25 +255,27 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         target = pipelineResult.getBestTarget();
         fiducialId = target.getFiducialId();
 
-        // Color:  Speaker -> Green; Amp --> Blue;  Note --> Red;   Source --> Yellow; Stage --> 
-        if( fiducialId == 4 || fiducialId == 7 ) {
-          // speaker, possible other two:  3, 8
-          RobotContainer.led.setAll(Color.kGreen); 
-        }
-        else if( fiducialId == 5  || fiducialId == 6) {
-          // AMP
-          RobotContainer.led.setAll(Color.kBlue);
-        }
-        else if( fiducialId == 1  || fiducialId == 9) {
-          // source, possible other two: 2, 10
-          RobotContainer.led.setAll(Color.kYellow);
-        }
-         else if( fiducialId >= 11) {
-          // stage
-          RobotContainer.led.setAll(Color.kYellow);
-        }
-        else{
-          RobotContainer.led.setAll(Color.kFuchsia);
+        if( newColor == null) {  
+            // Color:  Speaker -> Green; Amp --> Blue;  Note --> Red;   Source --> Yellow; Stage --> 
+            if( fiducialId == 4 || fiducialId == 7 ) {
+              // speaker, possible other two:  3, 8
+              RobotContainer.led.setAll(Color.kGreen); 
+            }
+            else if( fiducialId == 5  || fiducialId == 6) {
+              // AMP
+              RobotContainer.led.setAll(Color.kBlue);
+            }
+            else if( fiducialId == 1  || fiducialId == 9) {
+              // source, possible other two: 2, 10
+              RobotContainer.led.setAll(Color.kYellow);
+            }
+            else if( fiducialId >= 11) {
+              // stage
+              RobotContainer.led.setAll(Color.kYellow);
+            }
+            else{
+              RobotContainer.led.setAll(Color.kFuchsia);
+            }
         }
 
 
@@ -288,6 +313,25 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
     field2d.setRobotPose(getCurrentPose());
   }
+
+
+
+  //  LED  Color related
+  public static  void setLEDColor(Color new_Color){
+    colorTimer = Timer.getFPGATimestamp();
+    newColor = new_Color;
+ }
+
+ public static void setDefaultLEDColor(){
+    newColor = null;
+ }
+
+ public static void setRainBowLEDColor(){
+   // use a special color as RowBow
+    colorTimer = Timer.getFPGATimestamp();
+    newColor = Color.kLightSkyBlue; 
+ }
+
 
   private String getFomattedPose() {
     var pose = getCurrentPose();
