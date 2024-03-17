@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -47,6 +48,7 @@ public class ChaseTagCommand3 extends Command {
 
   private final PhotonCamera photonCamera;
   private final SwerveSubsystem drivetrainSubsystem;
+  private Supplier<Pose2d> poseProvider;
  
   private SlewRateLimiter translationLimiter = new SlewRateLimiter(3.0);
   private SlewRateLimiter strafeLimiter = new SlewRateLimiter(3.0);
@@ -80,6 +82,7 @@ public class ChaseTagCommand3 extends Command {
   double  lastGyroYaw = 0.0;
   double  lastDriveStraightAngle = 0.0;
   double vinniesError = 0.0;
+  double backDistanceIRSensorReading = 0.0;
   private Transform3d which_tag_to_goal;
 
   private double tagTimer ;
@@ -92,10 +95,12 @@ public class ChaseTagCommand3 extends Command {
 
   public ChaseTagCommand3(
         PhotonCamera photonCamera, 
-        SwerveSubsystem drivetrainSubsystem) 
+        SwerveSubsystem drivetrainSubsystem,
+        Supplier<Pose2d> poseProvider) 
   {    
     this.photonCamera = photonCamera;
     this.drivetrainSubsystem = drivetrainSubsystem;
+    this.poseProvider = poseProvider;
     addRequirements(drivetrainSubsystem);
   }
 
@@ -109,6 +114,8 @@ public class ChaseTagCommand3 extends Command {
   @Override
   public void execute() {
     
+    var robotPose2d = poseProvider.get();
+
     Pose3d aprilTagPose3d = null;
     int fiducialId = -1;
     double joystickX = 0.0;
@@ -120,6 +127,11 @@ public class ChaseTagCommand3 extends Command {
     rotationVal = rotationLimiter.calculate(   MathUtil.applyDeadband(rotationVal, Constants.stickDeadband));
 
     boolean hasTarget = false;
+
+     // if the IR distance sensor value < certain value, and angle error < 2 degree, stop
+    //backDistanceIRSensorReading = drivetrainSubsystem.getBackDistanceIRSensorReading();
+    //SmartDashboard.putNumber("back Distance Sensor 3 raw", backDistanceIRSensorReading);
+
 
     if( photonCamera != null) {
        var results = photonCamera.getLatestResult();
@@ -210,7 +222,7 @@ public class ChaseTagCommand3 extends Command {
              }
              
              // re-calculate the distance by pose
-             //distanceRobotToAprilTag = PoseEstimatorSubsystem.calculateDifference(robotPose2d, goalPose);
+             distanceRobotToAprilTag = PoseEstimatorSubsystem.calculateDifference(robotPose2d, goalPose);
            }
 
            
@@ -231,10 +243,28 @@ public class ChaseTagCommand3 extends Command {
 
          
            isFieldRelative = false;
-           System.out.println("Vision IP3 driveStraightAngle = "+driveStraightAngle+", vinniesError = "+vinniesError+", pid output ="+joystickX+", vision dist = "+distanceRobotToAprilTag+", pigeon Yaw = "+drivetrainSubsystem.getYawInDegree());
+           //System.out.println("Vision IP3 driveStraightAngle = "+driveStraightAngle+", vinniesError = "+vinniesError+", pid output ="+joystickX+", vision dist = "+distanceRobotToAprilTag+", pigeon Yaw = "+drivetrainSubsystem.getYawInDegree());
 
         }
     }
+
+
+    //System.out.println("translationVal,strafeVal,rotationVal = "+translationVal+", " +strafeVal+", "+rotationVal+" with distance = "+distanceRobotToAprilTag+", angle error = "+vinniesError);
+    System.out.println("IR Sensor = "+backDistanceIRSensorReading+", pigeon Yaw = "+drivetrainSubsystem.getYawInDegree());
+
+    if( backDistanceIRSensorReading > 920 &&  vinniesError  < 2  && distanceRobotToAprilTag < 0.6 ) {
+      isGoalReached = true;
+    }
+
+    if( isGoalReached == true) {
+      // if goal reached before, don't apply new power
+      translationVal = 0;
+      strafeVal = 0;
+      rotationVal = 0;
+      System.out.println("Goal is reached with distance = "+distanceRobotToAprilTag+", angle error = "+vinniesError );
+    }
+
+
 
     /* Drive */
   

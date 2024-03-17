@@ -134,7 +134,7 @@ public class RobotContainer {
             
             //  photonCamera may have race condition
             //chaseTagCommand2 =  new ChaseTagCommand2(photonBackOVCamera, swerve, poseEstimator::getCurrentPose);
-            chaseTagCommand3 =  new ChaseTagCommand3(photonBackOVCamera, swerve);
+            chaseTagCommand3 =  new ChaseTagCommand3(photonBackOVCamera, swerve, poseEstimator::getCurrentPose);
             //chaseTagCommand4 =  new ChaseTagCommand4(photonBackOVCamera, swerve, poseEstimator::getCurrentPose);
 
             chaseTagClimbCommand =  new ChaseTagClimbCommand(photonFrontOVCamera, swerve, poseEstimator::getCurrentPose);
