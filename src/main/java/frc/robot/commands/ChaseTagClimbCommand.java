@@ -237,8 +237,9 @@ public class ChaseTagClimbCommand extends Command {
 
                   //angleError = (goalPose.getRotation().getDegrees() - robotPose2d.getRotation().getDegrees()) ;
                  
-                  // rotate the robot to the desired gyro degree
                   
+                  // rotate the robot to the desired gyro degree
+                  /* 
                   vinniesError = desiredGyroAngle - Math.IEEEremainder( drivetrainSubsystem.getYawInDegree(), 360);
                   if( Math.abs(vinniesError) > 2) {
                     joystickX = vinniesError * 0.015;//0.025;//0.01
@@ -246,8 +247,10 @@ public class ChaseTagClimbCommand extends Command {
                         joystickX = Math.signum(joystickX) * 0.4;
                     }
                   }
+                  */
 
                 }
+                
                 
                 rotationVal = joystickX;
                 strafeVal = 0;

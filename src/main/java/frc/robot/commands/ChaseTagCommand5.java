@@ -244,8 +244,8 @@ public class ChaseTagCommand5 extends Command {
                 }
                 */
                 rotationVal = joystickX;
-                //strafeVal = 0;
-                strafeVal = xSpeed;
+                strafeVal = 0;
+                //strafeVal = xSpeed;
 
               
                 isFieldRelative = false;
