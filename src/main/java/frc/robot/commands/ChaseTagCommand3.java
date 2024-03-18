@@ -187,22 +187,7 @@ public class ChaseTagCommand3 extends Command {
 
       // if the target is outside the vision, use the last value if driveStraight is still in progress
       if(  driveStraightFlag == true) {
-            /* 
-                double vinniesError = driveStraightAngle - drivetrainSubsystem.getYawInDegree();
-                joystickX = vinniesError * 0.01;//0.025;//0.01
-                if(Math.abs(joystickX) > 0.4) {
-                    joystickX = Math.signum(joystickX) * 0.4;
-                }
-
-                // in drive straight mode, ignore rotation and strafe
-                rotationVal = joystickX;
-                strafeVal = 0;
-                if( translationVal > 0.4) {
-                    translationVal = 0.4; // fix the speed too?
-                }
-                isFieldRelative = false;
-                System.out.println("Vision IP3 driveStraightAngle = "+driveStraightAngle+", vinniesError = "+vinniesError+", pid output ="+joystickX+", vision dist = "+distanceRobotToAprilTag);
-            */
+            
 
           if( hasTarget == true) {
               vinniesError= driveStraightAngle - drivetrainSubsystem.getYawInDegree()   ;
@@ -212,10 +197,7 @@ public class ChaseTagCommand3 extends Command {
               }
            } 
            else {
-             // use pose to correct angle
-             
-             //vinniesError = (goalPose.getRotation().getDegrees() - robotPose2d.getRotation().getDegrees());
-             //vinniesError = lastGyroYaw - drivetrainSubsystem.getYawInDegree();
+            
              vinniesError = lastDriveStraightAngle - drivetrainSubsystem.getYawInDegree();
              joystickX = vinniesError * 0.025;//0.025;//0.01
              if(Math.abs(joystickX) > 0.4) {
@@ -227,28 +209,28 @@ public class ChaseTagCommand3 extends Command {
            }
 
            
+           if( hasTarget == true) {
+             rotationVal = joystickX;
+           }
+           else {
+             rotationVal = 0;
+           }
+          
 
-           // in drive straight mode, ignore rotation and strafe from joystick, 
-           // calculate the rotation by vision's angle, strafe by the distance from center
-           double xSpeed = 0;
-
-           
-           //xSpeed = 0.35 * (goalPose.getX() - robotPose2d.getX() -0.15);//0.1
-           //if(Math.abs(xSpeed) > 0.25) {
-           //    xSpeed = Math.signum(xSpeed) * 0.25;
-           //}
-
-           rotationVal = joystickX;
-           //strafeVal = 0;
-           strafeVal = xSpeed;
-
-         
+           strafeVal = 0;
            isFieldRelative = false;
-           //System.out.println("Vision IP3 driveStraightAngle = "+driveStraightAngle+", vinniesError = "+vinniesError+", pid output ="+joystickX+", vision dist = "+distanceRobotToAprilTag+", pigeon Yaw = "+drivetrainSubsystem.getYawInDegree());
-
+          
+           System.out.println("Vision IP3 driveStraightAngle = "+driveStraightAngle+", vinniesError = "+vinniesError+", pid output ="+joystickX+", vision dist = "+distanceRobotToAprilTag+", pigeon Yaw = "+drivetrainSubsystem.getYawInDegree());
+      
+           
         }
     }
 
+    // IMPORTANT:  need turn off drive straight model near the end !!!
+    if( backDistanceIRSensorReading > 300  ) {
+      // reset all vision parameter, like normal drive to avoid straffing at the target
+      driveStraightFlag = false;
+    }
 
     //System.out.println("translationVal,strafeVal,rotationVal = "+translationVal+", " +strafeVal+", "+rotationVal+" with distance = "+distanceRobotToAprilTag+", angle error = "+vinniesError);
     System.out.println("IR Sensor = "+backDistanceIRSensorReading+", pigeon Yaw = "+drivetrainSubsystem.getYawInDegree());

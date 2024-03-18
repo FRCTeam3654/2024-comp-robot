@@ -18,6 +18,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 
@@ -208,11 +209,7 @@ public class ChaseTagClimbCommand extends Command {
                   }
                 } 
                 else {
-                  // use pose to correct angle
                   
-                  //vinniesError = (goalPose.getRotation().getDegrees() - robotPose2d.getRotation().getDegrees());
-                  //vinniesError = lastGyroYaw - drivetrainSubsystem.getYawInDegree();
-                  vinniesError = lastDriveStraightAngle - drivetrainSubsystem.getYawInDegree();
                   joystickX = vinniesError * 0.025;//0.025;//0.01
                   if(Math.abs(joystickX) > 0.4) {
                       joystickX = Math.signum(joystickX) * 0.4;
@@ -222,14 +219,26 @@ public class ChaseTagClimbCommand extends Command {
                   distanceRobotToAprilTag = PoseEstimatorSubsystem.calculateDifference(robotPose2d, goalPose);
                 }
 
+                if( hasTarget == true) {
+                  rotationVal = joystickX;
+                }
+                else {
+                  rotationVal = 0;
+                }
+                
+                strafeVal = 0;
+                isFieldRelative = false;
                 
 
                 // in drive straight mode, ignore rotation and strafe from joystick, 
                 
                 double desiredGyroAngle = aprilTagIDtoRobotAngle.get(lastFiducialId); 
                 // slow down at the end
-                if( distanceRobotToAprilTag < 0.6) {
-                  translationVal = 0;
+                if( distanceRobotToAprilTag < 1.1) {
+                  // IMPORTANT:  need turn off drive straight model near the end !!!
+                  driveStraightFlag = false;
+
+                  //translationVal = 0;
                   strafeVal = 0;
                   rotationVal = 0;
                   joystickX = 0;
@@ -274,8 +283,8 @@ public class ChaseTagClimbCommand extends Command {
     System.out.println("translationVal,strafeVal,rotationVal = "+translationVal+", " +strafeVal+", "+rotationVal+" with distance = "+distanceRobotToAprilTag+", angle error = "+vinniesError);
     System.out.println("vision distance = "+distanceRobotToAprilTag+", pigeon Yaw = "+drivetrainSubsystem.getYawInDegree());
 
-    if( distanceRobotToAprilTag < 0.6 &&  vinniesError  < 2   ) {
-      //isGoalReached = true;
+    if( distanceRobotToAprilTag < 0.8 &&  vinniesError  < 2   ) {
+      isGoalReached = true;
     }
 
     if( isGoalReached == true) {
@@ -283,6 +292,7 @@ public class ChaseTagClimbCommand extends Command {
       translationVal = 0;
       strafeVal = 0;
       rotationVal = 0;
+      PoseEstimatorSubsystem.setLEDColor(Color.kGold);
       System.out.println("Goal is reached with distance = "+distanceRobotToAprilTag+", angle error = "+vinniesError );
     }
 

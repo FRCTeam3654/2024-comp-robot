@@ -212,58 +212,33 @@ public class ChaseTagCommand5 extends Command {
                   distanceRobotToAprilTag = PoseEstimatorSubsystem.calculateDifference(robotPose2d, goalPose);
                 }
 
-                
-
-                // in drive straight mode, ignore rotation and strafe from joystick, 
-                // calculate the rotation by vision's angle, strafe by the distance from center
-                double xSpeed = 0;
-                //if( backDistanceIRSensorReading < 150 && hasTarget == true) {
-                //if( backDistanceIRSensorReading < 150 && hasTarget == true) {
-                  // DO NOT STRAFLE IF NO TAG IS SEEN BY CAMERA
-                  xSpeed = 0.35 * (goalPose.getX() - robotPose2d.getX() -0.15);//0.15
-
-                  if(Math.abs(xSpeed) > 0.25) {
-                    xSpeed = Math.signum(xSpeed) * 0.25;
-                  }
-                //}
-
-                /* 
-                // slow down at the end
-                if( backDistanceIRSensorReading > 150 ) {
-                  if(Math.abs(xSpeed) > 0.1) {
-                    xSpeed = Math.signum(xSpeed) * 0.1;
-                  }
-
-                  if(Math.abs(rotationVal) > 0.1) {
-                    rotationVal = Math.signum(rotationVal) * 0.1;
-                  }
-
-                  if(Math.abs(translationVal) > 0.1) {
-                    rotationVal = Math.signum(translationVal) * 0.1;
-                  }
+                if( hasTarget == true) {
+                  rotationVal = joystickX;
                 }
-                */
-                rotationVal = joystickX;
+                else {
+                  rotationVal = 0;
+                }
+               
+     
                 strafeVal = 0;
-                //strafeVal = xSpeed;
-
-              
                 isFieldRelative = false;
-                System.out.println("Vision IP5 driveStraightAngle = "+driveStraightAngle+", vinniesError = "+vinniesError+", pid output ="+joystickX+", vision dist = "+distanceRobotToAprilTag+", pigeon Yaw = "+drivetrainSubsystem.getYawInDegree());
-            
+               
+                System.out.println("Vision IP5 driveStraightAngle = "+driveStraightAngle+", vinniesError = "+vinniesError+", pid output ="+joystickX+", vision dist = "+distanceRobotToAprilTag+", pigeon Yaw = "+drivetrainSubsystem.getYawInDegree());     
             
         }
     }
 
 
-    
-    //double angleError = (goalPose.getRotation().getDegrees() - robotPose2d.getRotation().getDegrees());
-    
+    // IMPORTANT:  need turn off drive straight model near the end !!!
+    if( backDistanceIRSensorReading > 300  ) {
+      // reset all vision parameter, like normal drive to avoid straffing at the target
+      driveStraightFlag = false;
+    }
 
-    System.out.println("Goal Pose = "+ goalPose.toString());
-    System.out.println("robot Pose = "+robotPose2d.toString());
-    System.out.println("translationVal,strafeVal,rotationVal = "+translationVal+", " +strafeVal+", "+rotationVal+" with distance = "+distanceRobotToAprilTag+", angle error = "+vinniesError);
-    System.out.println("IR Sensor = "+backDistanceIRSensorReading+", pigeon Yaw = "+drivetrainSubsystem.getYawInDegree());
+    //System.out.println("Goal Pose = "+ goalPose.toString());
+    //System.out.println("robot Pose = "+robotPose2d.toString());
+    //System.out.println("translationVal,strafeVal,rotationVal = "+translationVal+", " +strafeVal+", "+rotationVal+" with distance = "+distanceRobotToAprilTag+", angle error = "+vinniesError);
+    //System.out.println("IR Sensor = "+backDistanceIRSensorReading+", pigeon Yaw = "+drivetrainSubsystem.getYawInDegree());
 
     if( backDistanceIRSensorReading > 920 &&  vinniesError  < 2  && distanceRobotToAprilTag < 0.6 ) {
       isGoalReached = true;
