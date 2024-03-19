@@ -87,7 +87,7 @@ public class ChaseTagCommand3 extends Command {
   private Transform3d which_tag_to_goal;
 
   private double tagTimer ;
-  private double tagTimeout = 20;
+  private double tagTimeout = 30;
 
   private boolean driveStraightFlag = false;
   private double driveStraightAngle = 0;
@@ -235,20 +235,11 @@ public class ChaseTagCommand3 extends Command {
     //System.out.println("translationVal,strafeVal,rotationVal = "+translationVal+", " +strafeVal+", "+rotationVal+" with distance = "+distanceRobotToAprilTag+", angle error = "+vinniesError);
     System.out.println("IR Sensor = "+backDistanceIRSensorReading+", pigeon Yaw = "+drivetrainSubsystem.getYawInDegree());
 
-    if( backDistanceIRSensorReading > 920 &&  vinniesError  < 2  && distanceRobotToAprilTag < 0.6 ) {
-      isGoalReached = true;
-    }
-
-    if( isGoalReached == true) {
-      // if goal reached before, don't apply new power
-      translationVal = 0;
-      strafeVal = 0;
-      rotationVal = 0;
+    if( backDistanceIRSensorReading > 800 &&  vinniesError  < 2  && distanceRobotToAprilTag < 0.8 ) {
       PoseEstimatorSubsystem.setLEDColor(Color.kGold);
-      System.out.println("Goal is reached with distance = "+distanceRobotToAprilTag+", angle error = "+vinniesError );
     }
 
-
+    
 
     /* Drive */
   
@@ -269,7 +260,7 @@ public class ChaseTagCommand3 extends Command {
   @Override
   public boolean isFinished(){
     if( (tagTimer + tagTimeout) < Timer.getFPGATimestamp()) {
-      // after 20 second, stop command
+      // after 30 second, stop command
       return true;
     }
     else {
