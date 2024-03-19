@@ -86,7 +86,7 @@ public class ChaseTagCommand5 extends Command {
   private Transform3d which_tag_to_goal;
 
   private double tagTimer ;
-  private double tagTimeout = 20;
+  private double tagTimeout = 30;
 
   private boolean driveStraightFlag = false;
   private double driveStraightAngle = 0;
@@ -198,10 +198,7 @@ public class ChaseTagCommand5 extends Command {
                   }
                 } 
                 else {
-                  // use pose to correct angle
-                  
-                  //vinniesError = (goalPose.getRotation().getDegrees() - robotPose2d.getRotation().getDegrees());
-                  //vinniesError = lastGyroYaw - drivetrainSubsystem.getYawInDegree();
+                 
                   vinniesError = lastDriveStraightAngle - drivetrainSubsystem.getYawInDegree();
                   joystickX = vinniesError * 0.025;//0.025;//0.01
                   if(Math.abs(joystickX) > 0.4) {
@@ -223,7 +220,7 @@ public class ChaseTagCommand5 extends Command {
                 strafeVal = 0;
                 isFieldRelative = false;
                
-                System.out.println("Vision IP5 driveStraightAngle = "+driveStraightAngle+", vinniesError = "+vinniesError+", pid output ="+joystickX+", vision dist = "+distanceRobotToAprilTag+", pigeon Yaw = "+drivetrainSubsystem.getYawInDegree());     
+                //System.out.println("Vision IP5 driveStraightAngle = "+driveStraightAngle+", vinniesError = "+vinniesError+", pid output ="+joystickX+", vision dist = "+distanceRobotToAprilTag+", pigeon Yaw = "+drivetrainSubsystem.getYawInDegree());     
             
         }
     }
@@ -235,23 +232,13 @@ public class ChaseTagCommand5 extends Command {
       driveStraightFlag = false;
     }
 
-    //System.out.println("Goal Pose = "+ goalPose.toString());
-    //System.out.println("robot Pose = "+robotPose2d.toString());
     //System.out.println("translationVal,strafeVal,rotationVal = "+translationVal+", " +strafeVal+", "+rotationVal+" with distance = "+distanceRobotToAprilTag+", angle error = "+vinniesError);
     //System.out.println("IR Sensor = "+backDistanceIRSensorReading+", pigeon Yaw = "+drivetrainSubsystem.getYawInDegree());
 
-    if( backDistanceIRSensorReading > 920 &&  vinniesError  < 2  && distanceRobotToAprilTag < 0.6 ) {
-      isGoalReached = true;
-    }
-
-    if( isGoalReached == true) {
-      // if goal reached before, don't apply new power
-      translationVal = 0;
-      strafeVal = 0;
-      rotationVal = 0;
+    if( backDistanceIRSensorReading > 800 &&  vinniesError  < 2  && distanceRobotToAprilTag < 0.8 ) {
       PoseEstimatorSubsystem.setLEDColor(Color.kGold);
-      System.out.println("Goal is reached with distance = "+distanceRobotToAprilTag+", angle error = "+vinniesError );
     }
+    
 
     /* Drive */
   
@@ -272,7 +259,7 @@ public class ChaseTagCommand5 extends Command {
   @Override
   public boolean isFinished(){
     if( (tagTimer + tagTimeout) < Timer.getFPGATimestamp()) {
-      // after 20 second, stop command
+      // after 30 second, stop command
       return true;
     }
     else {
