@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.PoseEstimatorSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
 import org.photonvision.PhotonUtils;
@@ -88,7 +89,7 @@ public class DriveToNoteVisionTargetCommand2 extends Command {
     //  var results = RobotContainer.photonBackOVCamera.getLatestResult();
       if( results.hasTargets() ) {
            var result = results.getBestTarget();
-           if( result != null) {
+           if( result != null  && result.getArea() > 0.008) {
                    driveStraightAngle = s_Swerve.getYawInDegree();
                    // add the vision data
                    driveStraightAngle = driveStraightAngle - result.getYaw();// add or minus need test out
@@ -106,8 +107,21 @@ public class DriveToNoteVisionTargetCommand2 extends Command {
 
                   // some logic here -- if the distance is long, need adjust the timeout + make sure not drive too far into other side
                   // next note in middle line is 66 inches away (~ 1.67m) ==> how long it takes to get there?
-           }
-      }
+                  // also need watch out incoming robot for the same note,  raise the intake if it is coming
+
+                  if( distanceBtwRobotAndNote > 1.2 && distanceBtwRobotAndNote < 3.0 ) {
+                    this.driveTimeout = 2.5; // slightly longer time to get the next note
+                }
+         }
+         else {
+            translationVal = 0.0; // don't move if there is no note
+            driveStraightFlag = false;
+         }
+    }
+    else {
+      translationVal = 0.0; // don't move if there is no note
+      driveStraightFlag = false;
+    }
 
       // if the target is outside the vision, use the last value if driveStraight is still in progress
       if(  driveStraightFlag == true) {
@@ -147,6 +161,7 @@ public class DriveToNoteVisionTargetCommand2 extends Command {
   @Override
   public boolean isFinished() {
     if (RobotContainer.intakeRollers.hasGamePiece() || (driveTimer + driveTimeout < Timer.getFPGATimestamp())  ){ 
+      PoseEstimatorSubsystem.setLEDColor(Color.kGold);
       return true;
     }
    

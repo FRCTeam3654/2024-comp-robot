@@ -156,6 +156,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("AutoSpeakerShooterCommand", new AutoSpeakerShooterCommand());
 
         NamedCommands.registerCommand("DriveToNoteVisionTargetCommand", new DriveToNoteVisionTargetCommand(swerve , 2));
+        NamedCommands.registerCommand("DriveToNoteVisionTargetCommand2", new DriveToNoteVisionTargetCommand2(swerve , 2));
 
 
         /*

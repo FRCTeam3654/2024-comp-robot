@@ -68,6 +68,14 @@ public class DriveToNoteVisionTargetCommand extends Command {
                    driveStraightAngle = driveStraightAngle - result.getYaw();// add or minus need test out
                    driveStraightFlag = true;
            }
+           else {
+            translationVal = 0.0; // don't move if there is no note
+            driveStraightFlag = false;
+         }
+      }
+      else {
+        translationVal = 0.0; // don't move if there is no note
+        driveStraightFlag = false;
       }
 
       // if the target is outside the vision, use the last value if driveStraight is still in progress
@@ -110,13 +118,7 @@ public class DriveToNoteVisionTargetCommand extends Command {
     if ( RobotContainer.intakeRollers.hasGamePiece() ||  (driveTimer + driveTimeout < Timer.getFPGATimestamp()) ){ 
       return true;
     }
-    // check if the note is in, then finish too
-
-    // if(){
-
-    //}
-
-
+   
     return false;
   }
 }
