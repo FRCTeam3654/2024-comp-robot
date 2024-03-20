@@ -130,8 +130,8 @@ public class ChaseTagCommand3 extends Command {
     boolean hasTarget = false;
 
      // if the IR distance sensor value < certain value, and angle error < 2 degree, stop
-    //backDistanceIRSensorReading = drivetrainSubsystem.getBackDistanceIRSensorReading();
-    //SmartDashboard.putNumber("back Distance Sensor 3 raw", backDistanceIRSensorReading);
+    backDistanceIRSensorReading = drivetrainSubsystem.getBackDistanceIRSensorReading();
+    SmartDashboard.putNumber("back Distance Sensor 3 raw", backDistanceIRSensorReading);
 
 
     if( photonCamera != null) {
