@@ -171,6 +171,7 @@ public class ChaseTagCommand6 extends Command {
                       Pose3d camPose3d = aprilTagPose3d.transformBy(camToTarget.inverse());
                       robotPose3dByVision = camPose3d.transformBy(ROBOT_TO_CAMERA_BACK.inverse());//(CAMERA_TO_ROBOT);
 
+                      /* 
                       if(fiducialId == 4 || fiducialId == 7 ) {
                         // speaker
                         which_tag_to_goal = TAG_TO_GOAL_SPEAKER;
@@ -186,13 +187,26 @@ public class ChaseTagCommand6 extends Command {
                       else {
                           which_tag_to_goal = null;
                       }
+                      */
 
-                      goalPose = aprilTagPose3d.toPose2d();// aprilTagPose3d.transformBy(which_tag_to_goal).toPose2d();
-                      if( robotPose3dByVision != null) {
-                        // check distance and 2d angle make sense -- test code
-                        distanceRobotToAprilTag = PoseEstimatorSubsystem.calculateDifference(robotPose3dByVision.toPose2d(), goalPose);
-                        //System.out.println("Distance btw robot and goal = "+distanceRobotToAprilTag);    
-                      } 
+                      if(fiducialId == 5 || fiducialId == 6 ) {
+                          // AMP
+                          which_tag_to_goal = TAG_TO_GOAL_AMP;
+                      }
+                      else {
+                          which_tag_to_goal = null;
+                          driveStraightFlag = false;
+                      }
+
+                      if(which_tag_to_goal != null) {
+
+                          goalPose = aprilTagPose3d.toPose2d();// aprilTagPose3d.transformBy(which_tag_to_goal).toPose2d();
+                          if( robotPose3dByVision != null) {
+                            // check distance and 2d angle make sense -- test code
+                            distanceRobotToAprilTag = PoseEstimatorSubsystem.calculateDifference(robotPose3dByVision.toPose2d(), goalPose);
+                            //System.out.println("Distance btw robot and goal = "+distanceRobotToAprilTag);    
+                          } 
+                      }
                     }
             }
       }
