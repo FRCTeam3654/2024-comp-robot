@@ -119,8 +119,8 @@ public class IntakeRollers extends SubsystemBase {
     public void feedIn() {
         //target1 = -0.5;
         //target2 = -0.5;
-        target1 = 0.5;
-        target2 = 0.5;
+        target1 = 0.4;
+        target2 = 0.4;
 
         //lowerWheels.set(target);
     }
@@ -138,8 +138,8 @@ public class IntakeRollers extends SubsystemBase {
     public void feedOut() {
         //target1 = 0.5;
         //target2 = 0.5;
-        target1 = -0.5;
-        target2 = -0.5;
+        target1 = -0.4;
+        target2 = -0.4;
     }
 
     public void feedOut(double percentDuty) {
@@ -185,7 +185,7 @@ public class IntakeRollers extends SubsystemBase {
         SmartDashboard.putNumber("intakeSensor.getVoltage()", intakeNoteSensor.getVoltage());
         SmartDashboard.putNumber("intakeSensor.getAverageValue()", intakeNoteSensor.getAverageValue());
 
-        if((intakeNoteSensor.getVoltage() > 1.8) || RobotContainer.oi.intakeUpButton.getAsBoolean() || intakeNoteSensor.getAverageValue() > 1900){
+        if((intakeNoteSensor.getVoltage() > 1.8) || RobotContainer.oi.intakeUpButton.getAsBoolean() || intakeNoteSensor.getAverageValue() > 1600){
             prevSensorReading =  intakeNoteSensor.getAverageValue();
             return true;
         }
