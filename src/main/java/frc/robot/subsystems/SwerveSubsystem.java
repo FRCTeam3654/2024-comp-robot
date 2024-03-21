@@ -181,6 +181,19 @@ public class SwerveSubsystem extends SubsystemBase {
     }
   }
 
+  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean isOpenLoop, double maxSpeed) {
+    var swerveModuleStates =
+        swerveKinematics.toSwerveModuleStates(
+            fieldRelative
+                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getYaw())
+                : new ChassisSpeeds(xSpeed, ySpeed, rot));
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, maxSpeed);
+    for (SwerveModule mod : mSwerveMods) {
+            mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
+    }
+  }
+
+
 
     /* Used by SwerveControllerCommand in Auto */
     public void setModuleStates(SwerveModuleState[] desiredStates) {

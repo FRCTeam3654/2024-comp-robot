@@ -181,6 +181,17 @@ public class IntakeRollers extends SubsystemBase {
         return false;
     }
 
+    // slightly different criteria from hasGamePiece() -- verfy the value 0.8 and 500 first
+    public boolean hasNoGamePiece(){
+        SmartDashboard.putNumber("intakeSensor.getVoltage()", intakeNoteSensor.getVoltage());
+        SmartDashboard.putNumber("intakeSensor.getAverageValue()", intakeNoteSensor.getAverageValue());
+
+        if((intakeNoteSensor.getVoltage() < 0.8)  && intakeNoteSensor.getAverageValue() < 500){
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public void periodic() {
         // This method will be called once per scheduler run

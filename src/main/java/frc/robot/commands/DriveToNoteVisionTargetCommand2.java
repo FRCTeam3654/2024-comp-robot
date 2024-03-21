@@ -7,17 +7,31 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.PoseEstimatorSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+
+import org.photonvision.PhotonUtils;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 
-public class DriveToNoteVisionTargetCommand extends Command {
+
+/*
+ *  A few possible small enhancements:
+ *  1. make translationVal = 0.30;
+ *  2. end the command if the intake has taken the note similar to AutoIntakeCommand's isFinished()
+ *  3. estimate the distance btw robot and note in case that the targeted notes has been taken by other team
+ */
+
+public class DriveToNoteVisionTargetCommand2 extends Command {
 
   public static final double CHASE_NOTE_MAX_PID_OUTPUT = 0.4;
   private double driveTimer = 0;
-  private double driveTimeout = 0.5;
+  private double driveTimeout = 2;
   private SwerveSubsystem s_Swerve;    
 
   private boolean isFieldRelative;
@@ -25,14 +39,25 @@ public class DriveToNoteVisionTargetCommand extends Command {
   private boolean driveStraightFlag = false;
   private double driveStraightAngle = 0;
 
-  public DriveToNoteVisionTargetCommand(SwerveSubsystem s_Swerve) {
+  final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(22);// same as the camera height in above ROBOT_TO_CAMERA
+  final double TARGET_HEIGHT_METERS = Units.feetToMeters(0);
+  final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(-18); // camera facing down, about 18 degree from vertical line -- need double check
+
+
+
+
+
+
+
+
+  public DriveToNoteVisionTargetCommand2(SwerveSubsystem s_Swerve) {
      this.s_Swerve = s_Swerve ;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(s_Swerve);
 
   }
 
-  public DriveToNoteVisionTargetCommand( SwerveSubsystem s_Swerve, double driveTimeout) {
+  public DriveToNoteVisionTargetCommand2( SwerveSubsystem s_Swerve, double driveTimeout) {
     this.s_Swerve = s_Swerve ;
     this.driveTimeout = driveTimeout;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -52,9 +77,11 @@ public class DriveToNoteVisionTargetCommand extends Command {
     double joystickX = 0.0;
     boolean useOpenLoop = true;
 
-    double translationVal = 0.25;
+    double translationVal = 0.30;
     double strafeVal = 0.0;
     double rotationVal = 0.0;
+
+    double distanceBtwRobotAndNote = 0.0;
 
     if( RobotContainer.photonLifeCam != null) {
         var results = RobotContainer.photonLifeCam.getLatestResult();
@@ -62,21 +89,39 @@ public class DriveToNoteVisionTargetCommand extends Command {
     //  var results = RobotContainer.photonBackOVCamera.getLatestResult();
       if( results.hasTargets() ) {
            var result = results.getBestTarget();
-           if( result != null) {
+           if( result != null  && result.getArea() > 0.008) {
                    driveStraightAngle = s_Swerve.getYawInDegree();
                    // add the vision data
                    driveStraightAngle = driveStraightAngle - result.getYaw();// add or minus need test out
                    driveStraightFlag = true;
-           }
-           else {
+
+
+                  distanceBtwRobotAndNote =
+                        PhotonUtils.calculateDistanceToTargetMeters(
+                                CAMERA_HEIGHT_METERS,
+                                TARGET_HEIGHT_METERS,
+                                CAMERA_PITCH_RADIANS,
+                                Units.degreesToRadians(result.getPitch()));
+
+                  SmartDashboard.putNumber("distanceBtwRobotAndNote", distanceBtwRobotAndNote);
+
+                  // some logic here -- if the distance is long, need adjust the timeout + make sure not drive too far into other side
+                  // next note in middle line is 66 inches away (~ 1.67m) ==> how long it takes to get there?
+                  // also need watch out incoming robot for the same note,  raise the intake if it is coming
+
+                  if( distanceBtwRobotAndNote > 1.2 && distanceBtwRobotAndNote < 3.0 ) {
+                    this.driveTimeout = 2.5; // slightly longer time to get the next note
+                }
+         }
+         else {
             translationVal = 0.0; // don't move if there is no note
             driveStraightFlag = false;
          }
-      }
-      else {
-        translationVal = 0.0; // don't move if there is no note
-        driveStraightFlag = false;
-      }
+    }
+    else {
+      translationVal = 0.0; // don't move if there is no note
+      driveStraightFlag = false;
+    }
 
       // if the target is outside the vision, use the last value if driveStraight is still in progress
       if(  driveStraightFlag == true) {
@@ -93,7 +138,7 @@ public class DriveToNoteVisionTargetCommand extends Command {
                    translationVal = 0.4; // fix the speed too?
                }
                isFieldRelative = false;
-               System.out.println("Vision IP driveStraightAngle = "+driveStraightAngle+", vinniesError = "+vinniesError+", pid output ="+joystickX);
+               System.out.println("Vision IP driveStraightAngle = "+driveStraightAngle+", vinniesError = "+vinniesError+", pid output ="+joystickX+", distance = "+distanceBtwRobotAndNote );
        }
     }
 
@@ -115,7 +160,8 @@ public class DriveToNoteVisionTargetCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if ( driveTimer + 1 < Timer.getFPGATimestamp()){ 
+    if (RobotContainer.intakeRollers.hasGamePiece() || (driveTimer + driveTimeout < Timer.getFPGATimestamp())  ){ 
+      PoseEstimatorSubsystem.setLEDColor(Color.kGold);
       return true;
     }
    

@@ -34,7 +34,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 
 
 
-public class ChaseTagCommand5 extends Command {
+public class ChaseTagCommand6 extends Command {
    
   // front AprilTag Camera -- roll or pitch , which is 30 degree?
   
@@ -93,7 +93,7 @@ public class ChaseTagCommand5 extends Command {
   private boolean useOpenLoop = true;
   private boolean isFieldRelative;
 
-  public ChaseTagCommand5(
+  public ChaseTagCommand6(
         PhotonCamera photonCamera, 
         SwerveSubsystem drivetrainSubsystem,
         Supplier<Pose2d> poseProvider) 
@@ -116,16 +116,29 @@ public class ChaseTagCommand5 extends Command {
 
     var robotPose2d = poseProvider.get();
     
-    //Pose3d aprilTagPose3d = null;
+   
+    isFieldRelative = true;
+
     int fiducialId = -1;
     double joystickX = 0.0;
-    double rotationVal = -RobotContainer.oi.driverStick.getRawAxis(RobotContainer.rotationAxis);
-    double strafeVal = -RobotContainer.oi.driverStick.getRawAxis(RobotContainer.strafeAxis);
-    double translationVal = -RobotContainer.oi.driverStick.getRawAxis(RobotContainer.translationAxis);
-    translationVal =  translationLimiter.calculate(  MathUtil.applyDeadband(translationVal, Constants.stickDeadband) );
-    strafeVal = strafeLimiter.calculate(  MathUtil.applyDeadband(strafeVal, Constants.stickDeadband));
-    rotationVal = rotationLimiter.calculate(   MathUtil.applyDeadband(rotationVal, Constants.stickDeadband));
+    //double rotationVal = -RobotContainer.oi.driverStick.getRawAxis(RobotContainer.rotationAxis);
+    //double strafeVal = -RobotContainer.oi.driverStick.getRawAxis(RobotContainer.strafeAxis);
+    //double translationVal = -RobotContainer.oi.driverStick.getRawAxis(RobotContainer.translationAxis);
+    
+    //negative values when we push forward.
+    double xSpeed = -RobotContainer.oi.driverStick.getLeftY();
+    //// return positive values when you pull to the right by default.
+    double ySpeed = -RobotContainer.oi.driverStick.getLeftX();
+    //positive value when we pull to the left (remember, CCW is positive
+    double rotationVal= -RobotContainer.oi.driverStick.getRightX();
+    
 
+
+    xSpeed =  translationLimiter.calculate(  MathUtil.applyDeadband(xSpeed, Constants.stickDeadband) ) * Constants.Swerve.maxSpeed;
+    ySpeed  = strafeLimiter.calculate(  MathUtil.applyDeadband(ySpeed, Constants.stickDeadband)) * Constants.Swerve.maxSpeed;
+    rotationVal = rotationLimiter.calculate(   MathUtil.applyDeadband(rotationVal, Constants.stickDeadband)) * Constants.Swerve.maxAngularVelocity;
+
+    
     boolean hasTarget = false;
 
     // if the IR distance sensor value < certain value, and angle error < 2 degree, stop
@@ -186,6 +199,7 @@ public class ChaseTagCommand5 extends Command {
                       }
 
                       if(which_tag_to_goal != null) {
+
                           goalPose = aprilTagPose3d.toPose2d();// aprilTagPose3d.transformBy(which_tag_to_goal).toPose2d();
                           if( robotPose3dByVision != null) {
                             // check distance and 2d angle make sense -- test code
@@ -222,61 +236,77 @@ public class ChaseTagCommand5 extends Command {
                   distanceRobotToAprilTag = PoseEstimatorSubsystem.calculateDifference(robotPose2d, goalPose);
                 }
 
+                
+
+               
+
                 if( hasTarget == true) {
                   rotationVal = joystickX;
                 }
                 else {
                   rotationVal = 0;
                 }
-               
-     
-                strafeVal = 0;
-                isFieldRelative = false;
-               
-                //System.out.println("Vision IP5 driveStraightAngle = "+driveStraightAngle+", vinniesError = "+vinniesError+", pid output ="+joystickX+", vision dist = "+distanceRobotToAprilTag+", pigeon Yaw = "+drivetrainSubsystem.getYawInDegree());     
+                
+              
+                //strafeVal = 0;
+
+                //isFieldRelative = false;
+                
+                System.out.println("Vision IP5 driveStraightAngle = "+driveStraightAngle+", vinniesError = "+vinniesError+", pid output ="+joystickX+", vision dist = "+distanceRobotToAprilTag+", pigeon Yaw = "+drivetrainSubsystem.getYawInDegree());
+            
             
         }
     }
 
 
-    // IMPORTANT:  need turn off drive straight model near the end !!!
     if( backDistanceIRSensorReading > 300  ) {
-      // reset all vision parameter, like normal drive to avoid straffing at the target
+      // reset all vision parameter, like normal drive 
       driveStraightFlag = false;
+      System.out.println("turn off drive straight");
     }
+    
+    
+    //double angleError = (goalPose.getRotation().getDegrees() - robotPose2d.getRotation().getDegrees());
+    
 
-    //System.out.println("translationVal,strafeVal,rotationVal = "+translationVal+", " +strafeVal+", "+rotationVal+" with distance = "+distanceRobotToAprilTag+", angle error = "+vinniesError);
-    //System.out.println("IR Sensor = "+backDistanceIRSensorReading+", pigeon Yaw = "+drivetrainSubsystem.getYawInDegree());
+    //System.out.println("Goal Pose = "+ goalPose.toString());
+    //System.out.println("robot Pose = "+robotPose2d.toString());
+    System.out.println("translationVal,strafeVal,rotationVal = "+rotationVal+", " +xSpeed+", "+ySpeed+" with distance = "+distanceRobotToAprilTag+", angle error = "+vinniesError);
+    System.out.println("IR Sensor = "+backDistanceIRSensorReading+", pigeon Yaw = "+drivetrainSubsystem.getYawInDegree());
+
 
     if( backDistanceIRSensorReading > 800 &&  vinniesError  < 2  && distanceRobotToAprilTag < 0.8 ) {
       PoseEstimatorSubsystem.setLEDColor(Color.kGold);
     }
     
 
-    /* Drive */
-  
+
+    /// Drive    xSpeed, ySpeed, rot, fieldRelative
+    // WPILib Example for using joystick for field oriented drive: https://github.com/wpilibsuite/allwpilib/blob/023a5989f8bafec69c3650aca868c8b0cc4a6f3b/wpilibjExamples/src/main/java/edu/wpi/first/wpilibj/examples/swervedriveposeestimator/Drivetrain.java#L65
+    
     drivetrainSubsystem.drive(
-                new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed), 
-                rotationVal * Constants.Swerve.maxAngularVelocity, 
+                xSpeed, ySpeed, rotationVal,
                 isFieldRelative, 
-                useOpenLoop
-                
+                useOpenLoop,
+                Constants.Swerve.maxSpeed
     );
     
   }
 
   @Override
   public void end(boolean interrupted) {
+    
   }
 
   @Override
   public boolean isFinished(){
     if( (tagTimer + tagTimeout) < Timer.getFPGATimestamp()) {
       // after 30 second, stop command
+      //System.out.println("ChaseTagCommand5 timed out after 30 s");
       return true;
     }
     else {
-        return isGoalReached;
+      return isGoalReached;
     }
 
     // may enhance to check the distance and angle to set isGoalReached = true
