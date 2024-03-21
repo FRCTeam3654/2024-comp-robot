@@ -28,7 +28,7 @@ public class AutoIntakeCommand extends Command {
   @Override
   public void execute() {
     //RobotContainer.intakeWheels.intakeMove(0.2);
-    RobotContainer.intakeRollers.feedIn();
+    RobotContainer.intakeRollers.feedIn(-0.7, -0.7);
 
   }
 

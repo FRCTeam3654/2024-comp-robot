@@ -17,7 +17,7 @@ public class DriveToNoteVisionTargetCommand extends Command {
 
   public static final double CHASE_NOTE_MAX_PID_OUTPUT = 0.4;
   private double driveTimer = 0;
-  private double driveTimeout = 2;
+  private double driveTimeout = 0.5;
   private SwerveSubsystem s_Swerve;    
 
   private boolean isFieldRelative;
@@ -52,7 +52,7 @@ public class DriveToNoteVisionTargetCommand extends Command {
     double joystickX = 0.0;
     boolean useOpenLoop = true;
 
-    double translationVal = 0.10;
+    double translationVal = 0.25;
     double strafeVal = 0.0;
     double rotationVal = 0.0;
 
@@ -68,6 +68,11 @@ public class DriveToNoteVisionTargetCommand extends Command {
                    driveStraightAngle = driveStraightAngle - result.getYaw();// add or minus need test out
                    driveStraightFlag = true;
            }
+           
+      }
+
+      else{
+        translationVal = 0;
       }
 
       // if the target is outside the vision, use the last value if driveStraight is still in progress
@@ -107,7 +112,7 @@ public class DriveToNoteVisionTargetCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if ( driveTimer + driveTimeout < Timer.getFPGATimestamp()){ 
+    if ( driveTimer + 1 < Timer.getFPGATimestamp()){ 
       return true;
     }
     // check if the note is in, then finish too

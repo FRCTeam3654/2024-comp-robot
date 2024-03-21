@@ -179,7 +179,7 @@ public class ChaseTagCommand3 extends Command {
                 if( translationVal > 0.4) {
                     translationVal = 0.4; // fix the speed too?
                 }
-                isFieldRelative = false;
+                isFieldRelative = true;
                 System.out.println("Vision IP3 driveStraightAngle = "+driveStraightAngle+", vinniesError = "+vinniesError+", pid output ="+joystickX+", vision dist = "+distanceRobotToAprilTag);
         }
     }

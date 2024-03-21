@@ -85,8 +85,9 @@ public class RobotContainer {
     public static  PoseEstimatorSubsystem poseEstimator = null;
 
     //private ChaseTagCommand2 chaseTagCommand2 =  null;
-    private ChaseTagCommand3 chaseTagCommand3 =  null;
+    //private ChaseTagCommand3 chaseTagCommand3 =  null;
     //private ChaseTagCommand4 chaseTagCommand4 =  null;
+    private ChaseTagCommand3 chaseTagCommand3 =  null;
 
     private ChaseTagClimbCommand chaseTagClimbCommand =  null;
 
