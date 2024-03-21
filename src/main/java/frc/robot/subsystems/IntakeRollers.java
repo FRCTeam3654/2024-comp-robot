@@ -117,28 +117,37 @@ public class IntakeRollers extends SubsystemBase {
     }
 
     public void feedIn() {
-        target1 = -0.5;
-        target2 = -0.5;
+        //target1 = -0.5;
+        //target2 = -0.5;
+        target1 = 0.5;
+        target2 = 0.5;
 
         //lowerWheels.set(target);
     }
 
     public void feedIn(double percentDuty1, double percentDuty2) {
-        target1 = percentDuty1;
-        target2 = percentDuty2;
+       // target1 = percentDuty1;
+       // target2 = percentDuty2;
+        target1 = (-1) * percentDuty1;
+        target2 = (-1) * percentDuty2;
         //prevSensorReading =  intakeNoteSensor.getAverageValue();
 
 
     }
 
     public void feedOut() {
-        target1 = 0.5;
-        target2 = 0.5;
+        //target1 = 0.5;
+        //target2 = 0.5;
+        target1 = -0.5;
+        target2 = -0.5;
     }
 
     public void feedOut(double percentDuty) {
-        target1 = (-1.0) *  percentDuty;
-        target2 = (-1.0) *  percentDuty;
+       // target1 = (-1.0) *  percentDuty;
+        //target2 = (-1.0) *  percentDuty;
+
+        target1 =  percentDuty;
+        target2 =  percentDuty;
 
     }
 
@@ -148,13 +157,19 @@ public class IntakeRollers extends SubsystemBase {
     }
 
     public void centerNote(){
-        target1 = -0.03;
-        target2 = -0.03;
+        //target1 = -0.03;
+        //target2 = -0.03;
+
+        target1 = 0.03;
+        target2 = 0.03;
 
         double currentSensorReading = intakeNoteSensor.getAverageValue();
         if( (currentSensorReading - prevSensorReading) < 0 && currentSensorReading < 2550){
-            target1 = 0.03;
-            target2 = 0.03;
+           // target1 = 0.03;
+            //target2 = 0.03;
+
+             target1 = -0.03;
+            target2 = -0.03;
         }
         else if ((currentSensorReading - prevSensorReading) < 0 && currentSensorReading > 2550){
             target1 = 0;
