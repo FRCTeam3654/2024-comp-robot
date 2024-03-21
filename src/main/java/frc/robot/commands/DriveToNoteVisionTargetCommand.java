@@ -116,6 +116,7 @@ public class DriveToNoteVisionTargetCommand extends Command {
   @Override
   public boolean isFinished() {
     if ( driveTimer + 1 < Timer.getFPGATimestamp()){ 
+    //if ( RobotContainer.intakeRollers.hasGamePiece() || ( driveTimer + 1 < Timer.getFPGATimestamp() ) ){ 
       return true;
     }
    
