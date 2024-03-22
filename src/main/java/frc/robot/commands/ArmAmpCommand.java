@@ -13,7 +13,7 @@ public class ArmAmpCommand extends Command {
   /** Creates a new DropNoteTrapCommand. */
   private double ampTimer = 0;
   private double ampTimeout = 30;
-  private double wristTargetPos = -9.8;
+  private double wristTargetPos = -10;
   private double armTargetPos = 49;
   private boolean isWristSmartMotionInProgress = false;
   private boolean isArmSmartMotionInProgress = false;
