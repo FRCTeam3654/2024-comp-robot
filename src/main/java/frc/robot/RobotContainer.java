@@ -124,7 +124,7 @@ public class RobotContainer {
             System.out.println("Ready to sleep for 5 seconds ...");
             Thread.sleep(5000); // try this
             //photonFrontOVCamera = new PhotonCamera("Arducam_OV9281_USB_1");//JW's first camera
-            photonFrontOVCamera = new PhotonCamera("Arducam_OV2311_USB_Camera");//JW's second different kind of camera
+           // photonFrontOVCamera = new PhotonCamera("Arducam_OV2311_USB_Camera");//JW's second different kind of camera
 
             photonBackOVCamera = new PhotonCamera("Arducam_OV9281_USB_Camera");//AK's second camera
             
