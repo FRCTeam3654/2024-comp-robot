@@ -17,7 +17,7 @@ public class DriveToNoteVisionTargetCommand extends Command {
 
   public static final double CHASE_NOTE_MAX_PID_OUTPUT = 0.4;
   private double driveTimer = 0;
-  private double driveTimeout = 0.5;
+  private double driveTimeout = 1;
   private SwerveSubsystem s_Swerve;    
 
   private boolean isFieldRelative;
@@ -115,8 +115,8 @@ public class DriveToNoteVisionTargetCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if ( driveTimer + 1 < Timer.getFPGATimestamp()){ 
-    //if ( RobotContainer.intakeRollers.hasGamePiece() || ( driveTimer + 1 < Timer.getFPGATimestamp() ) ){ 
+    //if ( driveTimer + 1 < Timer.getFPGATimestamp()){ 
+    if ( RobotContainer.intakeRollers.hasGamePiece() || ( driveTimer + driveTimeout < Timer.getFPGATimestamp() ) ){ 
       return true;
     }
    

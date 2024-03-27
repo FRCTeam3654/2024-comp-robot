@@ -110,7 +110,7 @@ public class DriveToNoteVisionTargetCommand2 extends Command {
                   // also need watch out incoming robot for the same note,  raise the intake if it is coming
 
                   if( distanceBtwRobotAndNote > 1.2 && distanceBtwRobotAndNote < 3.0 ) {
-                    this.driveTimeout = 2.5; // slightly longer time to get the next note
+                    this.driveTimeout = 3.0; // slightly longer time to get the next note
                 }
          }
          else {

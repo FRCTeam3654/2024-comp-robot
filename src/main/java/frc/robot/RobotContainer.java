@@ -159,6 +159,9 @@ public class RobotContainer {
         NamedCommands.registerCommand("DriveToNoteVisionTargetCommand", new DriveToNoteVisionTargetCommand(swerve , 2));
         NamedCommands.registerCommand("DriveToNoteVisionTargetCommand2", new DriveToNoteVisionTargetCommand2(swerve , 2));
 
+        NamedCommands.registerCommand("ChaseSpeakerTagCommand", new ChaseSpeakerTagCommand(photonBackOVCamera, swerve, poseEstimator::getCurrentPose));
+        NamedCommands.registerCommand("TurnToAbsoluteAngleCommand", new TurnToAbsoluteAngleCommand(swerve, 0.0, 2));
+
 
         /*
          

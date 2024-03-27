@@ -42,7 +42,7 @@ public class SpeakerShooter extends SubsystemBase {
     
     // https://github.com/FRC-5013-Park-Hill-Robotics/2024-Crescendo/blob/main/src/main/java/frc/robot/constants/LauncherConstants.java
     shooterLeftFXConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    shooterLeftFXConfig.Slot0.kP = 0.05; // 0.0254; 0.05
+    shooterLeftFXConfig.Slot0.kP = 0.1;//0.05; // 0.0254; 0.05
     shooterLeftFXConfig.Slot0.kI = 0;
     shooterLeftFXConfig.Slot0.kD = 0;
     shooterLeftFXConfig.Slot0.kS = 0.15;//0.395;
@@ -60,7 +60,7 @@ public class SpeakerShooter extends SubsystemBase {
     m_LeftVoltage.withSlot(0);
 
     shooterRightFXConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    shooterRightFXConfig.Slot0.kP = 0.05; //0.0254;
+    shooterRightFXConfig.Slot0.kP = 0.1;//0.05; //0.0254;
     shooterRightFXConfig.Slot0.kI = 0;
     shooterRightFXConfig.Slot0.kD = 0;
     shooterRightFXConfig.Slot0.kS = 0.15;
