@@ -14,7 +14,7 @@ public class ClimbPositionCommand extends Command {
   private double climbPosTimer = 0;
   private double climbPosTimeout = 30;
   private double wristTargetPos = -20;
-  private double armTargetPos = 33;
+  private double armTargetPos = 36;
   private boolean isWristSmartMotionInProgress = false;
   private boolean isArmSmartMotionInProgress = false;
 
