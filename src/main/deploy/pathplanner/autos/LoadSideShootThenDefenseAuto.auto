@@ -1,0 +1,31 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.6924444618120023,
+      "y": 4.430257322053106
+    },
+    "rotation": -57.528807709151465
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoSpeakerShooterCommand"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BottomThreeDefense"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

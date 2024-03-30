@@ -84,6 +84,10 @@ public class Wrist extends SubsystemBase {
     m_Wrist_encoder.setPosition(0);
   }
 
+  public void manualWrist(double target){
+    wristMotor.set(target);
+  }
+
   public double getSensorReading(){
     return m_Wrist_encoder.getPosition();
   }

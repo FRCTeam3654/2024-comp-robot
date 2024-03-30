@@ -219,8 +219,12 @@ public class RobotContainer {
        autoChooser.addOption("Just Shoot Loading Side Auto", new PathPlannerAuto("JustShootLoadingSideAuto"));//
        autoChooser.addOption("Just Shoot Amp Side Auto", new PathPlannerAuto("JustShootAmpSideAuto"));//
        autoChooser.addOption("Do Nothing Auto", new PathPlannerAuto("DoNothingAuto"));//
+       autoChooser.addOption("Center Start 4 Piece Amp Side Mid Note", new PathPlannerAuto("4PieceShortLoadSideAutoGoToMid"));
+       autoChooser.addOption("Load Side 3 Note Defense Auto", new PathPlannerAuto("LoadSideShootThenDefenseAuto"));
        autoChooser.addOption("Load Side To Fourth Note Auto", new PathPlannerAuto("LoadSideToFourthNoteTwoPieceAuto"));//
-        autoChooser.addOption("Load Side Far Start Fourth Note Two Piece", new PathPlannerAuto("SideToShootToFourthNoteAuto"));//
+       autoChooser.addOption("Load Side Far Start Fourth Note Two Piece", new PathPlannerAuto("SideToShootToFourthNoteAuto"));//
+       autoChooser.addOption("Mid Start 4 Piece LoadMid Note (Load Side near)", new PathPlannerAuto("4PieceShortLoadSideAutoGoToLoadMidNote"));
+       autoChooser.addOption("Load Start Sweep LoadMid and Mid Pick AmpMid Shoot", new PathPlannerAuto("Sweep2PickCenterAmpAuto"));
 
        //autoChooser.addOption("2 Piece Auto", new PathPlannerAuto("TwoPieceAuto"));
         //add more with autoChooser.addOption
@@ -332,6 +336,16 @@ public class RobotContainer {
         return new PathPlannerAuto(autoName);
     }
 
+     public Command Sweep2PickCenterAmpAuto(){
+        String autoName = "Sweep2PickCenterAmpAuto";
+        Pose2d pose =  PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
+
+        swerve.swerveOdometry.resetPosition(swerve.getYaw(), swerve.getModulePositions(), 
+        pose);
+        
+        return new PathPlannerAuto(autoName);
+    }
+
     public Command DoNothingAuto(){
         String autoName = "DoNothingAuto";
         Pose2d pose =  PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
@@ -344,6 +358,16 @@ public class RobotContainer {
 
      public Command SideToShootToFourthNoteAuto(){
         String autoName = "SideToShootToFourthNoteAuto";
+        Pose2d pose =  PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
+
+        swerve.swerveOdometry.resetPosition(swerve.getYaw(), swerve.getModulePositions(), 
+        pose);
+        
+        return new PathPlannerAuto(autoName);
+    }
+
+     public Command LoadSideShootThenDefenseAuto(){
+        String autoName = "LoadSideShootThenDefenseAuto";
         Pose2d pose =  PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
 
         swerve.swerveOdometry.resetPosition(swerve.getYaw(), swerve.getModulePositions(), 

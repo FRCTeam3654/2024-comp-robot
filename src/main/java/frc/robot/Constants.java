@@ -173,9 +173,9 @@ public final class Constants {
 
     public static final class AutoConstants { // TODO: The below constants are used in the example auto, and must be
                                               // tuned to specific robot
-        public static final double kMaxSpeedMetersPerSecond = 3;// 2; //3.5;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 3;// 4.5;//9; // // ours are like 4.5
-        public static final double kMaxAngularSpeedRadiansPerSecond = 3;//4.5; //9; // ours are Math.PI
+        public static final double kMaxSpeedMetersPerSecond = 4.5;// 2; //3.5;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 4.5;// 4.5;//9; // // ours are like 4.5
+        public static final double kMaxAngularSpeedRadiansPerSecond = 4.5;//4.5; //9; // ours are Math.PI
         public static final double kMaxAngularSpeedRadiansPerSecondSquared = 4.5; //9; // ours are Math.PI
 
         public static final double kPXController =8;// 0.5;

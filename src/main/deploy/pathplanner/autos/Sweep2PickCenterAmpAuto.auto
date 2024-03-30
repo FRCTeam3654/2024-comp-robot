@@ -2,27 +2,15 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.5641742052714891,
-      "y": 2.950215900431802
+      "x": 0.8108477755417065,
+      "y": 4.430257322053106
     },
-    "rotation": 0
+    "rotation": -52.650650955359396
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "MiddleOfLoadSideToShoot"
-          }
-        },
         {
           "type": "deadline",
           "data": {
@@ -30,7 +18,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.0
+                  "waitTime": 0.5
                 }
               },
               {
@@ -43,13 +31,19 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "BeginningOfSweepLoadSide"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "LoadSideToFourthDown"
+                  "pathName": "SweepLoadMidAndCenter"
                 }
               },
               {
@@ -59,7 +53,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 1.5
+                        "waitTime": 0.25
                       }
                     },
                     {
@@ -81,13 +75,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "DriveToNoteVisionTargetCommand"
+                  "name": "AutoIntakeCommand"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "AutoIntakeCommand"
+                  "name": "DriveToNoteVisionTargetCommand"
                 }
               }
             ]
@@ -106,7 +100,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "FourthNoteToShootLoad"
+                  "pathName": "CenterAmpMidNoteToLoadSideSpeaker"
                 }
               }
             ]
