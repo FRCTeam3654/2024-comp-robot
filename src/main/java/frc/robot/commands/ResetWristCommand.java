@@ -6,37 +6,34 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
+import frc.robot.RobotMap;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
-public class ManualWristCommand extends Command {
-  /** Creates a new ManualWristCommand. */
-  public ManualWristCommand() {
+import frc.robot.subsystems.SpeakerShooter;
+
+import edu.wpi.first.wpilibj.Timer;
+
+public class ResetWristCommand extends Command {
+  /** Creates a new ResetWristCommand. */
+  public ResetWristCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.wrist);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    RobotContainer.wrist.resetEncoders();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    if (RobotContainer.oi.operatorStick.getRightY() > 0.4){
-      RobotContainer.wrist.manualWrist(0.1);
-
-    }
-
-    else if (RobotContainer.oi.operatorStick.getRightY() < -0.4){
-      RobotContainer.wrist.manualWrist(-0.1);
-
-    }
-
-    else{
-      RobotContainer.wrist.manualWrist(0);
-
-    }
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override

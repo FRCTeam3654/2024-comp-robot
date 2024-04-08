@@ -59,6 +59,7 @@ public class OI {
   public JoystickButton ampArmButton;
   public JoystickButton climbPosButton;
   public JoystickButton afterAmpStoreButton;
+  public POVButton resetWristButton;
   
       //new JoystickButton(driver, XboxController.Button.kRightBumper.value);
  
@@ -106,6 +107,7 @@ public class OI {
   ampButton = new JoystickButton(operatorStick, RobotMap.ampButtonNumber);
   ampArmButton = new JoystickButton(operatorStick, RobotMap.ampArmButtonNumber);
   afterAmpStoreButton = new JoystickButton(operatorStick, RobotMap.afterAmpStoreButtonNumber);
+  resetWristButton = new POVButton(operatorStick, 180);
 
 
   

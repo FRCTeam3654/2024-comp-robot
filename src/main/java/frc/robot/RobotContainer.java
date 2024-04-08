@@ -196,6 +196,7 @@ public class RobotContainer {
         //wrist.setDefaultCommand(new WristSmartMotion(0));
 
         intakeRollers.setDefaultCommand(new ManualIntakeRollersCommand());
+        wrist.setDefaultCommand(new ManualWristCommand());
 
         // Configure the button bindings
         configureButtonBindings();
@@ -273,6 +274,10 @@ public class RobotContainer {
             () -> swerve.zeroGyro()
         ));
 
+        oi.resetWristButton.onTrue(new InstantCommand(
+            () -> wrist.resetEncoders()
+        ));
+
         SmartDashboard.putNumber("DropNoteAmpCommandWristPosition",-9.5);// as default, can be modified in Shuffleboard
         SmartDashboard.putNumber("DropNoteAmpCommandArmPositionMode3",49);
 
@@ -292,6 +297,8 @@ public class RobotContainer {
         //oi.intakeDownButton.onTrue(new ParallelCommandGroup(intakeRollers.intakeGamepieceCommand(), new WristSmartMotion(0)));
         //oi.ampButton.onTrue((new DropNoteAmpCommand()).andThen(new StoreCommand(1.5)));
         //oi.ampButton.onTrue(new ParallelCommandGroup())
+        //oi.resetWristButton.onTrue(wrist.resetEncoders());
+        //oi.resetWristButton.onTrue(new ResetWristCommand());
         oi.intakeDownButton.onTrue((new ParallelDeadlineGroup(intakeRollers.intakeGamepieceCommand(), new WristSmartMotion(0))).andThen(new ParallelDeadlineGroup(new StoreCommand(0.02), intakeRollers.centerNoteCommand())));
         //oi.intakeDownButton.onTrue((new ParallelDeadlineGroup(intakeRollers.intakeGamepieceCommand(), new WristSmartMotion(0))).andThen(new StoreCommand(0.02)));
 
